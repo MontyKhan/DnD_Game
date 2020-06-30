@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <iostream>
-#include <stdlib.h>
-#include <string>
-#include <string.h>
-#include <time.h>	// For generating random seed
-#include <vector>	// For results of multiple rolls
+#include "action.h"
 
 using namespace std;
 
@@ -52,8 +46,8 @@ int main()
 	int num = stoi(input.substr(0,deliminator));
 	int dice = stoi(input.substr(deliminator+1, dice_length));
 
-	cout << "Attack: " << roll_dice(1,20) << endl;
-	cout << "Damage: " << roll_dice(num,dice) << endl;
+	cout << "Attack: " << roll_dice(1,20,0) << endl;
+	cout << "Damage: " << roll_dice(num,dice,0) << endl;
 
 	return 0;
 }

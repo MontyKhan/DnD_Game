@@ -1,10 +1,6 @@
-#include <stdio.h>
-#include <iostream>
-#include <math.h>
+#include "pathfinding.h"
 
 using namespace std;
-
-int find_euc(int x, int y, int h);	// Find euclidean distance between two points.
 
 int find_euc(int x, int y, int h)
 {
