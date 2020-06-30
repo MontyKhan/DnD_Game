@@ -21,7 +21,7 @@ void print_vector(vector <int> input)
 	}
 }
 
-int roll_dice(int num, int dice)
+int roll_dice(int num, int dice, int mod)
 {
 	int damage = 0;
 	vector <int> results;
@@ -36,7 +36,7 @@ int roll_dice(int num, int dice)
 	if (num > 1)
 		print_vector(results);	
 
-	return damage;
+	return damage + mod;
 }
 
 int main()
