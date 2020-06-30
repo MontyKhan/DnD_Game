@@ -1,0 +1,4 @@
+Name,HP,AC,Speed,Init,Attack,Damage
+Orc,15,13,30,1,5,1d12 + 3
+Goblin,7,15,30,2,4,1d6 + 2
+Bugbear,27,16,30,2,4,2d8 + 2
