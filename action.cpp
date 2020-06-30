@@ -21,7 +21,7 @@ void print_vector(vector <int> input)
 	}
 }
 
-int roll_damage(int num, int dice)
+int roll_dice(int num, int dice)
 {
 	int damage = 0;
 	vector <int> results;
@@ -33,7 +33,8 @@ int roll_damage(int num, int dice)
 		damage += roll;
 	}
 
-	print_vector(results);	
+	if (num > 1)
+		print_vector(results);	
 
 	return damage;
 }
@@ -51,7 +52,8 @@ int main()
 	int num = stoi(input.substr(0,deliminator));
 	int dice = stoi(input.substr(deliminator+1, dice_length));
 
-	cout << roll_damage(num,dice) << endl;
+	cout << "Attack: " << roll_dice(1,20) << endl;
+	cout << "Damage: " << roll_dice(num,dice) << endl;
 
 	return 0;
 }
