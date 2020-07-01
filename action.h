@@ -17,4 +17,3 @@
 void print_vector(std::vector <int> input);
 int roll_dice(int num, int dice, int mod);
 int take_action(std::vector<std::string> creature);
-int * read_dam(std::string input);

@@ -42,32 +42,6 @@ int take_action(std::vector<std::string> creature)
 	
 }
 
-int * read_dam(std::string input)
-{
-	static int values[3];
-
-	int d = input.find("d");
-	int dice_length = input.length() - d + 1;
-
-	int plus = input.find(" + ") + 2;
-	int plus_length = input.length() + 1;
-	int mod = 0;
-
-	if (plus > 1) {
-		plus_length = input.length() - plus;
-		mod = stoi(input.substr(plus+1, input.length() - plus_length));
-	}
-
-	int num = stoi(input.substr(0,d));
-	int dice = stoi(input.substr(d+1, plus_length - dice_length));
-
-	values[0] = num;
-	values[1] = dice;
-	values[2] = mod;
-
-	return values;
-}
-
 int main()
 {
 	srand(time(NULL));	// Generate random seed.
