@@ -1,4 +1,4 @@
-#include "combatant.h"
+#include "include/combatant.h"
 
 using namespace std;
 
@@ -104,14 +104,3 @@ void print_vector(vector <int> input)
 			cout << *i << ", ";
 	}
 }
-
-// Empty main function
-int main() {
-	srand(time(NULL));	// Generate random seed.
-
-	combatant C("Test", 1, 2, 3, 4, 5, "6d7 + 8");
-
-	C.print_stats();
-
-	C.take_action();
-};
