@@ -17,6 +17,7 @@ int main() {
 	srand(time(NULL));	// Generate random seed.
 
 	combatant C("Test", 1, 2, 3, 4, 5, "6d7 + 8");	// Create character
+	std::vector<combatant> players; 		// Create vector of characters
 
 	C.print_stats();	// Print character stats to screen
 
@@ -29,12 +30,17 @@ int main() {
     	// Print the content of row by row on screen
     	for(std::vector<std::string> vec : dataList)
     	{
-        	for(std::string data : vec)
+        	/* for(std::string data : vec)
         	{
         		std::cout<<data << " , ";
         	}
-        	std::cout<<std::endl;
+        	std::cout<<std::endl; */
+		players.push_back(combatant(vec));
     	}
+
+	for(combatant D : players) {
+		D.print_stats();
+	}
 
     	return 0;
 };

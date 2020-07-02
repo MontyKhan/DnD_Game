@@ -66,6 +66,7 @@ void combatant::print_stats()
 	cout << "Iniative modifier: " << init << endl;
 	cout << "Attack: " << attack << endl;			// Overridden, prints in form %d% + %.
 	cout << "Damage: " << damage << endl;			// Overridden, prints in form %d% + %.
+	cout << endl;
 }
 
 int combatant::make_roll(roll x)
@@ -89,7 +90,7 @@ int combatant::make_roll(roll x)
 void combatant::take_action()
 {
 	cout << "Attack: " << make_roll(attack) << endl;	// Roll attack
-	cout << "Damage: " << make_roll(damage) << endl;	// Roll damage
+	cout << "Damage: " << make_roll(damage) << endl << endl;	// Roll damage
 }
 
 void print_vector(vector <int> input)
