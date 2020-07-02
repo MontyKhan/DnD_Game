@@ -65,7 +65,13 @@ public:
 
 	// Interpret damage in form %d% + %.
 	roll read_dam(std::string input);
+	// Roll a dice
+	int make_roll(roll x);
+	// Roll both attack and damage
+	void take_action();
 
 	// Debugging functions
 	void print_stats();
 };
+
+void print_vector(std::vector <int> input);

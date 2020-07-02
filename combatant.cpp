@@ -68,9 +68,50 @@ void combatant::print_stats()
 	cout << "Damage: " << damage << endl;			// Overridden, prints in form %d% + %.
 }
 
+int combatant::make_roll(roll x)
+{
+	int damage = 0;
+	vector <int> results;
+
+	for (int i = 0; i < x.num; i++)
+	{
+		int val = rand() % x.dice + 1;
+		results.push_back(val);
+		damage += val;
+	}
+
+	if (x.num > 1)
+		print_vector(results);	
+
+	return damage + x.mod;
+}
+
+void combatant::take_action()
+{
+	cout << "Attack: " << make_roll(attack) << endl;	// Roll attack
+	cout << "Damage: " << make_roll(damage) << endl;	// Roll damage
+}
+
+void print_vector(vector <int> input)
+{
+	cout << "(";
+	
+	for(auto i = input.begin(); i != input.end(); i++)
+	{
+		if (next(i) == input.end())
+			cout << *i << ")" << endl;
+		else
+			cout << *i << ", ";
+	}
+}
+
 // Empty main function
 int main() {
+	srand(time(NULL));	// Generate random seed.
+
 	combatant C("Test", 1, 2, 3, 4, 5, "6d7 + 8");
 
 	C.print_stats();
+
+	C.take_action();
 };
