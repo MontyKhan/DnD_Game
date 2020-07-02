@@ -87,12 +87,27 @@ int combatant::make_roll(roll x)
 	return damage + x.mod;
 }
 
+// Roll attack and damage.
 void combatant::take_action()
 {
 	cout << "Attack: " << make_roll(attack) << endl;	// Roll attack
 	cout << "Damage: " << make_roll(damage) << endl << endl;	// Roll damage
 }
 
+// Reduce HP by dam
+int combatant::take_damage(int dam)
+{
+	if (dam < hp)
+		hp -= dam;
+	else {
+		hp = 0;
+		status = dead;
+	}
+
+	return status;
+}
+
+// Print a vector to the screen.
 void print_vector(vector <int> input)
 {
 	cout << "(";

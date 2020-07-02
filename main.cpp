@@ -42,5 +42,9 @@ int main() {
 		D.print_stats();
 	}
 
+	players[0].take_damage(2);
+
+	players[0].print_stats();
+
     	return 0;
 };

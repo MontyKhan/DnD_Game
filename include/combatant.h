@@ -29,6 +29,8 @@ typedef struct roll {
 } roll;
 #endif
 
+enum life_status {alive, death_1, death_2, dead};
+
 // May work better as typedef struct, review later.
 class roll {
 public:
@@ -56,6 +58,7 @@ private:
 	int init;
 	roll attack;
 	roll damage;
+	life_status status;
 
 public:
 	// Constructor for individual variables
@@ -69,6 +72,8 @@ public:
 	int make_roll(roll x);
 	// Roll both attack and damage
 	void take_action();
+	// Reduce hp by dam
+	int take_damage(int dam);
 
 	// Debugging functions
 	void print_stats();
