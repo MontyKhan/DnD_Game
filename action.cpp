@@ -39,7 +39,6 @@ int take_action(std::vector<std::string> creature)
 	cout << "Attack: " << roll_dice(1,20,attack_mod) << endl;	// Roll attack
 
 	std::string damage_roll = creature[DAM_VAR];
-	
 }
 
 int main()

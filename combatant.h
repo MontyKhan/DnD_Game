@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -10,6 +11,7 @@
 #define ATTACK_VAR	5
 #define DAM_VAR		6
 
+#if 0
 typedef struct roll {
 	int num;
 	int dice;
@@ -20,7 +22,29 @@ typedef struct roll {
 		num(0), dice(0), mod(0) {};
 	roll(int Num, int Dice, int Mod) :
 		num(Num), dice(Dice), mod(Mod) {};
+
+	// Friends
+	friend std::ostream& operator << (ostream &out, const roll &r);
+
 } roll;
+#endif
+
+// May work better as typedef struct, review later.
+class roll {
+public:
+	int num;
+	int dice;
+	int mod;
+
+	// Constructors
+	roll() :
+		num(0), dice(0), mod(0) {};
+	roll(int Num, int Dice, int Mod) :
+		num(Num), dice(Dice), mod(Mod) {};
+
+	// Friends
+	friend std::ostream & operator << (std::ostream &out, const roll &r);
+};
 
 // Class for each combatant in an encounter
 class combatant {
@@ -41,4 +65,7 @@ public:
 
 	// Interpret damage in form %d% + %.
 	roll read_dam(std::string input);
+
+	// Debugging functions
+	void print_stats();
 };
