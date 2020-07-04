@@ -16,7 +16,7 @@ combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, int At
 	hp = HP;
 	ac = AC;
 	speed = Spd;
-	init = Init;
+	init = roll(1,20,Init);
 	attack = roll(1,20,Attack);
 	damage = read_dam(Damage);
 }
@@ -28,7 +28,7 @@ combatant::combatant(std::vector<std::string> line)
 	hp = stoi(line[HP_VAR]);			// Get HP (int)
 	ac = stoi(line[AC_VAR]);			// Get AC (int)
 	speed = stoi(line[SPD_VAR]);			// Get speed (int)
-	init = stoi(line[INIT_VAR]);			// Get initiative modifier (int)
+	init = roll(1,20,stoi(line[INIT_VAR]));		// Create initiative roll
 	attack = roll(1,20,stoi(line[ATTACK_VAR]));	// Create attack roll
 	damage = read_dam(line[DAM_VAR]);		// Create damage roll
 }
@@ -63,7 +63,7 @@ void combatant::print_stats()
 	cout << "HP: " << hp << endl;
 	cout << "AC: " << ac << endl;
 	cout << "Speed: " << speed << endl;
-	cout << "Iniative modifier: " << init << endl;
+	cout << "Iniative: " << init << endl;
 	cout << "Attack: " << attack << endl;			// Overridden, prints in form %d% + %.
 	cout << "Damage: " << damage << endl;			// Overridden, prints in form %d% + %.
 	cout << endl;

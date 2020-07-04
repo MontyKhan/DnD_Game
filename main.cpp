@@ -3,6 +3,7 @@
 
 using namespace std;
 
+// Enter values from a .csv into a vector of vectors.
 std::vector<std::vector<std::string>> load_file(std::string filepath)
 {
 	// Create an object of CSV_Reader	

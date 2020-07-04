@@ -55,7 +55,7 @@ private:
 	int hp;
 	int ac;
 	int speed;
-	int init;
+	roll init;
 	roll attack;
 	roll damage;
 	life_status status;
@@ -84,8 +84,8 @@ public:
 	int setAc(int val) { ac = val; return 0; };
 	int getSpd() { return speed; };					// Speed
 	int setSpd(int val) { speed = val; return 0; };
-	int getInit() { return init; };					// Initiative
-	int setInit(int val) { init = val; return 0; };
+	roll getInit() { return init; };				// Initiative
+	int setInit(int val) { init = roll(1,20,val); return 0; };
 	life_status getStatus() { return status; };			// Status
 	int setStatus(life_status val) { status = val; return 0; };
 
