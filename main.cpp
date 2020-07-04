@@ -21,7 +21,7 @@ int main() {
 
 	C.print_stats();	// Print character stats to screen
 
-	C.take_action();	// Roll attack and damage.
+	//C.make_attack();	// Roll attack and damage.
 
 	std::string filepath = "./stats/encounter1.csv";
 
@@ -42,9 +42,11 @@ int main() {
 		D.print_stats();
 	}
 
-	players[0].take_damage(2);
+	while (players[1].getHp() > 0) {
+		players[0].make_attack(players[1]);
 
-	players[0].print_stats();
+		players[1].print_stats();
+	}
 
     	return 0;
 };

@@ -88,10 +88,24 @@ int combatant::make_roll(roll x)
 }
 
 // Roll attack and damage.
-void combatant::take_action()
+int combatant::make_attack(combatant & target)
 {
-	cout << "Attack: " << make_roll(attack) << endl;	// Roll attack
-	cout << "Damage: " << make_roll(damage) << endl << endl;	// Roll damage
+	int attack_roll = make_roll(attack);
+
+	cout << "Attack: " << attack_roll << " ";
+
+	if (attack_roll < target.getAc()) {
+		cout << "(Miss)" << endl;
+		return 0;
+	}
+	else {
+		int damage_roll = make_roll(damage);
+		target.take_damage(damage_roll);
+		cout << "(Hit, " << damage_roll << " damage)" << endl;
+		return damage_roll;
+	}
+	
+	return -1;				// Should not reach here.
 }
 
 // Reduce HP by dam
