@@ -76,14 +76,18 @@ public:
 	int take_damage(int dam);
 
 	// Getter/Setters
-	int getHp() { return hp; };				// HP
+	std::string getName() { return name; };				// Name
+	int setName(std::string val) { name = val; return 0; }
+	int getHp() { return hp; };					// HP
 	int setHp(int val) { hp = val; return 0; };
-	int getAc() { return ac; };				// AC
+	int getAc() { return ac; };					// AC
 	int setAc(int val) { ac = val; return 0; };
-	int getSpd() { return speed; };			// Speed
+	int getSpd() { return speed; };					// Speed
 	int setSpd(int val) { speed = val; return 0; };
-	int getInit() { return init; };			// Initiative
+	int getInit() { return init; };					// Initiative
 	int setInit(int val) { init = val; return 0; };
+	life_status getStatus() { return status; };			// Status
+	int setStatus(life_status val) { status = val; return 0; };
 
 	// Debugging functions
 	void print_stats();
