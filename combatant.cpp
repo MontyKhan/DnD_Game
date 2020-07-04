@@ -69,6 +69,7 @@ void combatant::print_stats()
 	cout << endl;
 }
 
+// Roll the dice given as input
 int combatant::make_roll(roll x)
 {
 	int damage = 0;
@@ -85,6 +86,12 @@ int combatant::make_roll(roll x)
 		print_vector(results);	
 
 	return damage + x.mod;
+}
+
+// Roll Initiative specifically
+int combatant::roll_initiative()
+{
+	return make_roll(init);
 }
 
 // Roll attack and damage.

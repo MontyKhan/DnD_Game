@@ -70,7 +70,9 @@ public:
 	roll read_dam(std::string input);
 	// Roll a dice
 	int make_roll(roll x);
-	// Roll both attack and damage
+	// Roll initiative specifically
+	int roll_initiative();
+	// Roll both attack and damage againt target
 	int make_attack(combatant & target);	// Pass by reference
 	// Reduce hp by dam
 	int take_damage(int dam);

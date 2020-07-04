@@ -31,26 +31,18 @@ void print_vector(vector <int> input)
 int main() {
 	srand(time(NULL));	// Generate random seed.
 
-	combatant C("Test", 1, 2, 3, 4, 5, "6d7 + 8");	// Create character
 	std::vector<combatant> players; 		// Create vector of characters
-
-	C.print_stats();	// Print character stats to screen
-
-	//C.make_attack();	// Roll attack and damage.
 
 	std::string filepath = "./stats/encounter1.csv";
 
 	std::vector<std::vector<std::string>> dataList = load_file(filepath);
 
     	// Print the content of row by row on screen
-    	for(std::vector<std::string> vec : dataList)
+    	// for(std::vector<std::string> vec : dataList)
+	for (int i = 0; i < dataList.size(); i++)
     	{
-        	/* for(std::string data : vec)
-        	{
-        		std::cout<<data << " , ";
-        	}
-        	std::cout<<std::endl; */
-		players.push_back(combatant(vec));
+		players.push_back(combatant(dataList[i]));
+		cout << players[i].roll_initiative() << endl;	
     	}
 
 	for(combatant D : players) {
