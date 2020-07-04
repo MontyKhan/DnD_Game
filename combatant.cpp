@@ -100,9 +100,8 @@ int combatant::make_attack(combatant & target)
 	}
 	else {
 		int damage_roll = make_roll(damage);
-		target.take_damage(damage_roll);
 		cout << "(Hit, " << damage_roll << " damage)" << endl;
-		return damage_roll;
+		return target.take_damage(damage_roll);			// Return status of target.
 	}
 	
 	return -1;				// Should not reach here.
@@ -119,18 +118,4 @@ int combatant::take_damage(int dam)
 	}
 
 	return status;
-}
-
-// Print a vector to the screen.
-void print_vector(vector <int> input)
-{
-	cout << "(";
-	
-	for(auto i = input.begin(); i != input.end(); i++)
-	{
-		if (next(i) == input.end())
-			cout << *i << ")" << endl;
-		else
-			cout << *i << ", ";
-	}
 }

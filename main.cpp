@@ -13,6 +13,20 @@ std::vector<std::vector<std::string>> load_file(std::string filepath)
 	return dataList;
 }
 
+// Print a vector to the screen.
+void print_vector(vector <int> input)
+{
+	cout << "(";
+	
+	for(auto i = input.begin(); i != input.end(); i++)
+	{
+		if (next(i) == input.end())
+			cout << *i << ")" << endl;
+		else
+			cout << *i << ", ";
+	}
+}
+
 int main() {
 	srand(time(NULL));	// Generate random seed.
 
