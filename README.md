@@ -1,3 +1,3 @@
 # DnD_Helper
 
-Developed in C++ using g++ converter.
+Developed in C++ using g++ compiler.
