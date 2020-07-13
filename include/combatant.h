@@ -1,3 +1,6 @@
+#ifndef COMBATANT_H
+#define COMBATANT_H
+
 #include <iostream>
 #include <ostream>
 #include <string>
@@ -65,6 +68,8 @@ public:
 	combatant(std::string Name, int HP, int AC, int Spd, int Init, int Attack, std::string Damage);
 	// Constructor for vector of strings, as read from .csv.
 	combatant(std::vector<std::string> line);
+	// Default constructor
+	combatant() : name(""), hp(0), ac(0), speed(0), init(roll()), attack(roll()), damage(roll()), status(dead) {};
 
 	// Interpret damage in form %d% + %.
 	roll read_dam(std::string input);
@@ -95,4 +100,4 @@ public:
 	void print_stats();
 };
 
-void print_vector(std::vector <int> input);
+#endif
