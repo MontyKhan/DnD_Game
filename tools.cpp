@@ -51,6 +51,17 @@ void add_to_list(node * head, int initiative, combatant player)
 	}
 }
 
+// Remove a node from a linked list
+void remove_from_list(node * target)
+{
+	if (target->next != NULL)
+		target->next->prev = target->prev;
+	if (target->prev != NULL)
+		target->prev->next = target->next;
+
+	delete target;	// Free up memory.
+}
+
 void change_head(node * head, combatant new_player, int new_initiative)
 {
 	combatant prev_player = head->player;
@@ -112,6 +123,7 @@ node * initiative_round(vector <combatant> players)
 		iterator = iterator->next;
 	}
 	iterator->next = head;
+	head->prev = iterator;
 
 	return head;
 }

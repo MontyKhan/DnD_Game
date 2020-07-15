@@ -20,3 +20,4 @@ void run_encounter(std::vector <combatant> players); 	// Run a fight, taking a l
 node * initiative_round(std::vector <combatant> players);
 void add_to_list(node * head, int initiative, combatant player);
 void change_head(node * head, combatant new_player, int new_initiative);
+void remove_from_list(node * target);
