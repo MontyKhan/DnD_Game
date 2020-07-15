@@ -104,12 +104,16 @@ int combatant::make_attack(combatant & target)
 
 	if (attack_roll < target.getAc()) {
 		cout << "(Miss)" << endl;
-		return 0;
+		cout << name << " swung at " << target.getName() << " but missed!" << endl << endl;
+		return alive; // 0
 	}
 	else {
 		int damage_roll = make_roll(damage);
 		cout << "(Hit, " << damage_roll << " damage)" << endl;
-		return target.take_damage(damage_roll);			// Return status of target.
+		cout << name << " hit " << target.getName() << " for " << damage_roll << " damage! ";
+		int remaining_hp = target.take_damage(damage_roll);
+		cout << target.getHp() << " HP remaining." << endl << endl;
+		return remaining_hp;			// Return status of target.
 	}
 	
 	return -1;				// Should not reach here.
@@ -123,6 +127,7 @@ int combatant::take_damage(int dam)
 	else {
 		hp = 0;
 		status = dead;
+		cout << name << " was downed!" << endl;
 	}
 
 	return status;
