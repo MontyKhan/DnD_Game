@@ -9,14 +9,18 @@
 
 using namespace std;
 
-// Parses through csv file line by line and returns the data
-// in vector of vector of strings.
+/* brief: 	Parse through .csv file at fileName line by line and transfer data to a vector of strings.
+   param: 	none
+   return: 	A vector of vectors of strings containing contents of file.
+*/
 std::vector<std::vector<std::string> > CSV_Reader::getData()
 {
-	std::ifstream file(fileName);
-	std::vector<std::vector<std::string> > dataList;
-	std::string line = "";
-	getline(file, line);
+	std::ifstream file(fileName);						// Open file with address at fileName.
+	std::vector<std::vector<std::string> > dataList;			// Declare vector of vectors of strings.
+	std::string line = "";							// Declare empty string.
+
+	getline(file, line);							// Get first line of file.
+
 	// Iterate through each line and split the content using delimeter
 	while (getline(file, line))
 	{

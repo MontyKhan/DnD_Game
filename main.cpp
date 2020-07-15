@@ -24,27 +24,34 @@ void run_encounter(std::vector <combatant> players)
 	// Repeat until only one player is left.
 	while (active_player->next != active_player)
 	{
-		node * target = active_player;		// Set target to start at attacker (origin).
+		// Set target to start at attacker (origin).
+		node * target = active_player;
 
-		// int target_selector = (rand() % potential_targets+1) - 1;
+		// Select random number between 1 and the number of enemies.
 		int target_selector = (rand() % potential_targets+1);
 
+		// Progress the head of the circular list ahead by target_selector.
+		// i.e. 1 means go to next. Cannot go completely around the list.
 		for (int i = 0; i < target_selector; i++)
 		{
 			target = target->next;
 		}
 
+		// Make attack against target. If attack kills them, result is set to dead. Else, alive.
 		life_status result = active_player->player.make_attack(target->player);
 
+		// If target is killed, remove them from the list and decrement the number of potential targets.
 		if (result == dead)
 		{
 			remove_from_list(target);
 			potential_targets--;
 		}
 
+		// Progress iterator node to the next one.
 		active_player = active_player->next;
 	}
 
+	// Debug code. State last fighter standing.
 	cout << active_player->player.getName() << " wins!" << endl;
 }
 
@@ -54,26 +61,28 @@ void run_encounter(std::vector <combatant> players)
    returns: 	0
 */
 int main() {
-	srand(time(NULL));	// Generate random seed.
 
-	std::vector<combatant> players; 		// Create vector of characters
+	srand(time(NULL));							// Generate random seed.
 
-	std::string filepath = "./stats/encounter1.csv";
+	std::vector<combatant> players; 					// Create vector of combatants.
 
-	std::vector<std::vector<std::string>> dataList = load_file(filepath);
+	std::string filepath = "./stats/encounter1.csv";			// Set filepath. Change to set at run-time later.
 
-    	// Print the content of row by row on screen
-    	// for(std::vector<std::string> vec : dataList)
+	std::vector<std::vector<std::string>> dataList = load_file(filepath);	// Import contents of .csv to vector of vectors of strings.
+
+    	// Print the content of row by row on screen while adding them them to vector.
 	for (int i = 0; i < dataList.size(); i++)
     	{
 		players.push_back(combatant(dataList[i]));
 		cout << players[i].roll_initiative() << endl;	
     	}
 
+	// Range based for loop. Print stats of each player to screen.
 	for(combatant D : players) {
 		D.print_stats();
 	}
 
+	// Loop for combat.
 	run_encounter(players);
 
     	return 0;

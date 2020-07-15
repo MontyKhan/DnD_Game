@@ -5,19 +5,20 @@
 class node {
 	public:
 		// Data
-		combatant player;
-		int initiative;
+		combatant player;	// Statistics of combatant.
+		int initiative;		// Initiative roll for use in sorting.
 
 		// Linked list
-		struct node *prev;
-		struct node *next;
+		struct node *prev;	// Previous node in list.
+		struct node *next;	// Next node in list.
 
+		// Constructor
 		node() : player(combatant()), initiative(0), prev(NULL), next(NULL) {};
 };
 
-void print_vector(std::vector <int> input);	// Print vector as a list seperated by commas.
-void run_encounter(std::vector <combatant> players); 	// Run a fight, taking a list of players as the input.
-node * initiative_round(std::vector <combatant> players);
-void add_to_list(node * head, int initiative, combatant player);
-void change_head(node * head, combatant new_player, int new_initiative);
-void remove_from_list(node * target);
+void print_vector(std::vector <int> input);					// Print vector as a list seperated by commas.
+void run_encounter(std::vector <combatant> players); 				// Run a fight, taking a list of players as the input.
+node * initiative_round(std::vector <combatant> players);			// Have all players roll initiative, and return head of list.
+void add_to_list(node * head, int initiative, combatant player);		// Add new node to list after head.
+void change_head(node * head, combatant new_player, int new_initiative);	// Add new node to list before head.
+void remove_from_list(node * target);						// Remove node from list.

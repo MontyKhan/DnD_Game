@@ -3,14 +3,27 @@
 
 using namespace std;
 
-// Override function for "roll" variable.
+/* brief:	Override function. Prints roll to screen in format %d% + %.
+   param:	&out - Address of output stream.
+		&r - roll to print.
+   returns:	output stream.
+*/
 std::ostream & operator << (std::ostream &out, const roll &r)
 {
 	out << r.num << "d" << r.dice << " + " << r.mod;
 	return out;
 }
 
-// Constructor for when taking variables individually
+/* brief:	Constructor for taking variables individually.
+   param:	Name - Combatant name as string.
+		HP - Combatant max HP as int.
+		AC - Combatant Armour Class as int.
+		Spd - Combatant speed in feet as an int.
+		Init - Initiative modifier as an int. Is converted into a roll equal to 1d20 + Init.
+		Attack - Attack modifier as an int. Is converted into a roll equal to 1d20 + Attack.
+		Damage - Weapon damage as a string, of format %d% + %.
+   return:	Nothing, as constructor.
+*/
 combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, int Attack, std::string Damage)
 {
 	name = Name;
@@ -22,7 +35,10 @@ combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, int At
 	damage = read_dam(Damage);
 }
 
-// Constuctor when taking vector of strings as input
+/* brief:	Constructor for reading variables from a vector of strings.
+   param:	line - Stats in order of Name, HP, AC, Spd, Init, Attack, Damage as in above formats.
+   return:	Nothing, as constructor.
+*/
 combatant::combatant(std::vector<std::string> line)
 {
 	name = line[NAME_VAR];				// Get name (string)
@@ -34,30 +50,40 @@ combatant::combatant(std::vector<std::string> line)
 	damage = read_dam(line[DAM_VAR]);		// Create damage roll
 }
 
-// Convert string in format %d% + % into three ints.
+/* brief:	Convert a string in the format %d% + % to three seperate ints.
+		Assigns values to num, dice and mod in that order.
+   param:	input - A string in the format %d% + %.
+   returns:	A roll value as above.
+*/
 roll combatant::read_dam(std::string input)
 {
-	roll values;
+	roll values;					// Declare roll value, values.
 
-	int d = input.find("d");
-	int dice_length = input.length() - d + 1;
+	int d = input.find("d");			// Find number of characters in the 'd' char is.
+	int dice_length = input.length() - d + 1;	// Assign length of dice string to one less than the number of chars in d is.
 
-	int plus = input.find(" + ") + 2;
-	int plus_length = input.length() + 1;
-	values.mod = 0;
+	int plus = input.find(" + ") + 2;		// Find number of characters in the " + " string is.
+	int plus_length = input.length() + 1;		// Assign length of string up to " + " to full length of string plus one.
+	values.mod = 0;					// By default, set modifier to zero.
 
+	// If plus is greater than 1, means it's present.
+	// Change value of plus_length to number of characters till " + ".
+	// Assign value of mod to string after " + ".
 	if (plus > 1) {
 		plus_length = input.length() - plus;
 		values.mod = stoi(input.substr(plus+1, input.length() - plus_length));
 	}
 
-	values.num = stoi(input.substr(0,d));
-	values.dice = stoi(input.substr(d+1, plus_length - dice_length));
+	values.num = stoi(input.substr(0,d));					// Convert string before "d" to an int, num.
+	values.dice = stoi(input.substr(d+1, plus_length - dice_length));	// Convert string between "d" and " + " to an int, dice. 
 
 	return values;
 }
 
-// Debugging, print all combatant stats.
+/* brief:	Print all stats of combatant to screen.
+   param:	None.
+   returns:	Nothing.
+*/
 void combatant::print_stats()
 {
 	cout << "Name: " << name << endl;
@@ -70,12 +96,17 @@ void combatant::print_stats()
 	cout << endl;
 }
 
-// Roll the dice given as input
+/* brief: 	Generate a random number as if rolled by a dice.
+   param: 	roll value, containing the number of dice, the size of the dice and the modifier.
+   returns: 	The result of the roll, plus the modifier.
+*/
 int combatant::make_roll(roll x)
 {
-	int damage = 0;
-	vector <int> results;
+	int damage = 0;					// Initialise damage to 0.
+	vector <int> results;				// Declare empty vector of ints for containing results of each roll.
 
+	// Roll each dice using rand(), then add to vector.
+	// Each roll produces a value between 1 and x.dice (e.g. 1 - 6 for a d6).
 	for (int i = 0; i < x.num; i++)
 	{
 		int val = rand() % x.dice + 1;
@@ -90,21 +121,31 @@ int combatant::make_roll(roll x)
 	return damage + x.mod;
 }
 
-// Roll Initiative specifically
+/* brief:	Roll initiative specifically. Accesses init from class.
+   param:	None
+   returns:	The result of the 1d20 + init roll.
+*/
 int combatant::roll_initiative()
 {
 	return make_roll(init);
 }
 
-// Roll attack and damage.
+/* brief:	Roll attack. If it's greater than the target's AC, roll damage and subtract that from the target's HP. Print result.
+		If it's less, just print miss to stdout.
+   param:	target - Passed by reference. Combatant for the attacks to be made against.
+   return:	status of target after attack, i.e. dead or alive.
+*/
 life_status combatant::make_attack(combatant & target)
 {
-	int attack_roll = make_roll(attack);
+	int attack_roll = make_roll(attack);				// Initialise attack_roll to randomly generated value in dice range.
 
+	// If attack roll is less than the target's AC, print message about missing.
 	if (attack_roll < target.getAc()) {
 		cout << name << " swung at " << target.getName() << " but missed!" << endl;
 		return alive; // 0
 	}
+	// If attack roll is greater than the target's AC, roll damage and subtract that from the target's HP.
+	// Then print message about hitting and dealing damage to stdout. Check target's status.
 	else {
 		int damage_roll = make_roll(damage);
 		cout << name << " hit " << target.getName() << " for " << damage_roll << " damage! ";
@@ -117,11 +158,16 @@ life_status combatant::make_attack(combatant & target)
 	return alive;				// Should not reach here.
 }
 
-// Reduce HP by dam
+/* brief:	Take a value away from HP.
+   param:	dam, the damage to be taken by the recipitent.
+   returns:	The recipitent's status, i.e. dead or alive.
+*/
 life_status combatant::take_damage(int dam)
 {
+	// If damage is less than the target's HP, just reduce HP.
 	if (dam < hp)
 		hp -= dam;
+	// If damage is greater than target's HP, set HP to zero and kill recipitent.
 	else {
 		hp = 0;
 		status = dead;

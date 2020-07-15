@@ -14,32 +14,14 @@
 #define ATTACK_VAR	5
 #define DAM_VAR		6
 
-#if 0
-typedef struct roll {
-	int num;
-	int dice;
-	int mod;
-
-	// Constructors
-	roll() :
-		num(0), dice(0), mod(0) {};
-	roll(int Num, int Dice, int Mod) :
-		num(Num), dice(Dice), mod(Mod) {};
-
-	// Friends
-	friend std::ostream& operator << (ostream &out, const roll &r);
-
-} roll;
-#endif
-
 enum life_status {alive, death_1, death_2, dead};
 
 // May work better as typedef struct, review later.
 class roll {
 public:
-	int num;
-	int dice;
-	int mod;
+	int num;		// Number of dice to roll.
+	int dice;		// Size of dice to roll (e.g. d6)
+	int mod;		// Modifier to roll, to be added on.
 
 	// Constructors
 	roll() :
