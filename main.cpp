@@ -25,8 +25,6 @@ void run_encounter(std::vector <combatant> players)
 
 	if (result == dead)
 		remove_from_list(target);
-	else
-		cout << "But it survived!" << endl;
 }
 
 int main() {

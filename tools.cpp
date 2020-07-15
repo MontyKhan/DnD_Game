@@ -92,8 +92,6 @@ node * initiative_round(vector <combatant> players)
 		tmp = head;
 		node * tmp2 = head;
 
-		cout << endl;
-
 		int initiative_roll = players[i].roll_initiative();
 
 		while (tmp != NULL) {
@@ -112,7 +110,6 @@ node * initiative_round(vector <combatant> players)
 
 		while (tmp2 != NULL)
 		{
-			cout << tmp2->player.getName() << " " << tmp2->initiative << endl;
 			tmp2 = tmp2->next;
 		}
 
