@@ -78,9 +78,9 @@ public:
 	// Roll initiative specifically
 	int roll_initiative();
 	// Roll both attack and damage againt target
-	int make_attack(combatant & target);	// Pass by reference
+	life_status make_attack(combatant & target);	// Pass by reference
 	// Reduce hp by dam
-	int take_damage(int dam);
+	life_status take_damage(int dam);
 
 	// Getter/Setters
 	std::string getName() { return name; };				// Name

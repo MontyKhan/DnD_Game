@@ -83,8 +83,9 @@ int combatant::make_roll(roll x)
 		damage += val;
 	}
 
-	if (x.num > 1)
-		print_vector(results);	
+	// Disable for now, as level of complexity of current program too low.
+	//if (x.num > 1)
+	//	print_vector(results);	
 
 	return damage + x.mod;
 }
@@ -96,31 +97,28 @@ int combatant::roll_initiative()
 }
 
 // Roll attack and damage.
-int combatant::make_attack(combatant & target)
+life_status combatant::make_attack(combatant & target)
 {
 	int attack_roll = make_roll(attack);
 
-	cout << "Attack: " << attack_roll << " ";
-
 	if (attack_roll < target.getAc()) {
-		cout << "(Miss)" << endl;
-		cout << name << " swung at " << target.getName() << " but missed!" << endl << endl;
+		cout << name << " swung at " << target.getName() << " but missed!" << endl;
 		return alive; // 0
 	}
 	else {
 		int damage_roll = make_roll(damage);
-		cout << "(Hit, " << damage_roll << " damage)" << endl;
 		cout << name << " hit " << target.getName() << " for " << damage_roll << " damage! ";
-		int remaining_hp = target.take_damage(damage_roll);
-		cout << target.getHp() << " HP remaining." << endl << endl;
-		return remaining_hp;			// Return status of target.
+		life_status target_status = target.take_damage(damage_roll);
+		if (target_status != dead)
+			cout << target.getHp() << " HP remaining." << endl;
+		return target_status;			// Return status of target.
 	}
 	
-	return -1;				// Should not reach here.
+	return alive;				// Should not reach here.
 }
 
 // Reduce HP by dam
-int combatant::take_damage(int dam)
+life_status combatant::take_damage(int dam)
 {
 	if (dam < hp)
 		hp -= dam;

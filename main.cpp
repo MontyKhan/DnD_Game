@@ -13,6 +13,8 @@ void run_encounter(std::vector <combatant> players)
 
 	cout << endl;
 
+	int target_selector = (rand() % (players.size()+1)) - 1;
+
 
 	while (active_player->initiative < active_player->prev->initiative)
 	{
@@ -20,11 +22,27 @@ void run_encounter(std::vector <combatant> players)
 		active_player = active_player->next;
 	}
 
-	node * target = active_player->next;
-	int result = active_player->player.make_attack(target->player);
+	while (active_player->next != active_player)
+	{
+		node * target = active_player->next;
 
-	if (result == dead)
-		remove_from_list(target);
+		for (int i = 0; i < target_selector; i++)
+		{
+			target = target->next;
+		}
+
+		life_status result = active_player->player.make_attack(target->player);
+
+		if (result == dead)
+		{
+			remove_from_list(target);
+			target_selector--;
+		}
+
+		active_player = active_player->next;
+	}
+
+	cout << active_player->player.getName() << " wins!" << endl;
 }
 
 int main() {
