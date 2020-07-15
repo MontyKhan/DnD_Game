@@ -1,4 +1,5 @@
 #include "include/combatant.h"
+#include "include/tools.h"
 
 using namespace std;
 

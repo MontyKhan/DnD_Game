@@ -1,30 +1,21 @@
 #include "include/csv_reader.h"
 #include "include/combatant.h"
+#include "include/tools.h"
 
 using namespace std;
 
-// Enter values from a .csv into a vector of vectors.
-std::vector<std::vector<std::string>> load_file(std::string filepath)
+void run_encounter(std::vector <combatant> players)
 {
-	// Create an object of CSV_Reader	
-	CSV_Reader reader(filepath);
-	// Get the data from the CSV file
-	std::vector<std::vector<std::string>> dataList = reader.getData();
+	node * active_player = new node();
 
-	return dataList;
-}
+	active_player = initiative_round(players);
 
-// Print a vector to the screen.
-void print_vector(vector <int> input)
-{
-	cout << "(";
-	
-	for(auto i = input.begin(); i != input.end(); i++)
+	cout << endl;
+
+	for (int i = 0; i < 18; i++)
 	{
-		if (next(i) == input.end())
-			cout << *i << ")" << endl;
-		else
-			cout << *i << ", ";
+		cout << "List item " << i << ": " << active_player->player.getName() << endl;
+		active_player = active_player->next;
 	}
 }
 
@@ -49,11 +40,7 @@ int main() {
 		D.print_stats();
 	}
 
-	while (players[1].getHp() > 0) {
-		players[0].make_attack(players[1]);
-
-		players[1].print_stats();
-	}
+	run_encounter(players);
 
     	return 0;
 };
