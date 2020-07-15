@@ -19,22 +19,15 @@ void run_encounter(std::vector <combatant> players)
 
 	cout << endl;					// Add line break for readability.
 
-	int potential_targets = players.size() - 1;
+	int potential_targets = players.size() - 1;	// Calculate number of available targets. Vector size minus self.
 
-	// Select target randomly. Value of 1 means next player in
-									// initiative order.
-
-	while (active_player->initiative < active_player->prev->initiative)
-	{
-		cout << "List item " << i++ << ": " << active_player->player.getName() << endl;
-		active_player = active_player->next;
-	}
-
+	// Repeat until only one player is left.
 	while (active_player->next != active_player)
 	{
-		node * target = active_player->next;
+		node * target = active_player;		// Set target to start at attacker (origin).
 
-		int target_selector = (rand() % potential_targets+1) - 1;
+		// int target_selector = (rand() % potential_targets+1) - 1;
+		int target_selector = (rand() % potential_targets+1);
 
 		for (int i = 0; i < target_selector; i++)
 		{
