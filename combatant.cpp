@@ -158,11 +158,60 @@ life_status combatant::make_attack(combatant & target)
 	return alive;				// Should not reach here.
 }
 
+/* brief:	Roll attack. If it's greater than the target's AC, roll damage and subtract that from the target's HP. Print result.
+		If it's less, just print miss to stdout.
+   param:	weapon - Weapon with which attacks are made, using damage and attack rolls. Type checked.
+		target - Passed by reference. Combatant for the attacks to be made against.
+   return:	status of target after attack, i.e. dead or alive.
+*/
+life_status combatant::make_attack(weapon_type weapon, combatant & target)
+{
+	int attack_roll = make_roll(weapon.getAttack());		// Initialise attack_roll to randomly generated value in dice range.
+
+	// If attack roll is less than the target's AC, print message about missing.
+	if (attack_roll < target.getAc()) {
+		cout << name << " swung at " << target.getName() << " but missed!" << endl;
+		return alive; // 0
+	}
+	// If attack roll is greater than the target's AC, roll damage and subtract that from the target's HP.
+	// Then print message about hitting and dealing damage to stdout. Check target's status.
+	else {
+		int damage_roll = make_roll(weapon.getDamage());
+		cout << name << " hit " << target.getName() << " for " << damage_roll << " damage! ";
+		life_status target_status = target.take_damage(damage_roll);
+		if (target_status != dead)
+			cout << target.getHp() << " HP remaining." << endl;
+		return target_status;			// Return status of target.
+	}
+	
+	return alive;				// Should not reach here.
+}
+
 /* brief:	Take a value away from HP.
    param:	dam, the damage to be taken by the recipitent.
    returns:	The recipitent's status, i.e. dead or alive.
 */
 life_status combatant::take_damage(int dam)
+{
+	// If damage is less than the target's HP, just reduce HP.
+	if (dam < hp)
+		hp -= dam;
+	// If damage is greater than target's HP, set HP to zero and kill recipitent.
+	else {
+		hp = 0;
+		status = dead;
+		cout << name << " was downed!" << endl;
+	}
+
+	return status;
+}
+
+/* brief:	Take a value away from HP.
+   param:	dam, the damage to be taken by the recipitent.
+		damage_type, the type of the damage. Currently ignored.
+   returns:	The recipitent's status, i.e. dead or alive.
+*/
+life_status combatant::take_damage(int dam, type damage_type)
 {
 	// If damage is less than the target's HP, just reduce HP.
 	if (dam < hp)

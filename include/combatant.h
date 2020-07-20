@@ -17,6 +17,7 @@
 enum life_status {alive, death_1, death_2, dead};
 enum type {acid, bludgeoning, cold, fire, force, lightning, necrotic, piercing, poison, psychic, radiant, slashing, thunder};
 
+
 // May work better as typedef struct, review later.
 class roll {
 public:
@@ -35,7 +36,7 @@ public:
 };
 
 // Class for each weapon wielded by combatant
-class weapon {
+class weapon_type {
 private:
 	std::string name;
 	roll attack;
@@ -43,9 +44,9 @@ private:
 	type damage_type;
 public:
 	// Default constuctor, assume fists
-	weapon() : name(""), attack(roll(1,20,0)), damage(roll(1,4,0)), damage_type(bludgeoning) {};
+	weapon_type() : name(""), attack(roll(1,20,0)), damage(roll(1,4,0)), damage_type(bludgeoning) {};
 	// Constructor
-	weapon(std::string Name, roll Attack, roll Damage, type Type) : name(Name), attack(Attack), damage(Damage), damage_type(Type) {};
+	weapon_type(std::string Name, roll Attack, roll Damage, type Type) : name(Name), attack(Attack), damage(Damage), damage_type(Type) {};
 
 	// Setters/getters
 	int setName(std::string Name) { name = Name; return 0; };
@@ -68,7 +69,7 @@ private:
 	roll init;
 	roll attack;
 	roll damage;
-	std::vector<weapon> weapons;
+	std::vector<weapon_type> weapons;
 	life_status status;
 
 public:
@@ -86,10 +87,14 @@ public:
 	int make_roll(roll x);
 	// Roll initiative specifically
 	int roll_initiative();
-	// Roll both attack and damage againt target
-	life_status make_attack(combatant & target);	// Pass by reference
+	// Roll both attack and damage against a target.
+	life_status make_attack(combatant & target);
+	// Roll both attack and damage against a target, supplying a weapon.
+	life_status make_attack(weapon_type weapon, combatant & target);	// Pass by reference
 	// Reduce hp by dam
 	life_status take_damage(int dam);
+	// Reduce hp by dam, specific to damage type.
+	life_status take_damage(int dam, type damage_type);
 
 	// Getter/Setters
 	std::string getName() { return name; };				// Name
