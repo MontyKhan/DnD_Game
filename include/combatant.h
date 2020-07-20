@@ -15,6 +15,7 @@
 #define DAM_VAR		6
 
 enum life_status {alive, death_1, death_2, dead};
+enum type {acid, bludgeoning, cold, fire, force, lightning, necrotic, piercing, poison, psychic, radiant, slashing, thunder};
 
 // May work better as typedef struct, review later.
 class roll {
@@ -33,19 +34,28 @@ public:
 	friend std::ostream & operator << (std::ostream &out, const roll &r);
 };
 
+// Class for each weapon wielded by combatant
 class weapon {
 private:
 	std::string name;
+	roll attack;
 	roll damage;
+	type damage_type;
 public:
-	//Default constuctor
-	weapon() : name(""), damage(roll(1,6,0)) {};
+	// Default constuctor, assume fists
+	weapon() : name(""), attack(roll(1,20,0)), damage(roll(1,4,0)), damage_type(bludgeoning) {};
+	// Constructor
+	weapon(std::string Name, roll Attack, roll Damage, type Type) : name(Name), attack(Attack), damage(Damage), damage_type(Type) {};
 
 	// Setters/getters
 	int setName(std::string Name) { name = Name; return 0; };
 	std::string getName() { return name; };
+	int setAttack(roll Attack) { attack = Attack; return 0; };
+	roll getAttack() { return attack; };
 	int setDamage(roll Damage) { damage = Damage; return 0; };
 	roll getDamage() { return damage; };
+	int setType(type Type) { damage_type = Type; return 0; };
+	type getType() { return damage_type; };
 };
 
 // Class for each combatant in an encounter
@@ -58,6 +68,7 @@ private:
 	roll init;
 	roll attack;
 	roll damage;
+	std::vector<weapon> weapons;
 	life_status status;
 
 public:
@@ -66,7 +77,8 @@ public:
 	// Constructor for vector of strings, as read from .csv.
 	combatant(std::vector<std::string> line);
 	// Default constructor
-	combatant() : name(""), hp(0), ac(0), speed(0), init(roll()), attack(roll()), damage(roll()), status(dead) {};
+	combatant() 
+		: name(""), hp(0), ac(0), speed(0), init(roll()), attack(roll()), damage(roll()), status(dead) {};
 
 	// Interpret damage in form %d% + %.
 	roll read_dam(std::string input);
