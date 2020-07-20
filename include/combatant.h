@@ -33,6 +33,21 @@ public:
 	friend std::ostream & operator << (std::ostream &out, const roll &r);
 };
 
+class weapon {
+private:
+	std::string name;
+	roll damage;
+public:
+	//Default constuctor
+	weapon() : name(""), damage(roll(1,6,0)) {};
+
+	// Setters/getters
+	int setName(std::string Name) { name = Name; return 0; };
+	std::string getName() { return name; };
+	int setDamage(roll Damage) { damage = Damage; return 0; };
+	roll getDamage() { return damage; };
+};
+
 // Class for each combatant in an encounter
 class combatant {
 private:

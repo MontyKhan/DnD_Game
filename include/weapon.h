@@ -3,10 +3,6 @@
 
 #include "combatant.h"
 
-class weapon {
-public:
-	std::string name;
-	roll damage;
-}
+
 
 #endif
