@@ -1,28 +1,28 @@
-<monster name="Orc" AC=15 HP=13 Spd=30 Init=1>
-	<weapon name="Great Axe" Range="5" Attack=5 Damage="1d12 + 3"/>
+<monster name="Orc" AC="15" HP="13" Spd="30" Init="1">
+	<weapon name="default" Range="5" Attack="5" Damage="1d12 + 3"/>
 </monster>
 
-<monster name="Goblin" AC=7 HP=15 Spd=30 Init=2>
-	<weapon name="Scimitar" Range="5" Attack=4 Damage="1d6 + 2"/>
+<monster name="Goblin" AC="7" HP="15" Spd="30" Init="2">
+	<weapon name="default" Range="5" Attack="4" Damage="1d6 + 2"/>
 </monster>
 
-<monster name="Bugbear" AC=27 HP=16 Spd=30 Init=2>
-	<weapon name="Morningstar" Range="5" Attack=4 Damage="2d8 + 2"/>
+<monster name="Bugbear" AC="27" HP="16" Spd="30" Init="2">
+	<weapon name="default" Range="5" Attack="4" Damage="2d8 + 2"/>
 </monster>
 
-<monster name="Bandit" AC=11 HP=12 Spd=30 Init=1>
-	<weapon name="Scimitar" Range="5" Attack=3 Damage="1d6 + 1"/>
+<monster name="Bandit" AC="11" HP="12" Spd="30" Init="1">
+	<weapon name="default" Range="5" Attack="3" Damage="1d6 + 1"/>
 </monster>
 
-<monster name="Kobold" AC=5 HP=12 Spd=30 Init=2>
-	<weapon name="Dagger" Range="5" Attack=4 Damage="1d4 + 2"/>
+<monster name="Kobold" AC="5" HP="12" Spd="30" Init="2">
+	<weapon name="default" Range="5" Attack="4" Damage="1d4 + 2"/>
 </monster>
 
-<monster name="Hobgoblin" AC=11 HP=18 Spd=30 Init=1>
-	<weapon name="Longsword" Range="5" Attack=3 Damage="1d10 + 1"/>
+<monster name="Hobgoblin" AC="11" HP="18" Spd="30" Init="1">
+	<weapon name="default" Range="5" Attack="3" Damage="1d10 + 1"/>
 </monster>
 
-<monster name="Drow" AC=13 HP=15 Spd=30 Init=2>
-	<weapon name="Shortsword" Range="5" Attack=4 Damage="1d6 + 2"/>
+<monster name="Drow" AC="13" HP="15" Spd="30" Init="2">
+	<weapon name="default" Range="5" Attack="4" Damage="1d6 + 2"/>
 </monster>
 
