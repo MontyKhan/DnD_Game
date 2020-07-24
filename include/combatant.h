@@ -5,6 +5,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include "rapidxml/rapidxml_utils.hpp"
 
 #define NAME_VAR 	0
 #define HP_VAR		1
@@ -13,6 +14,8 @@
 #define INIT_VAR	4
 #define ATTACK_VAR	5
 #define DAM_VAR		6
+
+using namespace rapidxml;
 
 enum life_status {alive, death_1, death_2, dead};
 enum type {acid, bludgeoning, cold, fire, force, lightning, necrotic, piercing, poison, psychic, radiant, slashing, thunder};
@@ -44,9 +47,11 @@ private:
 	type damage_type;
 public:
 	// Default constuctor, assume fists
-	weapon_type() : name(""), attack(roll(1,20,0)), damage(roll(1,4,0)), damage_type(bludgeoning) {};
-	// Constructor
-	weapon_type(std::string Name, roll Attack, roll Damage, type Type) : name(Name), attack(Attack), damage(Damage), damage_type(Type) {};
+	weapon_type() 
+		: name(""), attack(roll(1,20,0)), damage(roll(1,4,0)), damage_type(bludgeoning) {};
+	// Constructor for values recieved individually.
+	weapon_type(std::string Name, roll Attack, roll Damage, type Type) 
+		: name(Name), attack(Attack), damage(Damage), damage_type(Type) {};
 
 	// Setters/getters
 	int setName(std::string Name) { name = Name; return 0; };
@@ -77,6 +82,8 @@ public:
 	combatant(std::string Name, int HP, int AC, int Spd, int Init, int Attack, std::string Damage);
 	// Constructor for vector of strings, as read from .csv.
 	combatant(std::vector<std::string> line);
+	// Constructor for xml node
+	combatant(rapidxml::xml_node<> *node);
 	// Default constructor
 	combatant() 
 		: name(""), hp(0), ac(0), speed(0), init(roll()), attack(roll()), damage(roll()), status(dead) {};

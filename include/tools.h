@@ -1,4 +1,5 @@
 #include "combatant.h"
+#include "rapidxml/rapidxml_utils.hpp"
 #include <vector>
 
 // Node for used with linked list.
@@ -22,3 +23,4 @@ node * initiative_round(std::vector <combatant> players);			// Have all players 
 void add_to_list(node * head, int initiative, combatant player);		// Add new node to list after head.
 void change_head(node * head, combatant new_player, int new_initiative);	// Add new node to list before head.
 void remove_from_list(node * target);						// Remove node from list.
+void node_to_str(std::string &name, std::string &value, xml_node<> *node);	// Convert whatever nodes store their values in to string.

@@ -1,9 +1,11 @@
 #include "include/tools.h"
 #include "include/csv_reader.h"
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
+#if 0
 /* brief:	Declare CSV_Reader object, and load data from .csv file at filepath into a vector of vectors of strings.
    param:	filepath - A relative address pointing to the .csv file.
    returns:	A vector of vectors of strings containing contents of file.
@@ -16,6 +18,23 @@ std::vector<std::vector<std::string>> load_file(std::string filepath)
 	std::vector<std::vector<std::string>> dataList = reader.getData();
 
 	return dataList;
+}
+#endif
+
+/* brief: 	Extract the name of value of an xml node and assign to strings.
+   param: 	*name - A string to store the name in, called by reference.
+	  	*value - A string to store the value in, called by reference.
+	  	node - The node containing the information.
+   returns:	Nothing, as calling by reference.
+*/
+void node_to_str(std::string &name, std::string &value, xml_node<> *node)
+{
+	// Likely a better solution than this, but documentation is currently down.
+	std::stringstream ss_value, ss_name;
+	ss_value << node->value();
+	ss_name << node->name();
+	value = ss_value.str();
+	name = ss_name.str();
 }
 
 /* brief:	Print a vector of ints to the screen.

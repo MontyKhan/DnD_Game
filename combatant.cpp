@@ -1,7 +1,11 @@
 #include "include/combatant.h"
 #include "include/tools.h"
+#include "include/load_file.h"
+#include "include/rapidxml/rapidxml_print.hpp"
+#include <sstream>
 
 using namespace std;
+using namespace rapidxml;
 
 /* brief:	Override function. Prints roll to screen in format %d% + %.
    param:	&out - Address of output stream.
@@ -24,6 +28,7 @@ std::ostream & operator << (std::ostream &out, const roll &r)
 		Damage - Weapon damage as a string, of format %d% + %.
    return:	Nothing, as constructor.
 */
+
 combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, int Attack, std::string Damage)
 {
 	name = Name;
@@ -48,6 +53,56 @@ combatant::combatant(std::vector<std::string> line)
 	init = roll(1,20,stoi(line[INIT_VAR]));		// Create initiative roll
 	attack = roll(1,20,stoi(line[ATTACK_VAR]));	// Create attack roll
 	damage = read_dam(line[DAM_VAR]);		// Create damage roll
+}
+
+/* brief:	Constructor reading variables from an xml node.
+   param:	*node - Pointer to an xml node containing values
+   return:	Nothing, as constructor.
+*/
+combatant::combatant(xml_node<> *root)
+{
+	for (xml_node<> *child = root->first_node(); child; child = child->next_sibling())	// Monster
+	{
+		xml_node<> *grandchild = child->first_node();	// Name
+
+		std::string str_name;
+		std::string str_value;
+
+		// Convert name and value of child node to strings.
+		node_to_str(str_name, str_value, child);
+
+		if (str_name == "weapon")					// If has grandchildren, weapon.
+		{
+			// interpret_node(child);
+			//combatant new_player = combatant(child);
+			//players.push_back(new_player);
+			weapons.push_back(weapon_type());
+		}
+		else
+		{
+			// I wish switches could handle strings.
+			if (str_name == "name")
+			{
+				name = str_value;
+			}
+			else if (str_name == "ac")
+			{
+				ac = stoi(str_value);
+			}
+			else if (str_name == "hp")
+			{
+				hp = stoi(str_value);
+			}
+			else if (str_name == "speed")
+			{
+				speed = stoi(str_value);
+			}
+			else if (str_name == "initiative")
+			{
+				init = roll(1,20,stoi(str_value));
+			}
+		}
+	}
 }
 
 /* brief:	Convert a string in the format %d% + % to three seperate ints.

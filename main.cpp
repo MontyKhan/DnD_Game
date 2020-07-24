@@ -1,6 +1,7 @@
 #include "include/csv_reader.h"
 #include "include/combatant.h"
 #include "include/tools.h"
+#include "include/load_file.h"
 
 using namespace std;
 
@@ -66,16 +67,7 @@ int main() {
 
 	std::vector<combatant> players; 					// Create vector of combatants.
 
-	std::string filepath = "./stats/encounter1.csv";			// Set filepath. Change to set at run-time later.
-
-	std::vector<std::vector<std::string>> dataList = load_file(filepath);	// Import contents of .csv to vector of vectors of strings.
-
-    	// Print the content of row by row on screen while adding them them to vector.
-	for (int i = 0; i < dataList.size(); i++)
-    	{
-		players.push_back(combatant(dataList[i]));
-		cout << players[i].roll_initiative() << endl;	
-    	}
+	players = interpret_nodes("./stats/encounter1.enctr");
 
 	// Range based for loop. Print stats of each player to screen.
 	for(combatant D : players) {
@@ -83,7 +75,7 @@ int main() {
 	}
 
 	// Loop for combat.
-	run_encounter(players);
+	//run_encounter(players);
 
     	return 0;
 };
