@@ -75,7 +75,7 @@ int main() {
 	}
 
 	// Loop for combat.
-	//run_encounter(players);
+	run_encounter(players);
 
     	return 0;
 };

@@ -192,7 +192,7 @@ int combatant::roll_initiative()
 */
 life_status combatant::make_attack(combatant & target)
 {
-	int attack_roll = make_roll(attack);				// Initialise attack_roll to randomly generated value in dice range.
+	int attack_roll = make_roll(weapons[0].getAttack());				// Initialise attack_roll to randomly generated value in dice range.
 
 	// If attack roll is less than the target's AC, print message about missing.
 	if (attack_roll < target.getAc()) {
@@ -202,7 +202,7 @@ life_status combatant::make_attack(combatant & target)
 	// If attack roll is greater than the target's AC, roll damage and subtract that from the target's HP.
 	// Then print message about hitting and dealing damage to stdout. Check target's status.
 	else {
-		int damage_roll = make_roll(damage);
+		int damage_roll = make_roll(weapons[0].getDamage());
 		cout << name << " hit " << target.getName() << " for " << damage_roll << " damage! ";
 		life_status target_status = target.take_damage(damage_roll);
 		if (target_status != dead)
