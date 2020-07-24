@@ -33,6 +33,7 @@ public:
 		num(0), dice(0), mod(0) {};
 	roll(int Num, int Dice, int Mod) :
 		num(Num), dice(Dice), mod(Mod) {};
+	roll(std::string input);
 
 	// Friends
 	friend std::ostream & operator << (std::ostream &out, const roll &r);
@@ -52,6 +53,8 @@ public:
 	// Constructor for values recieved individually.
 	weapon_type(std::string Name, roll Attack, roll Damage, type Type) 
 		: name(Name), attack(Attack), damage(Damage), damage_type(Type) {};
+	// Constructor for xml node
+	weapon_type(rapidxml::xml_node<> *root);
 
 	// Setters/getters
 	int setName(std::string Name) { name = Name; return 0; };

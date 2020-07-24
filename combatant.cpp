@@ -7,6 +7,40 @@
 using namespace std;
 using namespace rapidxml;
 
+/* brief:	Constructor for weapon described by xml style node.
+   param:	Node containing weapon stats.
+   returns:	Nothing, as constructor.
+*/
+weapon_type::weapon_type(rapidxml::xml_node<> *root)
+{
+	for (xml_node<> *child = root->first_node(); child; child = child->next_sibling())	// Monster
+	{
+		xml_node<> *grandchild = child->first_node();	// Name
+
+		std::string str_name;
+		std::string str_value;
+
+		// Convert name and value of child node to strings.
+		node_to_str(str_name, str_value, child);
+
+
+		// I wish switches could handle strings.
+		if (str_name == "name")
+		{
+			name = str_value;
+		}
+		else if (str_name == "attack")
+		{
+			attack = roll(1,20,stoi(str_value));
+		}
+		else if (str_name == "damage")
+		{
+			damage = roll(str_value);
+		}
+		//cout << "weapon damage: " <<  << endl;
+	}
+}
+
 /* brief:	Override function. Prints roll to screen in format %d% + %.
    param:	&out - Address of output stream.
 		&r - roll to print.
@@ -76,7 +110,7 @@ combatant::combatant(xml_node<> *root)
 			// interpret_node(child);
 			//combatant new_player = combatant(child);
 			//players.push_back(new_player);
-			weapons.push_back(weapon_type());
+			weapons.push_back(weapon_type(child));
 		}
 		else
 		{
@@ -103,6 +137,28 @@ combatant::combatant(xml_node<> *root)
 			}
 		}
 	}
+}
+
+// Constructor for roll based on read_dam. Remove read_dam.
+roll::roll(std::string input)
+{
+	int d = input.find("d");			// Find number of characters in the 'd' char is.
+	int dice_length = input.length() - d + 1;	// Assign length of dice string to one less than the number of chars in d is.
+
+	int plus = input.find(" + ") + 2;		// Find number of characters in the " + " string is.
+	int plus_length = input.length() + 1;		// Assign length of string up to " + " to full length of string plus one.
+	mod = 0;					// By default, set modifier to zero.
+
+	// If plus is greater than 1, means it's present.
+	// Change value of plus_length to number of characters till " + ".
+	// Assign value of mod to string after " + ".
+	if (plus > 1) {
+		plus_length = input.length() - plus;
+		mod = stoi(input.substr(plus+1, input.length() - plus_length));
+	}
+
+	num = stoi(input.substr(0,d));					// Convert string before "d" to an int, num.
+	dice = stoi(input.substr(d+1, plus_length - dice_length));	// Convert string between "d" and " + " to an int, dice. 
 }
 
 /* brief:	Convert a string in the format %d% + % to three seperate ints.
