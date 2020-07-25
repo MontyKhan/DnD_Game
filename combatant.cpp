@@ -37,8 +37,47 @@ weapon_type::weapon_type(rapidxml::xml_node<> *root)
 		{
 			damage = roll(str_value);
 		}
-		//cout << "weapon damage: " <<  << endl;
+		else if (str_name == "range")
+		{
+			range = stoi(str_value);
+		}
+		else if (str_name == "type")
+		{
+			damage_type = get_damage_type(str_value);
+		}
 	}
+}
+
+std::string weapon_type::getTypeStr()
+{
+	if (damage_type == acid)
+		return "acid";
+	else if (damage_type = bludgeoning)
+		return "bludgeoning";
+	else if (damage_type == cold)
+		return "cold";
+	else if (damage_type == fire)
+		return "fire";
+	else if (damage_type == force)
+		return "force";
+	else if (damage_type == lightning)
+		return "lightning";
+	else if (damage_type == necrotic)
+		return "necrotic";
+	else if (damage_type == piercing)
+		return "piercing";
+	else if (damage_type == poison)
+		return "poison";
+	else if (damage_type == psychic)
+		return "psychic";
+	else if (damage_type == radiant)
+		return "radiant";
+	else if (damage_type == slashing)
+		return "slashing";
+	else if (damage_type == thunder)
+		return "thunder";
+	else
+		return "invalid";
 }
 
 /* brief:	Override function. Prints roll to screen in format %d% + %.
@@ -248,7 +287,9 @@ int combatant::roll_initiative()
 */
 life_status combatant::make_attack(combatant & target)
 {
-	int attack_roll = make_roll(weapons[0].getAttack());				// Initialise attack_roll to randomly generated value in dice range.
+	int wc = 0;							// Weapon choice
+
+	int attack_roll = make_roll(weapons[wc].getAttack());		// Initialise attack_roll to randomly generated value in dice range.
 
 	// If attack roll is less than the target's AC, print message about missing.
 	if (attack_roll < target.getAc()) {
@@ -258,8 +299,9 @@ life_status combatant::make_attack(combatant & target)
 	// If attack roll is greater than the target's AC, roll damage and subtract that from the target's HP.
 	// Then print message about hitting and dealing damage to stdout. Check target's status.
 	else {
-		int damage_roll = make_roll(weapons[0].getDamage());
-		cout << name << " hit " << target.getName() << " for " << damage_roll << " damage! ";
+		int damage_roll = make_roll(weapons[wc].getDamage());
+		cout << name << " hit " << target.getName() << " with their " << weapons[wc].getName() << " for " 
+		     << damage_roll << " " << weapons[wc].getTypeStr() << " damage! ";
 		life_status target_status = target.take_damage(damage_roll);
 		if (target_status != dead)
 			cout << target.getHp() << " HP remaining." << endl;

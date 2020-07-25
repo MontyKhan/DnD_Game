@@ -45,14 +45,15 @@ private:
 	std::string name;
 	roll attack;
 	roll damage;
+	int range;
 	type damage_type;
 public:
 	// Default constuctor, assume fists
 	weapon_type() 
-		: name(""), attack(roll(1,20,0)), damage(roll(1,4,0)), damage_type(bludgeoning) {};
+		: name(""), attack(roll(1,20,0)), damage(roll(1,4,0)), range(5), damage_type(bludgeoning) {};
 	// Constructor for values recieved individually.
-	weapon_type(std::string Name, roll Attack, roll Damage, type Type) 
-		: name(Name), attack(Attack), damage(Damage), damage_type(Type) {};
+	weapon_type(std::string Name, roll Attack, roll Damage, int Range, type Type) 
+		: name(Name), attack(Attack), damage(Damage), range(Range), damage_type(Type) {};
 	// Constructor for xml node
 	weapon_type(rapidxml::xml_node<> *root);
 
@@ -65,6 +66,7 @@ public:
 	roll getDamage() { return damage; };
 	int setType(type Type) { damage_type = Type; return 0; };
 	type getType() { return damage_type; };
+	std::string getTypeStr();		// Defined in file.
 };
 
 // Class for each combatant in an encounter
