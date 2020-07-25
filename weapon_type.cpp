@@ -1,6 +1,7 @@
 #include "include/combatant.h"
 #include "include/tools.h"
 #include "include/load_file.h"
+#include "include/weapon_type.h"
 #include "include/rapidxml/rapidxml_print.hpp"
 #include <sstream>
 

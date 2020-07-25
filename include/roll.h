@@ -1,6 +1,7 @@
 #ifndef ROLL_H
 #define ROLL_H
 
+#include "weapon_type.h"
 #include <string>
 
 // May work better as typedef struct, review later.
