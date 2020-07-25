@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "weapon_type.h"
+#include "pathfinding.h"
 #include "rapidxml/rapidxml_utils.hpp"
 
 #define NAME_VAR 	0
@@ -28,21 +29,20 @@ private:
 	int ac;
 	int speed;
 	roll init;
-	roll attack;
-	roll damage;
+	location coordinates;
 	std::vector<weapon_type> weapons;
 	life_status status;
 
 public:
 	// Constructor for individual variables
-	combatant(std::string Name, int HP, int AC, int Spd, int Init, int Attack, std::string Damage);
+	combatant(std::string Name, int HP, int AC, int Spd, int Init, location Coordinates, life_status Status);
 	// Constructor for vector of strings, as read from .csv.
 	combatant(std::vector<std::string> line);
 	// Constructor for xml node
 	combatant(rapidxml::xml_node<> *node);
 	// Default constructor
 	combatant() 
-		: name(""), hp(0), ac(0), speed(0), init(roll()), attack(roll()), damage(roll()), status(dead) {};
+		: name(""), hp(0), ac(0), speed(0), init(roll()), coordinates(location()), status(dead) {};
 
 	// Roll a dice
 	int make_roll(roll x);
