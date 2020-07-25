@@ -5,7 +5,6 @@
 
 using namespace std;
 
-#if 0
 /* brief:	Declare CSV_Reader object, and load data from .csv file at filepath into a vector of vectors of strings.
    param:	filepath - A relative address pointing to the .csv file.
    returns:	A vector of vectors of strings containing contents of file.
@@ -19,7 +18,6 @@ std::vector<std::vector<std::string>> load_file(std::string filepath)
 
 	return dataList;
 }
-#endif
 
 /* brief:	Converts a string describing a damage type into the corresponding enum.
    param:	str, the string containing a damage type.
