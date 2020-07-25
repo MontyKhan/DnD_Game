@@ -1,18 +1,12 @@
 #include "include/combatant.h"
 #include "include/tools.h"
+#include "include/load_file.h"
+#include "include/rapidxml/rapidxml_print.hpp"
+#include <sstream>
 
 using namespace std;
+using namespace rapidxml;
 
-/* brief:	Override function. Prints roll to screen in format %d% + %.
-   param:	&out - Address of output stream.
-		&r - roll to print.
-   returns:	output stream.
-*/
-std::ostream & operator << (std::ostream &out, const roll &r)
-{
-	out << r.num << "d" << r.dice << " + " << r.mod;
-	return out;
-}
 
 /* brief:	Constructor for taking variables individually.
    param:	Name - Combatant name as string.
@@ -24,6 +18,7 @@ std::ostream & operator << (std::ostream &out, const roll &r)
 		Damage - Weapon damage as a string, of format %d% + %.
    return:	Nothing, as constructor.
 */
+
 combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, int Attack, std::string Damage)
 {
 	name = Name;
@@ -32,7 +27,7 @@ combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, int At
 	speed = Spd;
 	init = roll(1,20,Init);
 	attack = roll(1,20,Attack);
-	damage = read_dam(Damage);
+	damage = roll(Damage);
 }
 
 /* brief:	Constructor for reading variables from a vector of strings.
@@ -47,37 +42,57 @@ combatant::combatant(std::vector<std::string> line)
 	speed = stoi(line[SPD_VAR]);			// Get speed (int)
 	init = roll(1,20,stoi(line[INIT_VAR]));		// Create initiative roll
 	attack = roll(1,20,stoi(line[ATTACK_VAR]));	// Create attack roll
-	damage = read_dam(line[DAM_VAR]);		// Create damage roll
+	damage = roll(line[DAM_VAR]);		// Create damage roll
 }
 
-/* brief:	Convert a string in the format %d% + % to three seperate ints.
-		Assigns values to num, dice and mod in that order.
-   param:	input - A string in the format %d% + %.
-   returns:	A roll value as above.
+/* brief:	Constructor reading variables from an xml node.
+   param:	*node - Pointer to an xml node containing values
+   return:	Nothing, as constructor.
 */
-roll combatant::read_dam(std::string input)
+combatant::combatant(xml_node<> *root)
 {
-	roll values;					// Declare roll value, values.
+	for (xml_node<> *child = root->first_node(); child; child = child->next_sibling())	// Monster
+	{
+		xml_node<> *grandchild = child->first_node();	// Name
 
-	int d = input.find("d");			// Find number of characters in the 'd' char is.
-	int dice_length = input.length() - d + 1;	// Assign length of dice string to one less than the number of chars in d is.
+		std::string str_name;
+		std::string str_value;
 
-	int plus = input.find(" + ") + 2;		// Find number of characters in the " + " string is.
-	int plus_length = input.length() + 1;		// Assign length of string up to " + " to full length of string plus one.
-	values.mod = 0;					// By default, set modifier to zero.
+		// Convert name and value of child node to strings.
+		node_to_str(str_name, str_value, child);
 
-	// If plus is greater than 1, means it's present.
-	// Change value of plus_length to number of characters till " + ".
-	// Assign value of mod to string after " + ".
-	if (plus > 1) {
-		plus_length = input.length() - plus;
-		values.mod = stoi(input.substr(plus+1, input.length() - plus_length));
+		if (str_name == "weapon")					// If has grandchildren, weapon.
+		{
+			// interpret_node(child);
+			//combatant new_player = combatant(child);
+			//players.push_back(new_player);
+			weapons.push_back(weapon_type(child));
+		}
+		else
+		{
+			// I wish switches could handle strings.
+			if (str_name == "name")
+			{
+				name = str_value;
+			}
+			else if (str_name == "ac")
+			{
+				ac = stoi(str_value);
+			}
+			else if (str_name == "hp")
+			{
+				hp = stoi(str_value);
+			}
+			else if (str_name == "speed")
+			{
+				speed = stoi(str_value);
+			}
+			else if (str_name == "initiative")
+			{
+				init = roll(1,20,stoi(str_value));
+			}
+		}
 	}
-
-	values.num = stoi(input.substr(0,d));					// Convert string before "d" to an int, num.
-	values.dice = stoi(input.substr(d+1, plus_length - dice_length));	// Convert string between "d" and " + " to an int, dice. 
-
-	return values;
 }
 
 /* brief:	Print all stats of combatant to screen.
@@ -137,7 +152,9 @@ int combatant::roll_initiative()
 */
 life_status combatant::make_attack(combatant & target)
 {
-	int attack_roll = make_roll(attack);				// Initialise attack_roll to randomly generated value in dice range.
+	int wc = 0;							// Weapon choice
+
+	int attack_roll = make_roll(weapons[wc].getAttack());		// Initialise attack_roll to randomly generated value in dice range.
 
 	// If attack roll is less than the target's AC, print message about missing.
 	if (attack_roll < target.getAc()) {
@@ -147,7 +164,37 @@ life_status combatant::make_attack(combatant & target)
 	// If attack roll is greater than the target's AC, roll damage and subtract that from the target's HP.
 	// Then print message about hitting and dealing damage to stdout. Check target's status.
 	else {
-		int damage_roll = make_roll(damage);
+		int damage_roll = make_roll(weapons[wc].getDamage());
+		cout << name << " hit " << target.getName() << " with their " << weapons[wc].getName() << " for " 
+		     << damage_roll << " " << weapons[wc].getTypeStr() << " damage! ";
+		life_status target_status = target.take_damage(damage_roll);
+		if (target_status != dead)
+			cout << target.getHp() << " HP remaining." << endl;
+		return target_status;			// Return status of target.
+	}
+	
+	return alive;				// Should not reach here.
+}
+
+/* brief:	Roll attack. If it's greater than the target's AC, roll damage and subtract that from the target's HP. Print result.
+		If it's less, just print miss to stdout.
+   param:	weapon - Weapon with which attacks are made, using damage and attack rolls. Type checked.
+		target - Passed by reference. Combatant for the attacks to be made against.
+   return:	status of target after attack, i.e. dead or alive.
+*/
+life_status combatant::make_attack(weapon_type weapon, combatant & target)
+{
+	int attack_roll = make_roll(weapon.getAttack());		// Initialise attack_roll to randomly generated value in dice range.
+
+	// If attack roll is less than the target's AC, print message about missing.
+	if (attack_roll < target.getAc()) {
+		cout << name << " swung at " << target.getName() << " but missed!" << endl;
+		return alive; // 0
+	}
+	// If attack roll is greater than the target's AC, roll damage and subtract that from the target's HP.
+	// Then print message about hitting and dealing damage to stdout. Check target's status.
+	else {
+		int damage_roll = make_roll(weapon.getDamage());
 		cout << name << " hit " << target.getName() << " for " << damage_roll << " damage! ";
 		life_status target_status = target.take_damage(damage_roll);
 		if (target_status != dead)
@@ -163,6 +210,26 @@ life_status combatant::make_attack(combatant & target)
    returns:	The recipitent's status, i.e. dead or alive.
 */
 life_status combatant::take_damage(int dam)
+{
+	// If damage is less than the target's HP, just reduce HP.
+	if (dam < hp)
+		hp -= dam;
+	// If damage is greater than target's HP, set HP to zero and kill recipitent.
+	else {
+		hp = 0;
+		status = dead;
+		cout << name << " was downed!" << endl;
+	}
+
+	return status;
+}
+
+/* brief:	Take a value away from HP.
+   param:	dam, the damage to be taken by the recipitent.
+		damage_type, the type of the damage. Currently ignored.
+   returns:	The recipitent's status, i.e. dead or alive.
+*/
+life_status combatant::take_damage(int dam, type damage_type)
 {
 	// If damage is less than the target's HP, just reduce HP.
 	if (dam < hp)

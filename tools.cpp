@@ -1,6 +1,7 @@
 #include "include/tools.h"
 #include "include/csv_reader.h"
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -16,6 +17,59 @@ std::vector<std::vector<std::string>> load_file(std::string filepath)
 	std::vector<std::vector<std::string>> dataList = reader.getData();
 
 	return dataList;
+}
+
+/* brief:	Converts a string describing a damage type into the corresponding enum.
+   param:	str, the string containing a damage type.
+   returns:	The corresponding damage type as an enum.
+		If there are no matches, it defaults to bludgeoning.
+*/
+type get_damage_type(std::string str)
+{
+	if (str == "acid")
+		return acid;
+	else if (str == "bludgeoning")
+		return bludgeoning;
+	else if (str == "cold")
+		return cold;
+	else if (str == "fire")
+		return fire;
+	else if (str == "force")
+		return force;
+	else if (str == "lightning")
+		return lightning;
+	else if (str == "necrotic")
+		return necrotic;
+	else if (str == "piercing")
+		return piercing;
+	else if (str == "poison")
+		return poison;
+	else if (str == "psychic")
+		return psychic;
+	else if (str == "radiant")
+		return radiant;
+	else if (str == "slashing")
+		return slashing;
+	else if (str == "thunder")
+		return thunder;
+	else
+		return bludgeoning;
+}
+
+/* brief: 	Extract the name of value of an xml node and assign to strings.
+   param: 	*name - A string to store the name in, called by reference.
+	  	*value - A string to store the value in, called by reference.
+	  	node - The node containing the information.
+   returns:	Nothing, as calling by reference.
+*/
+void node_to_str(std::string &name, std::string &value, xml_node<> *node)
+{
+	// Likely a better solution than this, but documentation is currently down.
+	std::stringstream ss_value, ss_name;
+	ss_value << node->value();
+	ss_name << node->name();
+	value = ss_value.str();
+	name = ss_name.str();
 }
 
 /* brief:	Print a vector of ints to the screen.

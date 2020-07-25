@@ -5,6 +5,8 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include "weapon_type.h"
+#include "rapidxml/rapidxml_utils.hpp"
 
 #define NAME_VAR 	0
 #define HP_VAR		1
@@ -14,24 +16,9 @@
 #define ATTACK_VAR	5
 #define DAM_VAR		6
 
+using namespace rapidxml;
+
 enum life_status {alive, death_1, death_2, dead};
-
-// May work better as typedef struct, review later.
-class roll {
-public:
-	int num;		// Number of dice to roll.
-	int dice;		// Size of dice to roll (e.g. d6)
-	int mod;		// Modifier to roll, to be added on.
-
-	// Constructors
-	roll() :
-		num(0), dice(0), mod(0) {};
-	roll(int Num, int Dice, int Mod) :
-		num(Num), dice(Dice), mod(Mod) {};
-
-	// Friends
-	friend std::ostream & operator << (std::ostream &out, const roll &r);
-};
 
 // Class for each combatant in an encounter
 class combatant {
@@ -43,6 +30,7 @@ private:
 	roll init;
 	roll attack;
 	roll damage;
+	std::vector<weapon_type> weapons;
 	life_status status;
 
 public:
@@ -50,19 +38,24 @@ public:
 	combatant(std::string Name, int HP, int AC, int Spd, int Init, int Attack, std::string Damage);
 	// Constructor for vector of strings, as read from .csv.
 	combatant(std::vector<std::string> line);
+	// Constructor for xml node
+	combatant(rapidxml::xml_node<> *node);
 	// Default constructor
-	combatant() : name(""), hp(0), ac(0), speed(0), init(roll()), attack(roll()), damage(roll()), status(dead) {};
+	combatant() 
+		: name(""), hp(0), ac(0), speed(0), init(roll()), attack(roll()), damage(roll()), status(dead) {};
 
-	// Interpret damage in form %d% + %.
-	roll read_dam(std::string input);
 	// Roll a dice
 	int make_roll(roll x);
 	// Roll initiative specifically
 	int roll_initiative();
-	// Roll both attack and damage againt target
-	life_status make_attack(combatant & target);	// Pass by reference
+	// Roll both attack and damage against a target.
+	life_status make_attack(combatant & target);
+	// Roll both attack and damage against a target, supplying a weapon.
+	life_status make_attack(weapon_type weapon, combatant & target);	// Pass by reference
 	// Reduce hp by dam
 	life_status take_damage(int dam);
+	// Reduce hp by dam, specific to damage type.
+	life_status take_damage(int dam, type damage_type);
 
 	// Getter/Setters
 	std::string getName() { return name; };				// Name
