@@ -8,17 +8,6 @@ using namespace std;
 using namespace rapidxml;
 
 
-/* brief:	Override function. Prints roll to screen in format %d% + %.
-   param:	&out - Address of output stream.
-		&r - roll to print.
-   returns:	output stream.
-*/
-std::ostream & operator << (std::ostream &out, const roll &r)
-{
-	out << r.num << "d" << r.dice << " + " << r.mod;
-	return out;
-}
-
 /* brief:	Constructor for taking variables individually.
    param:	Name - Combatant name as string.
 		HP - Combatant max HP as int.
@@ -38,7 +27,7 @@ combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, int At
 	speed = Spd;
 	init = roll(1,20,Init);
 	attack = roll(1,20,Attack);
-	damage = read_dam(Damage);
+	damage = roll(Damage);
 }
 
 /* brief:	Constructor for reading variables from a vector of strings.
@@ -53,7 +42,7 @@ combatant::combatant(std::vector<std::string> line)
 	speed = stoi(line[SPD_VAR]);			// Get speed (int)
 	init = roll(1,20,stoi(line[INIT_VAR]));		// Create initiative roll
 	attack = roll(1,20,stoi(line[ATTACK_VAR]));	// Create attack roll
-	damage = read_dam(line[DAM_VAR]);		// Create damage roll
+	damage = roll(line[DAM_VAR]);		// Create damage roll
 }
 
 /* brief:	Constructor reading variables from an xml node.
@@ -104,58 +93,6 @@ combatant::combatant(xml_node<> *root)
 			}
 		}
 	}
-}
-
-// Constructor for roll based on read_dam. Remove read_dam.
-roll::roll(std::string input)
-{
-	int d = input.find("d");			// Find number of characters in the 'd' char is.
-	int dice_length = input.length() - d + 1;	// Assign length of dice string to one less than the number of chars in d is.
-
-	int plus = input.find(" + ") + 2;		// Find number of characters in the " + " string is.
-	int plus_length = input.length() + 1;		// Assign length of string up to " + " to full length of string plus one.
-	mod = 0;					// By default, set modifier to zero.
-
-	// If plus is greater than 1, means it's present.
-	// Change value of plus_length to number of characters till " + ".
-	// Assign value of mod to string after " + ".
-	if (plus > 1) {
-		plus_length = input.length() - plus;
-		mod = stoi(input.substr(plus+1, input.length() - plus_length));
-	}
-
-	num = stoi(input.substr(0,d));					// Convert string before "d" to an int, num.
-	dice = stoi(input.substr(d+1, plus_length - dice_length));	// Convert string between "d" and " + " to an int, dice. 
-}
-
-/* brief:	Convert a string in the format %d% + % to three seperate ints.
-		Assigns values to num, dice and mod in that order.
-   param:	input - A string in the format %d% + %.
-   returns:	A roll value as above.
-*/
-roll combatant::read_dam(std::string input)
-{
-	roll values;					// Declare roll value, values.
-
-	int d = input.find("d");			// Find number of characters in the 'd' char is.
-	int dice_length = input.length() - d + 1;	// Assign length of dice string to one less than the number of chars in d is.
-
-	int plus = input.find(" + ") + 2;		// Find number of characters in the " + " string is.
-	int plus_length = input.length() + 1;		// Assign length of string up to " + " to full length of string plus one.
-	values.mod = 0;					// By default, set modifier to zero.
-
-	// If plus is greater than 1, means it's present.
-	// Change value of plus_length to number of characters till " + ".
-	// Assign value of mod to string after " + ".
-	if (plus > 1) {
-		plus_length = input.length() - plus;
-		values.mod = stoi(input.substr(plus+1, input.length() - plus_length));
-	}
-
-	values.num = stoi(input.substr(0,d));					// Convert string before "d" to an int, num.
-	values.dice = stoi(input.substr(d+1, plus_length - dice_length));	// Convert string between "d" and " + " to an int, dice. 
-
-	return values;
 }
 
 /* brief:	Print all stats of combatant to screen.
