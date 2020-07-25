@@ -109,7 +109,8 @@ void combatant::print_stats()
 	cout << "HP: " << hp << endl;
 	cout << "AC: " << ac << endl;
 	cout << "Speed: " << speed << endl;
-	cout << "Iniative: " << init << endl;
+	cout << "Initiative: " << init << endl;
+	cout << "Coordinates: " << coordinates << endl;
 	cout << endl;
 }
 
