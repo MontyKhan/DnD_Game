@@ -5,6 +5,7 @@ using namespace std;
 
 
 /* brief:	Override function. Prints roll to screen in format %d% + %.
+		Friend function of roll.
    param:	&out - Address of output stream.
 		&r - roll to print.
    returns:	output stream.

@@ -5,6 +5,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include "roll.h"
 #include "rapidxml/rapidxml_utils.hpp"
 
 #define NAME_VAR 	0
@@ -20,24 +21,6 @@ using namespace rapidxml;
 enum life_status {alive, death_1, death_2, dead};
 enum type {acid, bludgeoning, cold, fire, force, lightning, necrotic, piercing, poison, psychic, radiant, slashing, thunder};
 
-
-// May work better as typedef struct, review later.
-class roll {
-public:
-	int num;		// Number of dice to roll.
-	int dice;		// Size of dice to roll (e.g. d6)
-	int mod;		// Modifier to roll, to be added on.
-
-	// Constructors
-	roll() :
-		num(0), dice(0), mod(0) {};
-	roll(int Num, int Dice, int Mod) :
-		num(Num), dice(Dice), mod(Mod) {};
-	roll(std::string input);
-
-	// Friends
-	friend std::ostream & operator << (std::ostream &out, const roll &r);
-};
 
 // Class for each weapon wielded by combatant
 class weapon_type {
