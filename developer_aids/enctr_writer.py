@@ -17,8 +17,8 @@ with open(filepath) as input:
 		output.write("\t<monster>\n")							# Start monster tag.
 
 		output.write("\t\t<name>{}</name>\n".format(line_contents[0]))			# Set name string.
-		output.write("\t\t<ac>{}</ac>\n".format(line_contents[1]))			# Set AC value.
-		output.write("\t\t<hp>{}</hp>\n".format(line_contents[2]))			# Set HP value.
+		output.write("\t\t<hp>{}</hp>\n".format(line_contents[1]))			# Set HP value.
+		output.write("\t\t<ac>{}</ac>\n".format(line_contents[2]))			# Set AC value.
 		output.write("\t\t<speed>{}</speed>\n".format(line_contents[3]))			# Set Speed value.
 		output.write("\t\t<initiative>{}</initiative>\n".format(line_contents[4]))	# Set Initiative value.
 		

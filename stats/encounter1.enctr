@@ -1,8 +1,8 @@
 <encounter>
 	<monster>
 		<name>Orc</name>
-		<ac>15</ac>
-		<hp>13</hp>
+		<ac>13</ac>
+		<hp>15</hp>
 		<speed>30</speed>
 		<initiative>1</initiative>
 		<weapon>
@@ -16,8 +16,8 @@
 
 	<monster>
 		<name>Goblin</name>
-		<ac>7</ac>
-		<hp>15</hp>
+		<ac>15</ac>
+		<hp>7</hp>
 		<speed>30</speed>
 		<initiative>2</initiative>
 		<weapon>
@@ -31,8 +31,8 @@
 
 	<monster>
 		<name>Bugbear</name>
-		<ac>27</ac>
-		<hp>16</hp>
+		<ac>16</ac>
+		<hp>27</hp>
 		<speed>30</speed>
 		<initiative>2</initiative>
 		<weapon>
@@ -46,8 +46,8 @@
 
 	<monster>
 		<name>Bandit</name>
-		<ac>11</ac>
-		<hp>12</hp>
+		<ac>12</ac>
+		<hp>11</hp>
 		<speed>30</speed>
 		<initiative>1</initiative>
 		<weapon>
@@ -61,8 +61,8 @@
 
 	<monster>
 		<name>Kobold</name>
-		<ac>5</ac>
-		<hp>12</hp>
+		<ac>12</ac>
+		<hp>5</hp>
 		<speed>30</speed>
 		<initiative>2</initiative>
 		<weapon>
@@ -76,8 +76,8 @@
 
 	<monster>
 		<name>Hobgoblin</name>
-		<ac>11</ac>
-		<hp>18</hp>
+		<ac>18</ac>
+		<hp>11</hp>
 		<speed>30</speed>
 		<initiative>1</initiative>
 		<weapon>
@@ -91,8 +91,8 @@
 
 	<monster>
 		<name>Drow</name>
-		<ac>13</ac>
-		<hp>15</hp>
+		<ac>15</ac>
+		<hp>13</hp>
 		<speed>30</speed>
 		<initiative>2</initiative>
 		<weapon>
