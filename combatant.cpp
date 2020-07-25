@@ -14,24 +14,24 @@ using namespace rapidxml;
 		AC - Combatant Armour Class as int.
 		Spd - Combatant speed in feet as an int.
 		Init - Initiative modifier as an int. Is converted into a roll equal to 1d20 + Init.
-		Attack - Attack modifier as an int. Is converted into a roll equal to 1d20 + Attack.
-		Damage - Weapon damage as a string, of format %d% + %.
+		Coordinates - 3D coordinates of combatant
+		Status - life_status of combatant
    return:	Nothing, as constructor.
 */
 
-combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, int Attack, std::string Damage)
+combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, location Coordinates, life_status Status)
 {
 	name = Name;
 	hp = HP;
 	ac = AC;
 	speed = Spd;
 	init = roll(1,20,Init);
-	attack = roll(1,20,Attack);
-	damage = roll(Damage);
+	coordinates = Coordinates;
+	status = Status;
 }
 
 /* brief:	Constructor for reading variables from a vector of strings.
-   param:	line - Stats in order of Name, HP, AC, Spd, Init, Attack, Damage as in above formats.
+   param:	line - Stats in order of Name, HP, AC, Spd, Init as in above formats.
    return:	Nothing, as constructor.
 */
 combatant::combatant(std::vector<std::string> line)
@@ -41,8 +41,8 @@ combatant::combatant(std::vector<std::string> line)
 	ac = stoi(line[AC_VAR]);			// Get AC (int)
 	speed = stoi(line[SPD_VAR]);			// Get speed (int)
 	init = roll(1,20,stoi(line[INIT_VAR]));		// Create initiative roll
-	attack = roll(1,20,stoi(line[ATTACK_VAR]));	// Create attack roll
-	damage = roll(line[DAM_VAR]);		// Create damage roll
+	coordinates = location();
+	status = dead;
 }
 
 /* brief:	Constructor reading variables from an xml node.
@@ -67,6 +67,10 @@ combatant::combatant(xml_node<> *root)
 			//combatant new_player = combatant(child);
 			//players.push_back(new_player);
 			weapons.push_back(weapon_type(child));
+		}
+		else if (str_name == "coordinates")
+		{
+			coordinates = location(str_value);
 		}
 		else
 		{
@@ -106,8 +110,6 @@ void combatant::print_stats()
 	cout << "AC: " << ac << endl;
 	cout << "Speed: " << speed << endl;
 	cout << "Iniative: " << init << endl;
-	cout << "Attack: " << attack << endl;			// Overridden, prints in form %d% + %.
-	cout << "Damage: " << damage << endl;			// Overridden, prints in form %d% + %.
 	cout << endl;
 }
 
