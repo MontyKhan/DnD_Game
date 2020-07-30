@@ -124,6 +124,13 @@
 			<damage>1d12 + 3</damage>
 			<type>slashing</type>
 		</weapon>
+		<weapon>
+			<name>Handaxe</name>
+			<range>5</attack>
+			<attack>5</attack>
+			<damage>1d6 + 3</damage>
+			<type>slashing</damage>
+		</weapon>
 		<coordinates>115,5,0</coordinates>
 	</player>
 
