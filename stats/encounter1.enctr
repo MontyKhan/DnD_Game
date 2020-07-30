@@ -111,4 +111,20 @@
 		<coordinates>65,5,0</coordinates>
 	</monster>
 
+	<player>
+		<name>Barbarian</name>
+		<ac>12</ac>
+		<hp>15</hp>
+		<speed>30</speed>
+		<initiative>0</initiative>
+		<weapon>
+			<name>Greataxe</name>
+			<range>5</range>
+			<attack>5</attack>
+			<damage>1d12 + 3</damage>
+			<type>slashing</type>
+		</weapon>
+		<coordinates>115,5,0</coordinates>
+	</player>
+
 </encounter>
