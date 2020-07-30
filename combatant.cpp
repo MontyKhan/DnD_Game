@@ -181,6 +181,7 @@ life_status combatant::make_attack(combatant & target)
 
 /* brief:	Roll attack. If it's greater than the target's AC, roll damage and subtract that from the target's HP. Print result.
 		If it's less, just print miss to stdout.
+		Virtual function, overwritten in Player.
    param:	weapon - Weapon with which attacks are made, using damage and attack rolls. Type checked.
 		target - Passed by reference. Combatant for the attacks to be made against.
    return:	status of target after attack, i.e. dead or alive.

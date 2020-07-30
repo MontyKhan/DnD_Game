@@ -23,7 +23,8 @@ enum life_status {alive, death_1, death_2, dead};
 
 // Class for each combatant in an encounter
 class combatant {
-private:
+//private:
+protected:
 	std::string name;
 	int hp;
 	int ac;
@@ -49,7 +50,7 @@ public:
 	// Roll initiative specifically
 	int roll_initiative();
 	// Roll both attack and damage against a target.
-	life_status make_attack(combatant & target);
+	virtual life_status make_attack(combatant & target);
 	// Roll both attack and damage against a target, supplying a weapon.
 	life_status make_attack(weapon_type weapon, combatant & target);	// Pass by reference
 	// Reduce hp by dam
