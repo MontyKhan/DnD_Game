@@ -9,10 +9,10 @@ using namespace std;
 /* brief: 	Roll initiative for all players and monsters involved, then have each perform an action
 	  	on their turn.
 	  	Currently only supports melee attacks against random opponents.
-   param: 	players - vector of players and monsters involved in encounter.
+   param: 	players - vector of pointers to players and monsters involved in encounter.
    returns: 	nothing
 */
-void run_encounter(std::vector <monster> players)
+void run_encounter(std::vector <combatant*> players)
 {
 	node * active_player = new node();		// Create initialisation node for players.
 	int i = 0;					// Initialise counter to 0.
@@ -40,7 +40,7 @@ void run_encounter(std::vector <monster> players)
 		}
 
 		// Make attack against target. If attack kills them, result is set to dead. Else, alive.
-		life_status result = active_player->player.make_attack(target->player);
+		life_status result = active_player->player->make_attack(*(target->player));
 
 		// If target is killed, remove them from the list and decrement the number of potential targets.
 		if (result == dead)
@@ -54,7 +54,7 @@ void run_encounter(std::vector <monster> players)
 	}
 
 	// Debug code. State last fighter standing.
-	cout << active_player->player.getName() << " wins!" << endl;
+	cout << active_player->player->getName() << " wins!" << endl;
 }
 
 /* brief: 	main function. Loads players and monsters from .csv file with hardcoded address.
@@ -66,13 +66,13 @@ int main() {
 
 	srand(time(NULL));							// Generate random seed.
 
-	std::vector<monster> players; 					// Create vector of monsters.
+	std::vector<combatant*> players; 					// Create vector of players and monsters.
 
 	players = interpret_nodes("./stats/encounter1.enctr");
 
 	// Range based for loop. Print stats of each player to screen.
-	for(monster D : players) {
-		D.print_stats();
+	for(combatant* D : players) {
+		D->print_stats();
 	}
 
 	// Loop for combat.
