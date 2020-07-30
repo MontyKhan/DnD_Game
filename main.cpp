@@ -2,6 +2,7 @@
 #include "include/combatant.h"
 #include "include/tools.h"
 #include "include/load_file.h"
+#include "include/monster.h"
 
 using namespace std;
 
@@ -11,7 +12,7 @@ using namespace std;
    param: 	players - vector of players and monsters involved in encounter.
    returns: 	nothing
 */
-void run_encounter(std::vector <combatant> players)
+void run_encounter(std::vector <monster> players)
 {
 	node * active_player = new node();		// Create initialisation node for players.
 	int i = 0;					// Initialise counter to 0.
@@ -65,12 +66,12 @@ int main() {
 
 	srand(time(NULL));							// Generate random seed.
 
-	std::vector<combatant> players; 					// Create vector of combatants.
+	std::vector<monster> players; 					// Create vector of monsters.
 
 	players = interpret_nodes("./stats/encounter1.enctr");
 
 	// Range based for loop. Print stats of each player to screen.
-	for(combatant D : players) {
+	for(monster D : players) {
 		D.print_stats();
 	}
 

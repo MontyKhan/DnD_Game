@@ -98,7 +98,7 @@ void print_vector(vector <int> input)
 		player - The player value for the new node.
    returns:	Nothing.
 */
-void add_to_list(node * head, int initiative, combatant player)
+void add_to_list(node * head, int initiative, monster player)
 {
 	node * entry = new node();			// Declare empty node, entry.
 
@@ -141,9 +141,9 @@ void remove_from_list(node * target)
 		new_initiative - Value for new initiative stat for the new node.
    returns:	Nothing.
 */
-void change_head(node * head, combatant new_player, int new_initiative)
+void change_head(node * head, monster new_player, int new_initiative)
 {
-	combatant prev_player = head->player;			// Set prev_player to current head.
+	monster prev_player = head->player;			// Set prev_player to current head.
 	int prev_roll = head->initiative;			// Set prev_roll to initiative value of current head.
 				
 	head->player = new_player;				// Set player value of current head to desired new value.
@@ -153,10 +153,10 @@ void change_head(node * head, combatant new_player, int new_initiative)
 }
 
 /* brief: Create a circular doubly linked list sorted by initiative.
-   param: players - A vector containing all combatants involved.
+   param: players - A vector containing all monsters involved.
    returns: 	Pointer to the head of the new circular doubly linked list.
 */
-node * initiative_round(vector <combatant> players)
+node * initiative_round(vector <monster> players)
 {
 	node * head = new node();				// Declare new empty node for head of list.
 	node * iterator = head;					// Declare new node for use as an iterator, pointing to head.
