@@ -1,8 +1,8 @@
-#include "combatant.h"
-#include "rapidxml/rapidxml_utils.hpp"
-
 #ifndef LOAD_FILE_H
 #define LOAD_FILE_H
+
+#include "combatant.h"
+#include "rapidxml/rapidxml_utils.hpp"
 
 using namespace rapidxml;
 
