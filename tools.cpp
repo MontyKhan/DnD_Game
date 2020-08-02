@@ -98,7 +98,7 @@ void print_vector(vector <int> input)
 		player - The player value for the new node.
    returns:	Nothing.
 */
-void add_to_list(node * head, int initiative, combatant player)
+void add_to_list(node * head, int initiative, combatant* player)
 {
 	node * entry = new node();			// Declare empty node, entry.
 
@@ -141,9 +141,9 @@ void remove_from_list(node * target)
 		new_initiative - Value for new initiative stat for the new node.
    returns:	Nothing.
 */
-void change_head(node * head, combatant new_player, int new_initiative)
+void change_head(node * head, combatant* new_player, int new_initiative)
 {
-	combatant prev_player = head->player;			// Set prev_player to current head.
+	combatant* prev_player = head->player;			// Set prev_player to current head.
 	int prev_roll = head->initiative;			// Set prev_roll to initiative value of current head.
 				
 	head->player = new_player;				// Set player value of current head to desired new value.
@@ -153,16 +153,16 @@ void change_head(node * head, combatant new_player, int new_initiative)
 }
 
 /* brief: Create a circular doubly linked list sorted by initiative.
-   param: players - A vector containing all combatants involved.
+   param: players - A vector containing pointers to all monsters and players involved via downcasting.
    returns: 	Pointer to the head of the new circular doubly linked list.
 */
-node * initiative_round(vector <combatant> players)
+node * initiative_round(vector <combatant*> players)
 {
 	node * head = new node();				// Declare new empty node for head of list.
 	node * iterator = head;					// Declare new node for use as an iterator, pointing to head.
 
 	head->player = players[0];				// Set player value for head to first value in vector.
-	head->initiative = players[0].roll_initiative();	// Set initiative value for head to RNGed value.
+	head->initiative = players[0]->roll_initiative();	// Set initiative value for head to RNGed value.
 	head->next = NULL;					// Point next towards empty space.
 	head->prev = NULL;					// Point prev towards empty space.
 
@@ -176,7 +176,7 @@ node * initiative_round(vector <combatant> players)
 		tmp = head;					// Point iterator node to head.
 		node * tmp2 = head;				// Declare second iterator node, point to head.
 
-		int initiative_roll = players[i].roll_initiative();	// Set initiative to randomly generated value.
+		int initiative_roll = players[i]->roll_initiative();	// Set initiative to randomly generated value.
 
 		// Keep iterating through list until you reach the end.
 		while (tmp != NULL) {
