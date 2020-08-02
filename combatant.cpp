@@ -148,6 +148,49 @@ int combatant::roll_initiative()
 	return make_roll(init);
 }
 
+/* brief:	Select opponent and make attack.
+   param:	A pointer to the node containing the combatant making the attack.
+   returns:	0 if successful.
+*/
+int combatant::take_turn(node* self)
+{
+	// Set target to start at attacker (origin).
+	node * target = self;
+
+	// Count other combatants in initiative list.
+	int potential_targets = 0;
+	while (target->next != self) 
+	{
+		potential_targets++;
+		target = target->next;
+	}
+
+	// Reset target to origin.
+	target = self;
+
+	// Select random number between 1 and the number of enemies.
+	int target_selector = (rand() % potential_targets+1);
+
+	// Progress the head of the circular list ahead by target_selector.
+	// i.e. 1 means go to next. Cannot go completely around the list.
+	for (int i = 0; i < target_selector; i++)
+	{
+		target = target->next;
+	}
+
+	// Make attack against target. If attack kills them, result is set to dead. Else, alive.
+	life_status result = self->player->make_attack(*(target->player));
+
+	// If target is killed, remove them from the list and decrement the number of potential targets.
+	if (result == dead)
+	{
+		remove_from_list(target);
+		potential_targets--;
+	}
+
+	return 0;
+}
+
 /* brief:	Roll attack. If it's greater than the target's AC, roll damage and subtract that from the target's HP. Print result.
 		If it's less, just print miss to stdout.
    param:	target - Passed by reference. Combatant for the attacks to be made against.

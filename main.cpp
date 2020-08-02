@@ -26,28 +26,8 @@ void run_encounter(std::vector <combatant*> players)
 	// Repeat until only one player is left.
 	while (active_player->next != active_player)
 	{
-		// Set target to start at attacker (origin).
-		node * target = active_player;
-
-		// Select random number between 1 and the number of enemies.
-		int target_selector = (rand() % potential_targets+1);
-
-		// Progress the head of the circular list ahead by target_selector.
-		// i.e. 1 means go to next. Cannot go completely around the list.
-		for (int i = 0; i < target_selector; i++)
-		{
-			target = target->next;
-		}
-
-		// Make attack against target. If attack kills them, result is set to dead. Else, alive.
-		life_status result = active_player->player->make_attack(*(target->player));
-
-		// If target is killed, remove them from the list and decrement the number of potential targets.
-		if (result == dead)
-		{
-			remove_from_list(target);
-			potential_targets--;
-		}
+		// Make move and take attack
+		active_player->player->take_turn(active_player);
 
 		// Progress iterator node to the next one.
 		active_player = active_player->next;

@@ -21,6 +21,8 @@ using namespace rapidxml;
 
 enum life_status {alive, death_1, death_2, dead};
 
+class node;				// Forward declaration for take_turn(node* self) function.
+
 // Class for each combatant in an encounter
 class combatant {
 //private:
@@ -49,6 +51,8 @@ public:
 	int make_roll(roll x);
 	// Roll initiative specifically
 	int roll_initiative();
+	// Move and then make attack
+	int take_turn(node* self);
 	// Roll both attack and damage against a target.
 	virtual life_status make_attack(combatant & target);
 	// Roll both attack and damage against a target, supplying a weapon.
