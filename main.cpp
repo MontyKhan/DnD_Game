@@ -21,8 +21,6 @@ void run_encounter(std::vector <combatant*> players)
 
 	cout << endl;					// Add line break for readability.
 
-	int potential_targets = players.size() - 1;	// Calculate number of available targets. Vector size minus self.
-
 	// Repeat until only one player is left.
 	while (active_player->next != active_player)
 	{

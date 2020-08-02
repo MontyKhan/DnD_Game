@@ -3,7 +3,7 @@
 #include "include/roll.h"
 #include "include/tools.h"
 
-/* brief: 	Make move and then make attack.
+/* brief: 	Make move and then make attack against specified target.
 	  	Virtual overloaded function from combatant.
    param: 	Pointer to node describing the player.
    returns:	0 if successful.
@@ -13,19 +13,24 @@ int Player::take_turn(node* self)
 	// Set target to start at attacker (origin).
 	node * target = self;
 
+	cout << "Select target:\t";
+
 	// Count other combatants in initiative list.
 	int potential_targets = 0;
 	while (target->next != self) 
 	{
-		potential_targets++;
 		target = target->next;
+		cout << target->player->getName() << " (" << ++potential_targets << ")" << endl << "\t\t";
 	}
+	cout << endl;
 
 	// Reset target to origin.
 	target = self;
 
 	// Select random number between 1 and the number of enemies.
-	int target_selector = (rand() % potential_targets+1);
+	int target_selector;
+
+	cin >> target_selector;
 
 	// Progress the head of the circular list ahead by target_selector.
 	// i.e. 1 means go to next. Cannot go completely around the list.
