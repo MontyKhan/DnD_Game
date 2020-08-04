@@ -7,6 +7,7 @@
 #include <vector>
 #include "weapon_type.h"
 #include "pathfinding.h"
+#include "object.h"
 #include "rapidxml/rapidxml_utils.hpp"
 
 #define NAME_VAR 	0
@@ -24,15 +25,13 @@ enum life_status {alive, death_1, death_2, dead};
 class node;				// Forward declaration for take_turn(node* self) function.
 
 // Class for each combatant in an encounter
-class combatant {
-//private:
+class combatant : public object {
 protected:
 	std::string name;
 	int hp;
 	int ac;
 	int speed;
 	roll init;
-	location coordinates;
 	std::vector<weapon_type> weapons;
 	life_status status;
 
@@ -45,7 +44,7 @@ public:
 	combatant(rapidxml::xml_node<> *node);
 	// Default constructor
 	combatant() 
-		: name(""), hp(0), ac(0), speed(0), init(roll()), coordinates(location()), status(dead) {};
+		: name(""), hp(0), ac(0), speed(0), init(roll()), object(location()), status(dead) {};
 
 	// Roll a dice
 	int make_roll(roll x);
