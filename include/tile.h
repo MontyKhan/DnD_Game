@@ -2,6 +2,7 @@
 #define TILE_H
 
 #include "object.h"
+#include "pathfinding.h"
 
 class Tile {
 private:
@@ -17,6 +18,10 @@ public:
 
 	// Print tile grid to screen, each tile represented by "x"
 	void print_map();
+	// Get specific tile by map reference, location.
+	Tile* get(location coordinates);
+	// Get specific tile by map reference, individual ints.
+	Tile* get(int x, int y);
 
 	// Getters/setters
 	object* getContents() { return contents; };

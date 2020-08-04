@@ -1,5 +1,7 @@
 #include "include/tile.h"
 #include <iostream>
+#include <exception>
+#include <stdlib.h>
 
 
 /* brief:	Constructor for creating rectangle shaped maps.
@@ -89,6 +91,53 @@ void Tile::print_map()
 	// If there's a row below, call self recursively.
 	if (south != NULL)
 		south->print_map();
+}
+
+/* brief:	Get a tile by x,y coordinates
+   param:	x - x coordinate
+		y - y coordinate
+   returns:	The tile at (x,y)
+*/
+Tile* Tile::get(int x, int y)
+{
+	Tile * tile = this;
+	try
+	{
+		// Iterate across row
+		for (int i = 0; i < x; i++)
+		{	
+			if (tile->east == NULL)
+				throw "Out of range!";
+			tile = tile->east;
+		}
+
+		// Iterate down column.
+		for (int j = 0; j < y; j++)
+		{
+			if (tile->south == NULL)
+				throw "Out of range!";
+			tile = tile->south;
+		}
+	}
+	// Check if out of range error thrown. If so, exit.
+	catch (const char* msg)
+	{
+		std::cerr << msg << std::endl;
+		exit (EXIT_FAILURE);
+	}
+
+	return tile;
+}
+
+/* brief:	Get a tile by location
+   param:	coordinates - coordinates of tile
+   returns:	The tile at location
+*/
+Tile* Tile::get(location coordinates)
+{
+	Tile* tile = get(coordinates.getX(), coordinates.getY());
+
+	return tile;
 }
 
 /* brief:	Check if tile is occupied, and if not add contents.
