@@ -15,9 +15,12 @@ public:
 	Tile() : contents(NULL), north(NULL), east(NULL), south(NULL), west(NULL) {};	// Default
 	Tile(int x, int y);								// Rectangle
 
+	// Print tile grid to screen, each tile represented by "x"
+	void print_map();
+
 	// Getters/setters
 	object* getContents() { return contents; };
-	int setContents(Tile* Contents);			// Defined in file
+	int setContents(object* Contents);			// Defined in file
 	Tile* getNorth() { return north; };
 	int setNorth(Tile* North) { north = North; };
 	Tile* getEast() { return east; };
