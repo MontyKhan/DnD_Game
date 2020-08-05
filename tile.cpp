@@ -66,11 +66,37 @@ Tile::Tile(int x, int y)
 		}	
 	}
 }
+
+/* brief:	Prints entire map to console, starting from origin.
+   param:	None.
+   returns:	Nothing, just prints to console.
+*/
+void Tile::print_map()
+{
+	// Point to current tile
+	Tile* origin = this;
+
+	// Iterate upwards
+	while (origin->north != NULL)
+	{
+		origin = origin->north;
+	}
+
+	// Iterate to the right
+	while (origin->west != NULL)
+	{
+		origin = origin->west;
+	}
+
+	// Print from origin
+	origin->print_from();
+}
+
 /* brief:	Prints map to console, with each tile represented by an "x" char.
    param:	None
    returns:	Nothing, just prints to console.
 */ 
-void Tile::print_map()
+void Tile::print_from()
 {
 	// Point to first neighbour
 	Tile* neighbour = east;
@@ -90,7 +116,7 @@ void Tile::print_map()
 
 	// If there's a row below, call self recursively.
 	if (south != NULL)
-		south->print_map();
+		south->print_from();
 }
 
 /* brief:	Get a tile by x,y coordinates
@@ -158,4 +184,11 @@ int Tile::setContents(object* Contents)
 	{
 		return -1;
 	}
+}
+
+int main()
+{
+	Tile* origin = new Tile(10,5);
+
+	origin->print_map();
 }

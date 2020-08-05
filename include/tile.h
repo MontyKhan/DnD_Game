@@ -16,8 +16,10 @@ public:
 	Tile() : contents(NULL), north(NULL), east(NULL), south(NULL), west(NULL) {};	// Default
 	Tile(int x, int y);								// Rectangle
 
-	// Print tile grid to screen, each tile represented by "x"
+	// Print entire tile grid to screen, each tile represented by "x"
 	void print_map();
+	// Print map starting Tile, each tile represented by "x"
+	void print_from();
 	// Get specific tile by map reference, location.
 	Tile* get(location coordinates);
 	// Get specific tile by map reference, individual ints.
