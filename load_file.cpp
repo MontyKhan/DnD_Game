@@ -39,7 +39,6 @@ std::vector<combatant*> interpret_nodes(const char* filepath)
 		{
 			Player* new_player = new Player(child);
 			combatants.push_back(new_player);
-			cout << "testing" << endl;
 		}
 	}
 
