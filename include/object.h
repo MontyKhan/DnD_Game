@@ -16,6 +16,7 @@ public:
 	// Getters/setters
 	virtual std::string getName() { return name; };
 	virtual int setName(std::string Name) { name = Name; return 0; };
+	location getCoordinates() { return coordinates; };
 };
 
 #endif

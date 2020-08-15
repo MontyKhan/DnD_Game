@@ -49,12 +49,17 @@ int main() {
 
 	players = interpret_nodes("./stats/encounter1.enctr");
 
-	test_map();
+	Tile *map = new Tile(125,35);
 
 	// Range based for loop. Print stats of each player to screen.
+	// Also adds players to map.
 	for(combatant* D : players) {
 		D->print_stats();
+		Tile *tile = map->get(D->getCoordinates());
+		tile->setContents(D);
 	}
+
+	map->print_map();
 
 	// Loop for combat.
 	run_encounter(players);

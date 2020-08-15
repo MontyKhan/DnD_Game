@@ -38,6 +38,4 @@ public:
 	int setWest(Tile* West) { west = West; };
 };
 
-void test_map();
-
 #endif

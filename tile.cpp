@@ -170,16 +170,3 @@ int Tile::setContents(object* Contents)
 		return -1;
 	}
 }
-
-void test_map()
-{
-	Tile* origin = new Tile(10,5);	// Segfault in here.
-
-	origin->print_from();
-	std::cout << std::endl;
-
-	Tile* sample = origin->get(2,3);
-	sample->setContents(new object());
-
-	origin->print_from();
-}
