@@ -11,59 +11,32 @@
 */
 Tile::Tile(int x, int y)
 {
-	// If only one more row requested, end it here.
-	if (y == 1)
-		south = NULL;
-	else
+	Tile* tile = new Tile();
+	Tile *new_line = this;
+
+	for (int i = 0; i < y; ++i)
 	{
-		// Recursive call to create bottom neighbour
-		south = new Tile(x, y-1);
+		tile = new_line;
+		for (int j = 1; j < x; ++j)
+		{
+			tile->east = new Tile();
+			tile->east->west = tile;
+			if (tile->south != NULL)
+			{
+				tile->east->south = tile->south->east;
+			}
+			if (tile->north != NULL)
+			{
+				tile->east->north = tile->north->east;
+			}
+			tile = tile->east;
+		}
 		
-		// Connect east tile to neighbours, and vice versa.
-		if (east != NULL)
+		if (i < (y - 1))
 		{
-			south->east = east->south;
-			if (east->south != NULL)
-				east->south->west = south;
+			new_line->south = new Tile();
+			new_line = new_line->south;
 		}
-
-		// Connect west tile to neighbours, and vice versa.
-		if (west != NULL)
-		{
-			south->west = west->south;
-			if (west->south != NULL)
-				west->south->east = south;
-		}
-
-		// Connect new neighbour to self.
-		south->north = this;
-	}
-
-	if (x == 1)
-		east = NULL;
-	else
-	{
-		// Recursive call to create right neighbour
-		east = new Tile(x-1,y);
-
-		// Connect new neighbour to self.
-		east->west = this;
-
-		// Connect north tile to neighbours, and vice versa.
-		if (north != NULL)
-		{
-			east->north = north->east;
-			if (north->east != NULL)
-				north->east->south = east;
-		}
-
-		// Connect south tile to neighbours, and vice versa.
-		if (south != NULL)
-		{
-			east->south = south->east;
-			if (south->east != NULL)
-				south->east->north = east;
-		}	
 	}
 }
 
@@ -99,20 +72,20 @@ void Tile::print_map()
 void Tile::print_from()
 {
 	// Point to first neighbour
-	Tile* neighbour = east;
-
-	// Print x for origin tile.
-	std::cout << "x";
+	Tile* tile = this;
 
 	// Iterate through row, print "x" for each tile.
-	while (neighbour != NULL)
+	while (tile != NULL)
 	{
-		std::cout << "x";
-		neighbour = neighbour->east;
+		if (tile->contents == NULL)
+			std::cout << "x";
+		else
+			std::cout << "p";
+		tile = tile->east;
 	}
 
 	// New line
-	std::cout << "\n";
+	std::cout << std::endl;
 
 	// If there's a row below, call self recursively.
 	if (south != NULL)
@@ -129,20 +102,20 @@ Tile* Tile::get(int x, int y)
 	Tile * tile = this;
 	try
 	{
-		// Iterate across row
-		for (int i = 0; i < x; i++)
-		{	
-			if (tile->east == NULL)
-				throw "Out of range!";
-			tile = tile->east;
-		}
-
 		// Iterate down column.
 		for (int j = 0; j < y; j++)
 		{
 			if (tile->south == NULL)
 				throw "Out of range!";
 			tile = tile->south;
+		}
+
+		// Iterate across row
+		for (int i = 0; i < x; i++)
+		{	
+			if (tile->east == NULL)
+				throw "Out of range!";
+			tile = tile->east;
 		}
 	}
 	// Check if out of range error thrown. If so, exit.
@@ -190,5 +163,11 @@ int main()
 {
 	Tile* origin = new Tile(10,5);
 
-	origin->print_map();
+	origin->print_from();
+	std::cout << std::endl;
+
+	Tile* sample = origin->get(2,3);
+	sample->setContents(new object());
+
+	origin->print_from();
 }
