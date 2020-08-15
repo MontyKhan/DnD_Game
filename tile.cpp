@@ -11,9 +11,19 @@
 */
 Tile::Tile(int x, int y)
 {
-	Tile* tile = new Tile();
-	Tile *new_line = this;
+	// Assign values of links to NULL, to be filled in later.
+	// Could use simplifying?
+	this->north = NULL;
+	this->east = NULL;
+	this->south = NULL;
+	this->west = NULL;
+	this->contents = NULL;
 
+	// Create x (tile) and y (new_line) iterators.
+	Tile *new_line = this;
+	Tile *tile;
+
+	// Fill in map one line at a time.
 	for (int i = 0; i < y; ++i)
 	{
 		tile = new_line;
@@ -32,6 +42,8 @@ Tile::Tile(int x, int y)
 			tile = tile->east;
 		}
 		
+		// If last line, don't add new south.
+		// May be better solution for this.
 		if (i < (y - 1))
 		{
 			new_line->south = new Tile();
@@ -159,9 +171,9 @@ int Tile::setContents(object* Contents)
 	}
 }
 
-int main()
+void test_map()
 {
-	Tile* origin = new Tile(10,5);
+	Tile* origin = new Tile(10,5);	// Segfault in here.
 
 	origin->print_from();
 	std::cout << std::endl;

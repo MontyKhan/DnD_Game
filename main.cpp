@@ -3,6 +3,7 @@
 #include "include/tools.h"
 #include "include/load_file.h"
 #include "include/monster.h"
+#include "include/tile.h"
 
 using namespace std;
 
@@ -47,6 +48,8 @@ int main() {
 	std::vector<combatant*> players; 					// Create vector of players and monsters.
 
 	players = interpret_nodes("./stats/encounter1.enctr");
+
+	test_map();
 
 	// Range based for loop. Print stats of each player to screen.
 	for(combatant* D : players) {
