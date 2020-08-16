@@ -151,6 +151,17 @@ Tile* Tile::get(location coordinates)
 	return tile;
 }
 
+/* brief:	Get a tile from it's contents.
+   param:	toFind - The object to find.
+   returns:	The tile containing the object.
+*/
+Tile* Tile::get(object* toFind)
+{
+	Tile* tile = get(toFind->getCoordinates());
+
+	return tile;
+}
+
 /* brief:	Check if tile is occupied, and if not add contents.
    param:	Contents, the object to store in the tile.
    returns:	0 if contents succesfully changed,

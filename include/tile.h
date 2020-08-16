@@ -24,10 +24,13 @@ public:
 	Tile* get(location coordinates);
 	// Get specific tile by map reference, individual ints.
 	Tile* get(int x, int y);
+	// Get specific tile by contents.
+	Tile* get(object *toFind);
 
 	// Getters/setters
 	object* getContents() { return contents; };
 	int setContents(object* Contents);			// Defined in file
+	object* clearContents() { contents = NULL; return contents; };
 	Tile* getNorth() { return north; };
 	int setNorth(Tile* North) { north = North; };
 	Tile* getEast() { return east; };

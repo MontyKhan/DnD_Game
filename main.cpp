@@ -13,7 +13,7 @@ using namespace std;
    param: 	players - vector of pointers to players and monsters involved in encounter.
    returns: 	nothing
 */
-void run_encounter(std::vector <combatant*> players)
+void run_encounter(std::vector <combatant*> players, Tile *map)
 {
 	node * active_player = new node();		// Create initialisation node for players.
 	int i = 0;					// Initialise counter to 0.
@@ -61,8 +61,13 @@ int main() {
 
 	map->print_map();
 
+	std::cout << std::endl;
+	Tile* test = map->get(players[0]);
+	test->clearContents();
+	map->print_map();
+
 	// Loop for combat.
-	run_encounter(players);
+	run_encounter(players, map);
 
     	return 0;
 };
