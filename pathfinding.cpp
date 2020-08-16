@@ -2,6 +2,7 @@
 #include <boost/algorithm/string.hpp>
 #include <string>
 #include <vector>
+#include <math.h>
 
 using namespace std;
 
@@ -45,7 +46,7 @@ int location::find_distance(location coords)
 	int y_d = abs(y - coords.getY());
 	int z_d = abs(z - coords.getZ());
 
-	int d = (x_d*x_d) + (y_d*y_d) + (z_d*z_d);
+	int d = sqrt((x_d*x_d) + (y_d*y_d) + (z_d*z_d));
 
 	return d;
 }

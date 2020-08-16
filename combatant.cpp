@@ -1,8 +1,10 @@
 #include "include/combatant.h"
 #include "include/tools.h"
 #include "include/load_file.h"
+#include "include/pathfinding.h"
 #include "include/rapidxml/rapidxml_print.hpp"
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 using namespace rapidxml;
@@ -168,24 +170,35 @@ int combatant::take_turn(node* self)
 	// Reset target to origin.
 	target = self;
 
-	// Select random number between 1 and the number of enemies.
-	int target_selector = (rand() % potential_targets+1);
+	vector<int> distances;
 
 	// Progress the head of the circular list ahead by target_selector.
 	// i.e. 1 means go to next. Cannot go completely around the list.
-	for (int i = 0; i < target_selector; i++)
+	// for (int i = 0; i < target_selector; i++)
+	for (int i = 0; i < potential_targets; i++)
 	{
 		target = target->next;
+		distances.push_back(this->coordinates.find_distance(target->player->coordinates));
 	}
 
-	// Make attack against target. If attack kills them, result is set to dead. Else, alive.
-	life_status result = self->player->make_attack(*(target->player));
-
-	// If target is killed, remove them from the list and decrement the number of potential targets.
-	if (result == dead)
+	// Find minimum distance in list, i.e. closest opponent.
+	target = self;
+	auto min = *min_element(distances.begin(), distances.end());
+	for (int D : distances)
 	{
-		remove_from_list(target);
-		potential_targets--;
+		target = target->next;
+		if (D == min)
+		{
+			// Make attack against target. If attack kills them, result is set to dead. Else, alive.
+			life_status result = self->player->make_attack(*(target->player));
+
+			// If target is killed, remove them from the list and decrement the number of potential targets.
+			if (result == dead)
+			{
+				remove_from_list(target);
+				potential_targets--;
+			}
+		}
 	}
 
 	return 0;

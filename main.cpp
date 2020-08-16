@@ -53,10 +53,10 @@ int main() {
 
 	// Range based for loop. Print stats of each player to screen.
 	// Also adds players to map.
-	for(combatant* D : players) {
-		D->print_stats();
-		Tile *tile = map->get(D->getCoordinates());
-		tile->setContents(D);
+	for(combatant* C : players) {
+		C->print_stats();
+		Tile *tile = map->get(C->getCoordinates());
+		tile->setContents(C);
 	}
 
 	map->print_map();
