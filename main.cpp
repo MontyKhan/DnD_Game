@@ -65,12 +65,12 @@ int main() {
 
 	std::cout << std::endl;
 
-	Tile* test_map = new Tile(4,2);
+	Tile* test_map = new Tile(4,4);
 
 	test_map->print_map();
 
 	Tile* test1 = test_map->get(0,0);
-	Tile* test2 = test_map->get(3,0);
+	Tile* test2 = test_map->get(0,2);
 
 	std::cout << std::endl;
 

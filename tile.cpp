@@ -20,6 +20,7 @@ Tile::Tile(int x, int y)
 	this->west = NULL;
 	this->contents = NULL;
 
+#if 0
 	// Create x (tile) and y (new_line) iterators.
 	Tile *new_line = this;
 	Tile *tile;
@@ -50,6 +51,42 @@ Tile::Tile(int x, int y)
 			new_line->south = new Tile();
 			new_line = new_line->south;
 		}
+	}
+#endif
+
+	// Create first row
+	Tile* x_iter = this;
+	for (int i = 1; i < x; i++)
+	{
+		Tile* new_tile = new Tile();
+		new_tile->west = x_iter;			// All else will be NULL by default.
+		x_iter->east = new_tile;
+		x_iter = x_iter->east;
+	}
+
+	// Create subsequent rows
+	Tile* prev_y = this;
+	Tile* y_iter = new Tile();
+	for (int j = 1; j < y; j++)
+	{
+		y_iter = new Tile();
+		y_iter->north = prev_y;
+		prev_y->south = y_iter;
+
+		Tile* x_iter = y_iter;
+		for (int i = 1; i < x; i++)
+		{
+			Tile* new_tile = new Tile();
+			new_tile->west = x_iter;
+			new_tile->north = prev_y->east;
+			x_iter->east = new_tile;
+			
+			prev_y = prev_y->east;
+			x_iter = x_iter->east;
+		}
+
+		prev_y = y_iter;
+		y_iter = y_iter->south;
 	}
 }
 
@@ -185,7 +222,6 @@ int Tile::setContents(object* Contents)
 
 int Tile::distanceTo(Tile* target)
 {
-	std::cout << "distance called";
 	// Check if any of neighbouring tiles.
 	if (this->north == target)
 		return 1;
@@ -198,20 +234,22 @@ int Tile::distanceTo(Tile* target)
 
 	// Assign to arbitarily large value.
 	int north_dist, east_dist, south_dist, west_dist = MAX_VALUE;
-	cout << " recursively" << endl;
 	// Recursive function call to find otherwise.
+	std::cout << "North" << std::endl;
 	if (north != NULL)
 	{
 		north_dist = north->distanceTo(target);
 		if (north_dist != MAX_VALUE)
 			north_dist++;
 	}
+	std::cout << "East" << std::endl;
 	if (east != NULL)
 	{
 		east_dist = east->distanceTo(target);
 		if (east_dist != MAX_VALUE)
 			east_dist++;
 	}
+	std::cout << "South" << std::endl;
 	if (south != NULL)
 	{
 		south_dist = south->distanceTo(target);
@@ -219,6 +257,7 @@ int Tile::distanceTo(Tile* target)
 			south_dist++;
 	}
 #if 0
+	std::cout << "West" << std::endl;
 	if (west != NULL)
 	{
 		west_dist = west->distanceTo(target);
