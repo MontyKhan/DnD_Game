@@ -1,4 +1,5 @@
 #include "include/tile.h"
+#include "include/tools.h"
 #include <iostream>
 #include <exception>
 #include <stdlib.h>
@@ -180,4 +181,59 @@ int Tile::setContents(object* Contents)
 	{
 		return -1;
 	}
+}
+
+int Tile::distanceTo(Tile* target)
+{
+	std::cout << "distance called";
+	// Check if any of neighbouring tiles.
+	if (this->north == target)
+		return 1;
+	else if (this->east == target)
+		return 1;
+	else if (this->south == target)
+		return 1;
+	else if (this->west == target)
+		return 1;
+
+	// Assign to arbitarily large value.
+	int north_dist, east_dist, south_dist, west_dist = MAX_VALUE;
+	cout << " recursively" << endl;
+	// Recursive function call to find otherwise.
+	if (north != NULL)
+	{
+		north_dist = north->distanceTo(target);
+		if (north_dist != MAX_VALUE)
+			north_dist++;
+	}
+	if (east != NULL)
+	{
+		east_dist = east->distanceTo(target);
+		if (east_dist != MAX_VALUE)
+			east_dist++;
+	}
+	if (south != NULL)
+	{
+		south_dist = south->distanceTo(target);
+		if (south_dist != MAX_VALUE)
+			south_dist++;
+	}
+#if 0
+	if (west != NULL)
+	{
+		west_dist = west->distanceTo(target);
+		if (west_dist != MAX_VALUE)
+			west_dist++;
+	}
+#endif
+
+	int min_dist = north_dist;
+	if (min_dist > east_dist)
+		min_dist = east_dist;
+	if (min_dist > south_dist)
+		min_dist = south_dist;
+	if (min_dist > west_dist)
+		min_dist = west_dist;
+
+	return min_dist;
 }

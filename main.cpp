@@ -7,13 +7,15 @@
 
 using namespace std;
 
+Tile *map;
+
 /* brief: 	Roll initiative for all players and monsters involved, then have each perform an action
 	  	on their turn.
 	  	Currently only supports melee attacks against random opponents.
    param: 	players - vector of pointers to players and monsters involved in encounter.
    returns: 	nothing
 */
-void run_encounter(std::vector <combatant*> players, Tile *map)
+void run_encounter(std::vector <combatant*> players)
 {
 	node * active_player = new node();		// Create initialisation node for players.
 	int i = 0;					// Initialise counter to 0.
@@ -49,7 +51,7 @@ int main() {
 
 	players = interpret_nodes("./stats/encounter1.enctr");
 
-	Tile *map = new Tile(125,35);
+	map = new Tile(125,35);
 
 	// Range based for loop. Print stats of each player to screen.
 	// Also adds players to map.
@@ -62,12 +64,26 @@ int main() {
 	map->print_map();
 
 	std::cout << std::endl;
-	Tile* test = map->get(players[0]);
-	test->clearContents();
-	map->print_map();
+
+	Tile* test_map = new Tile(4,2);
+
+	test_map->print_map();
+
+	Tile* test1 = test_map->get(0,0);
+	Tile* test2 = test_map->get(3,0);
+
+	std::cout << std::endl;
+
+	test1->print_map();
+
+	std::cout << std::endl;
+
+	std::cout << "distance: " << test1->distanceTo(test2) << endl;
 
 	// Loop for combat.
-	run_encounter(players, map);
+	run_encounter(players);
+
+	delete(map);
 
     	return 0;
 };

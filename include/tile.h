@@ -4,6 +4,8 @@
 #include "object.h"
 #include "pathfinding.h"
 
+#define MAX_VALUE 32767
+
 class Tile {
 private:
 	object* contents;
@@ -26,6 +28,8 @@ public:
 	Tile* get(int x, int y);
 	// Get specific tile by contents.
 	Tile* get(object *toFind);
+	// Finds distance to another tile.
+	int distanceTo(Tile *target);
 
 	// Getters/setters
 	object* getContents() { return contents; };

@@ -303,3 +303,13 @@ life_status combatant::take_damage(int dam, type damage_type)
 
 	return status;
 }
+
+
+int combatant::moveToFoe(combatant foe)
+{
+	location foeLocation = foe.coordinates;
+
+	//map->get(foe);
+
+	return 0;	
+}
