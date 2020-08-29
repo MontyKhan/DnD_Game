@@ -19,40 +19,7 @@ Tile::Tile(int x, int y)
 	this->south = NULL;
 	this->west = NULL;
 	this->contents = NULL;
-
-#if 0
-	// Create x (tile) and y (new_line) iterators.
-	Tile *new_line = this;
-	Tile *tile;
-
-	// Fill in map one line at a time.
-	for (int i = 0; i < y; ++i)
-	{
-		tile = new_line;
-		for (int j = 1; j < x; ++j)
-		{
-			tile->east = new Tile();
-			tile->east->west = tile;
-			if (tile->south != NULL)
-			{
-				tile->east->south = tile->south->east;
-			}
-			if (tile->north != NULL)
-			{
-				tile->east->north = tile->north->east;
-			}
-			tile = tile->east;
-		}
-		
-		// If last line, don't add new south.
-		// May be better solution for this.
-		if (i < (y - 1))
-		{
-			new_line->south = new Tile();
-			new_line = new_line->south;
-		}
-	}
-#endif
+	this->coordinates = location(0,0,0);
 
 	// Create first row
 	Tile* x_iter = this;
@@ -60,6 +27,7 @@ Tile::Tile(int x, int y)
 	{
 		Tile* new_tile = new Tile();
 		new_tile->west = x_iter;			// All else will be NULL by default.
+		new_tile->setCoordinates(i,0,0);
 		x_iter->east = new_tile;
 		x_iter = x_iter->east;
 	}
@@ -74,9 +42,10 @@ Tile::Tile(int x, int y)
 		prev_y->south = y_iter;
 
 		Tile* x_iter = y_iter;
-		for (int i = 1; i < x; i++)
+		for (int i = 0; i < x; i++)
 		{
 			Tile* new_tile = new Tile();
+			new_tile->setCoordinates(i,j,0);
 			new_tile->west = x_iter;
 			new_tile->north = prev_y->east;
 			x_iter->east = new_tile;
@@ -210,8 +179,18 @@ int Tile::setContents(object* Contents)
 	// Don't want to accidentally clear occupied tile, so check if empty first.
 	if (contents == NULL)
 	{
-		contents = Contents;
-		return 0;
+		std::cout << "test1" << endl;
+		if (Contents->getCoordinates() == this->coordinates)
+		{
+			this->contents = Contents;			// Assign contents to tile
+			this->contents->setParent(this);		// Set parent as the current tile.
+			return 0;
+		}
+		else
+		{
+			cout << "error" << endl;
+			return -1;
+		}
 	}
 	// If tile occupied, return -1 and preserve original contents.
 	else

@@ -9,6 +9,7 @@
 class Tile {
 private:
 	object* contents;
+	location coordinates;
 	Tile* north;
 	Tile* east;
 	Tile* south;
@@ -34,6 +35,9 @@ public:
 	// Getters/setters
 	object* getContents() { return contents; };
 	int setContents(object* Contents);			// Defined in file
+	location getCoordinates() { return coordinates; };
+	int setCoordinates(int x, int y, int z) { coordinates = location(x,y,z); return 0; };
+	int setCoordinates(location Coordinates) { coordinates = Coordinates; return 0; };
 	object* clearContents() { contents = NULL; return contents; };
 	Tile* getNorth() { return north; };
 	int setNorth(Tile* North) { north = North; };

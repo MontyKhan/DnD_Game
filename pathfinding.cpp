@@ -19,6 +19,16 @@ std::ostream & operator << (std::ostream &out, const location &l)
 	return out;
 }
 
+/* brief:	Compares two sets of location data, returns True if equal.
+   param:	&rhs - First location to compare.
+		&lhs - Second location to compare.
+   returns:	True if equal, false otherwise.
+*/
+bool operator == (const location &rhs, const location &lhs)
+{
+	return ((rhs.x == lhs.x) && (rhs.y == lhs.y) && (rhs.z == lhs.z));
+}
+
 /* brief:	Sets values for x, y and z based on a string.
    param:	str, in the format %,%,%
    returns:	Nothing, as constructor.
