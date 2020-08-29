@@ -3,6 +3,7 @@
 #include <iostream>
 #include <exception>
 #include <stdlib.h>
+#include <sstream>
 
 
 /* brief:	Constructor for creating rectangle shaped maps.
@@ -23,7 +24,7 @@ Tile::Tile(int x, int y)
 
 	// Create first row
 	Tile* x_iter = this;
-	for (int i = 1; i < x; i++)
+	for (int i = 0; i < x; i++)
 	{
 		Tile* new_tile = new Tile();
 		new_tile->west = x_iter;			// All else will be NULL by default.
@@ -45,10 +46,10 @@ Tile::Tile(int x, int y)
 		for (int i = 0; i < x; i++)
 		{
 			Tile* new_tile = new Tile();
-			new_tile->setCoordinates(i,j,0);
 			new_tile->west = x_iter;
 			new_tile->north = prev_y->east;
 			x_iter->east = new_tile;
+			x_iter->setCoordinates(i,j,0);
 			
 			prev_y = prev_y->east;
 			x_iter = x_iter->east;
@@ -176,26 +177,37 @@ Tile* Tile::get(object* toFind)
 */
 int Tile::setContents(object* Contents)
 {
-	// Don't want to accidentally clear occupied tile, so check if empty first.
-	if (contents == NULL)
+	try
 	{
-		std::cout << "test1" << endl;
-		if (Contents->getCoordinates() == this->coordinates)
+		// Don't want to accidentally clear occupied tile, so check if empty first.
+		if (contents == NULL)
 		{
-			this->contents = Contents;			// Assign contents to tile
-			this->contents->setParent(this);		// Set parent as the current tile.
-			return 0;
+			if (Contents->getCoordinates() == this->coordinates)
+			{
+				this->contents = Contents;			// Assign contents to tile
+				this->contents->setParent(this);		// Set parent as the current tile.
+				return 0;
+			}
+			else
+			{	
+				std::stringstream err;
+				std::cout << "test1" << endl;
+				err << "Coordinates do not match! (" << Contents->getCoordinates() << " and " << this->coordinates << ")";
+				std::cout << "test2" << endl;
+				std::string str_err = err.str();
+				throw str_err;
+			}
 		}
+		// If tile occupied, return -1 and preserve original contents.
 		else
 		{
-			cout << "error" << endl;
-			return -1;
+			throw std::string("Tile occupied!");
 		}
 	}
-	// If tile occupied, return -1 and preserve original contents.
-	else
+	catch (const std::string msg)
 	{
-		return -1;
+		std::cerr << msg << std::endl;
+		exit (EXIT_FAILURE);
 	}
 }
 
