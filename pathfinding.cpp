@@ -15,7 +15,7 @@ using namespace std;
 */
 std::ostream & operator << (std::ostream &out, const location &l)
 {
-	out << l.x << ", " << l.y << ", " << l.z;
+	out << "(" << l.x << ", " << l.y << ", " << l.z << ")";
 	return out;
 }
 
@@ -42,6 +42,18 @@ location::location(std::string str)
 	x = stoi(vals[0]);
 	y = stoi(vals[1]);
 	z = stoi(vals[2]);
+}
+
+float find_euc(location rhs, location lhs)
+{
+	std::cout << "locations: " << rhs << "), (" << lhs << std::endl;
+	float x_d = abs(float(rhs.x) - float(lhs.x));
+	float y_d = abs(float(rhs.y) - float(lhs.y));
+	float z_d = abs(float(rhs.z) - float(lhs.z));
+
+	float d = sqrt((x_d*x_d) + (y_d*y_d) + (z_d*z_d));
+
+	return d;
 }
 
 /* brief:	Convert three sets of distances to one.

@@ -34,8 +34,10 @@ public:
 	// Friend functions
 	friend std::ostream & operator << (std::ostream &out, const location &l);
 	friend bool operator == (const location &rhs, const location &lhs);
+	friend float find_euc(location rhs, location lhs);
 };
 
 int find_euc(int x, int y, int h);	// Find euclidean distance between two points.
+float find_euc(location rhs, location lhs);
 
 #endif

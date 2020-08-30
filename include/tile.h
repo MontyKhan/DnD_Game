@@ -31,6 +31,7 @@ public:
 	Tile* get(object *toFind);
 	// Finds distance to another tile.
 	int distanceTo(Tile *target);
+	int findMinimumPath(Tile* target, int hops);
 
 	// Getters/setters
 	object* getContents() { return contents; };

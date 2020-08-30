@@ -70,7 +70,9 @@ int main() {
 	test_map->print_map();
 
 	Tile* test1 = test_map->get(0,0);
+	std::cout << "test1: " << test1->getEast()->getCoordinates() << std::endl;
 	Tile* test2 = test_map->get(0,2);
+	std::cout << "test2: " << test2->getCoordinates() << std::endl;
 
 	std::cout << std::endl;
 
@@ -78,7 +80,7 @@ int main() {
 
 	std::cout << std::endl;
 
-	std::cout << "distance: " << test1->distanceTo(test2) << endl;
+	std::cout << "distance: " << test1->findMinimumPath(test2, 0) << endl;
 
 	// Loop for combat.
 	run_encounter(players);
