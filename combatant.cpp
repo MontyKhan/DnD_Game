@@ -189,8 +189,37 @@ int combatant::take_turn(node* self)
 		target = target->next;
 		if (D == min)
 		{
-			// Make attack against target. If attack kills them, result is set to dead. Else, alive.
-			life_status result = self->player->make_attack(*(target->player));
+			std::vector<Tile*> free_cells = target->player->getFreeNeighbours();
+			int min_dist = MAX_VALUE;
+			Tile* new_location;
+			bool reached = false;
+			for (Tile* T : free_cells)
+			{
+				int dist = this->parent->findMinimumPath(T);
+				if (dist < min_dist)
+				{
+					min_dist = dist;
+
+					if (min_dist <= this->speed)
+					{
+						new_location = T;
+						reached = true;
+					}
+					else
+						new_location = parent->findMidPoint(T, this->speed);
+				}
+			}
+
+			// Select new tile to move to.
+			moveTo(new_location);
+			
+			// If next to target, attack. Otherwise, do nothing but print message.
+			life_status result = alive;
+			if (reached)
+				// Make attack against target. If attack kills them, result is set to dead. Else, alive.
+				result = self->player->make_attack(*(target->player));
+			else
+				cout << this->name << " moved to " << this->coordinates << "." << endl;
 
 			// If target is killed, remove them from the list and decrement the number of potential targets.
 			if (result == dead)
@@ -304,12 +333,16 @@ life_status combatant::take_damage(int dam, type damage_type)
 	return status;
 }
 
-
-int combatant::moveToFoe(combatant foe)
+/* brief:	Move to a specified tile.
+   param:	The tile to be moved to.
+   returns:	A 0 on a success.
+*/
+int combatant::moveTo(Tile* target)
 {
-	location foeLocation = foe.coordinates;
-
-	//map->get(foe);
+	Tile* tmp = this->parent;
+	this->coordinates = target->getCoordinates();
+	if (target->setContents(this) == 0)
+		tmp->clearContents();
 
 	return 0;	
 }

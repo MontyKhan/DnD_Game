@@ -4,8 +4,6 @@
 #include "object.h"
 #include "pathfinding.h"
 
-#define MAX_VALUE 32767
-
 class Tile {
 private:
 	object* contents;
@@ -32,6 +30,8 @@ public:
 	// Finds distance to another tile.
 	int findMinimumPath(Tile* target);			// Accessor for when calling within code.
 	int findMinimumPath(Tile* target, int hops);		// Recursive function.
+	// Find closest point to target that can be reached in a set number of hops.
+	Tile* findMidPoint(Tile* target, int moves);
 
 	// Getters/setters
 	object* getContents() { return contents; };
@@ -48,6 +48,9 @@ public:
 	int setSouth(Tile* South) { south = South; };
 	Tile* getWest() { return west; };
 	int setWest(Tile* West) { west = West; };
+
+	// Friend functions
+	friend std::vector<Tile*> object::getFreeNeighbours();
 };
 
 #endif

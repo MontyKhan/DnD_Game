@@ -3,6 +3,9 @@
 
 #include "pathfinding.h"
 #include <string>
+#include <vector>
+
+#define MAX_VALUE 32767
 
 class Tile;
 
@@ -15,6 +18,9 @@ public:
 	// Constructors
 	object() : name(""), coordinates(location(0,0,0)), parent(NULL) {};
 	object(location Coordinates) : name(""), coordinates(Coordinates), parent(NULL) {};
+
+	// Get a list of vacant neighbouring tiles.
+	std::vector<Tile*> getFreeNeighbours();
 
 	// Getters/setters
 	virtual std::string getName() { return name; };

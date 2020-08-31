@@ -276,3 +276,51 @@ int Tile::findMinimumPath(Tile* target, int hops)
 	hops = next_tile->findMinimumPath(target, hops) + 1;
 	return hops;
 }
+
+/* brief: 	Find the closest point on the path to the target allowed by the speed.
+   param:	target - The target you're trying to move to (but can't reach).
+		moves - The maximum distance you're allowed to travel.
+   returns:	The closest tile to the target you can reach.
+*/
+Tile* Tile::findMidPoint(Tile* target, int moves)
+{
+	// Check if any of neighbouring tiles are the target.
+	if (this == target)
+		return this;
+	if (moves = 0)
+		return this;
+	
+	// By default, set the minimum distance to an arbitarily large value. Will be overriden if a path is found.
+	float north_dist = MAX_VALUE, east_dist = MAX_VALUE, south_dist = MAX_VALUE, west_dist = MAX_VALUE;
+	if (this->north != NULL)
+		north_dist = find_euc(this->north->coordinates, target->coordinates);
+	if (this->east != NULL)
+		east_dist = find_euc(this->east->coordinates, target->coordinates);
+	if (this->south != NULL)
+		south_dist = find_euc(this->south->coordinates, target->coordinates);
+	if (this->west != NULL)
+		west_dist = find_euc(this->west->coordinates, target->coordinates);
+
+	// Check if any of the neighbouring tiles are closer to the target.
+	float min_dist = north_dist;
+	Tile* next_tile = this->north;
+	if (east_dist < min_dist)
+	{
+		min_dist = east_dist;
+		next_tile = this->east;
+	}
+	if (south_dist < min_dist)
+	{
+		min_dist = south_dist;
+		next_tile = this->south;
+	}
+	if (west_dist < min_dist)
+	{
+		min_dist = west_dist;
+		next_tile = this->west;
+	}
+
+	// Recursive function, keep going until remaining steps is zero or you reach the target.
+	Tile* midpoint = next_tile->findMidPoint(target,--moves);
+	return midpoint;
+}

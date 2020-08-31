@@ -61,7 +61,7 @@ public:
 	// Reduce hp by dam, specific to damage type.
 	life_status take_damage(int dam, type damage_type);
 	// Move to a tile next to another combatant, so they can attack.
-	virtual int moveToFoe(combatant foe);
+	virtual int moveTo(Tile* target);
 
 	// Getter/Setters
 	std::string getName() { return name; };				// Name
