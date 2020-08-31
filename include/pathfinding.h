@@ -32,9 +32,11 @@ public:
 	void setZ(int Z) { z = Z; };
 
 	// Friend functions
-	friend std::ostream & operator << (std::ostream &out, const location &l);
-	friend bool operator == (const location &rhs, const location &lhs);
-	friend float find_euc(location rhs, location lhs);
+	friend std::ostream & operator << (std::ostream &out, const location &l);	// Print location
+	friend bool operator == (const location &rhs, const location &lhs);		// Compare locations
+	friend location operator + (const location &rhs, const location &lhs);		// Sum locations
+	friend location operator - (const location &rhs, const location &lhs);		// Subtract locations
+	friend float find_euc(location rhs, location lhs);				// Find distance between locations
 };
 
 int find_euc(int x, int y, int h);	// Find euclidean distance between two points.

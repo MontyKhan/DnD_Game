@@ -29,6 +29,42 @@ bool operator == (const location &rhs, const location &lhs)
 	return ((rhs.x == lhs.x) && (rhs.y == lhs.y) && (rhs.z == lhs.z));
 }
 
+/* brief:	Add two sets of location data. To the right and up are considered positive directions.
+		Down and left are considered negative.
+   param:	&rhs - First location to sum.
+		&lhs - Second location to sum.
+   returns:	The sum of the two locations.
+*/
+location operator + (const location &rhs, const location &lhs)
+{
+	location sum;
+
+	// Sum all components
+	sum.x = rhs.x + lhs.x;
+	sum.y = rhs.y + lhs.y;
+	sum.z = rhs.z + lhs.z;
+
+	return sum;
+}
+
+/* brief:	Subtact one location datum from another. To the right and up are considered positive directions.
+		Down and left are considered negative.
+   param:	&rhs - Location to subtract from.
+		&lhs - Location to subtract.
+   returns:	The sum of the two locations.
+*/
+location operator - (const location &rhs, const location &lhs)
+{
+	location sum;
+
+	// Sum all components
+	sum.x = rhs.x - lhs.x;
+	sum.y = rhs.y - lhs.y;
+	sum.z = rhs.z - lhs.z;
+
+	return sum;
+}
+
 /* brief:	Sets values for x, y and z based on a string.
    param:	str, in the format %,%,%
    returns:	Nothing, as constructor.
