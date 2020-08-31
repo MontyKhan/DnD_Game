@@ -10,8 +10,10 @@ class Player : public combatant
 	using combatant::combatant;
 
 public:
+	// Make move, then attack.
 	int take_turn(node* self);
-	life_status make_attack(combatant & target);
+	// Deal damage to target, then check if they survive.
+	life_status make_attack(object & target);
 };
 
 #endif

@@ -5,6 +5,37 @@
 
 using namespace std;
 
+/* brief:	Print contents of linked list, completing one lap.
+   param:	None.
+   returns:	Nothing.
+*/
+void node::print()
+{
+	node* self = this;
+	
+	do {
+		cout << self->player->getName() << " -> ";
+		self = self->next;
+	} while (self != this);
+}
+
+/* brief:	Remove a node from a linked list.
+		Member of node class.
+   param:	target - A combatant included in the list
+   returns:	Nothing.
+*/
+void node::remove(object * target)
+{
+	node* active_node = this;
+
+	while (active_node->player != target)
+	{
+		active_node = active_node->next;
+	}
+
+	remove_from_list(active_node);
+}
+
 /* brief:	Declare CSV_Reader object, and load data from .csv file at filepath into a vector of vectors of strings.
    param:	filepath - A relative address pointing to the .csv file.
    returns:	A vector of vectors of strings containing contents of file.
@@ -98,7 +129,7 @@ void print_vector(vector <int> input)
 		player - The player value for the new node.
    returns:	Nothing.
 */
-void add_to_list(node * head, int initiative, combatant* player)
+void add_to_list(node * head, int initiative, object* player)
 {
 	node * entry = new node();			// Declare empty node, entry.
 
@@ -141,9 +172,9 @@ void remove_from_list(node * target)
 		new_initiative - Value for new initiative stat for the new node.
    returns:	Nothing.
 */
-void change_head(node * head, combatant* new_player, int new_initiative)
+void change_head(node * head, object* new_player, int new_initiative)
 {
-	combatant* prev_player = head->player;			// Set prev_player to current head.
+	object* prev_player = head->player;			// Set prev_player to current head.
 	int prev_roll = head->initiative;			// Set prev_roll to initiative value of current head.
 				
 	head->player = new_player;				// Set player value of current head to desired new value.
@@ -156,7 +187,7 @@ void change_head(node * head, combatant* new_player, int new_initiative)
    param: players - A vector containing pointers to all monsters and players involved via downcasting.
    returns: 	Pointer to the head of the new circular doubly linked list.
 */
-node * initiative_round(vector <combatant*> players)
+node * initiative_round(vector <object*> players)
 {
 	node * head = new node();				// Declare new empty node for head of list.
 	node * iterator = head;					// Declare new node for use as an iterator, pointing to head.
