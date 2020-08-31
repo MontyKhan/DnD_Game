@@ -21,12 +21,14 @@ Tile::Tile(int x, int y)
 	this->west = NULL;
 	this->contents = NULL;
 	this->coordinates = location(0,0,0);
+	this->origin = this;
 
 	// Create first row
 	Tile* x_iter = this;
 	for (int i = 0; i < x; i++)
 	{
 		Tile* new_tile = new Tile();
+		new_tile->origin = this->origin;
 		new_tile->west = x_iter;			// All else will be NULL by default.
 		new_tile->setCoordinates(i+1,0,0);
 		x_iter->east = new_tile;
@@ -47,6 +49,7 @@ Tile::Tile(int x, int y)
 		for (int i = 0; i < x; i++)
 		{
 			Tile* new_tile = new Tile();
+			new_tile->origin = this->origin;
 			new_tile->west = x_iter;
 			new_tile->north = prev_y->east;
 			if (prev_y->east != NULL)
@@ -123,7 +126,7 @@ void Tile::print_from()
 */
 Tile* Tile::get(int x, int y)
 {
-	Tile * tile = this;
+	Tile * tile = origin;
 	try
 	{
 		// Iterate down column.

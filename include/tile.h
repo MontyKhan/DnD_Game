@@ -12,10 +12,11 @@ private:
 	Tile* east;
 	Tile* south;
 	Tile* west;
+	Tile* origin;
 public:
 	// Constructors
-	Tile() : contents(NULL), north(NULL), east(NULL), south(NULL), west(NULL) {};	// Default
-	Tile(int x, int y);								// Rectangle
+	Tile() : contents(NULL), north(NULL), east(NULL), south(NULL), west(NULL), origin(NULL) {};	// Default
+	Tile(int x, int y);										// Rectangle
 
 	// Print entire tile grid to screen, each tile represented by "x"
 	void print_map();
