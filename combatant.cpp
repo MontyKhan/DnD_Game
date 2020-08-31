@@ -65,9 +65,6 @@ combatant::combatant(xml_node<> *root)
 
 		if (str_name == "weapon")					// If has grandchildren, weapon.
 		{
-			// interpret_node(child);
-			//combatant new_player = combatant(child);
-			//players.push_back(new_player);
 			weapons.push_back(weapon_type(child));
 		}
 		else if (str_name == "coordinates")

@@ -29,6 +29,16 @@ bool operator == (const location &rhs, const location &lhs)
 	return ((rhs.x == lhs.x) && (rhs.y == lhs.y) && (rhs.z == lhs.z));
 }
 
+/* brief:	Compare two sets of location data, returns False is equal.
+   param:	&rhs - First location to compare.
+		&lhs - Second location to compare.
+   returns:	True if unequal, false otherwise.
+*/
+bool operator != (const location &rhs, const location &lhs)
+{
+	return !(rhs == lhs);
+}
+
 /* brief:	Add two sets of location data. To the right and up are considered positive directions.
 		Down and left are considered negative.
    param:	&rhs - First location to sum.

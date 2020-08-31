@@ -60,7 +60,7 @@ public:
 	life_status take_damage(int dam);
 	// Reduce hp by dam, specific to damage type.
 	life_status take_damage(int dam, type damage_type);
-	// Move to a tile next to another combatant, so they can attack.
+	// Move to a tile next to another tile.
 	virtual int moveTo(Tile* target);
 
 	// Getter/Setters

@@ -290,7 +290,7 @@ Tile* Tile::findMidPoint(Tile* target, int moves)
 	// Check if any of neighbouring tiles are the target.
 	if (this == target)
 		return this;
-	if (moves = 0)
+	if (moves == 0)
 		return this;
 	
 	// By default, set the minimum distance to an arbitarily large value. Will be overriden if a path is found.

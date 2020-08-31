@@ -33,7 +33,8 @@ public:
 
 	// Friend functions
 	friend std::ostream & operator << (std::ostream &out, const location &l);	// Print location
-	friend bool operator == (const location &rhs, const location &lhs);		// Compare locations
+	friend bool operator == (const location &rhs, const location &lhs);		// Check for equality.
+	friend bool operator != (const location &rhs, const location &lhs);		// Check for inequality.
 	friend location operator + (const location &rhs, const location &lhs);		// Sum locations
 	friend location operator - (const location &rhs, const location &lhs);		// Subtract locations
 	friend float find_euc(location rhs, location lhs);				// Find distance between locations
