@@ -49,6 +49,8 @@ Tile::Tile(int x, int y)
 			Tile* new_tile = new Tile();
 			new_tile->west = x_iter;
 			new_tile->north = prev_y->east;
+			if (prev_y->east != NULL)
+				prev_y->east->south = new_tile;
 			new_tile->setCoordinates(i+1,j,0);
 			x_iter->east = new_tile;
 			//x_iter->setCoordinates(i,j,0);
@@ -100,8 +102,7 @@ void Tile::print_from()
 	while (tile != NULL)
 	{
 		if (tile->contents == NULL)
-			//std::cout << "x";
-			std::cout << tile->coordinates;
+			std::cout << "x";
 		else
 			std::cout << "p";
 		tile = tile->east;
@@ -214,9 +215,24 @@ int Tile::setContents(object* Contents)
 	}
 }
 
+/* brief:	Accessor function for findMinimumPath without 0 as a magic number.
+   param:	target - The tile you are measuring the distance to.
+   returns:	The number of steps required.
+*/
+int Tile::findMinimumPath(Tile* target)
+{
+	return findMinimumPath(target, 0);
+}
+
+/* brief:	Returns the number of moves necessary to move to the target tile.
+		Does not account for obstacles, improve to Djikstra's or A* later.
+   param:	target - The tile you are measuring the distance to.
+   		hops - The number of moves required to move to the target. Set to 0 when first calling.
+   returns:	The number of steps required.
+*/
 int Tile::findMinimumPath(Tile* target, int hops)
 {
-	// Check if any of neighbouring tiles.
+	// Check if any of neighbouring tiles are the target.
 	if (this->north == target)
 		return 1;
 	else if (this->east == target)
@@ -226,7 +242,8 @@ int Tile::findMinimumPath(Tile* target, int hops)
 	else if (this->west == target)
 		return 1;
 	
-	float north_dist, east_dist, south_dist, west_dist = MAX_VALUE;
+	// By default, set the minimum distance to an arbitarily large value. Will be overriden if a path is found.
+	float north_dist = MAX_VALUE, east_dist = MAX_VALUE, south_dist = MAX_VALUE, west_dist = MAX_VALUE;
 	if (this->north != NULL)
 		north_dist = find_euc(this->north->coordinates, target->coordinates);
 	if (this->east != NULL)
@@ -236,6 +253,7 @@ int Tile::findMinimumPath(Tile* target, int hops)
 	if (this->west != NULL)
 		west_dist = find_euc(this->west->coordinates, target->coordinates);
 
+	// Check if any of the neighbouring tiles are closer to the target.
 	float min_dist = north_dist;
 	Tile* next_tile = this->north;
 	if (east_dist < min_dist)
@@ -254,64 +272,7 @@ int Tile::findMinimumPath(Tile* target, int hops)
 		next_tile = this->west;
 	}
 
-	int distance = next_tile->findMinimumPath(target, hops) + 1;
-	std::cout << "distance: " << distance << std::endl;
-	return distance;
-}
-
-int Tile::distanceTo(Tile* target)
-{
-	// Check if any of neighbouring tiles.
-	if (this->north == target)
-		return 1;
-	else if (this->east == target)
-		return 1;
-	else if (this->south == target)
-		return 1;
-	else if (this->west == target)
-		return 1;
-
-	// Assign to arbitarily large value.
-	int north_dist, east_dist, south_dist, west_dist = MAX_VALUE;
-	// Recursive function call to find otherwise.
-	std::cout << "North" << std::endl;
-	if (north != NULL)
-	{
-		north_dist = north->distanceTo(target);
-		if (north_dist != MAX_VALUE)
-			north_dist++;
-	}
-	std::cout << "East" << std::endl;
-	if (east != NULL)
-	{
-		east_dist = east->distanceTo(target);
-		if (east_dist != MAX_VALUE)
-			east_dist++;
-	}
-	std::cout << "South" << std::endl;
-	if (south != NULL)
-	{
-		south_dist = south->distanceTo(target);
-		if (south_dist != MAX_VALUE)
-			south_dist++;
-	}
-#if 0
-	std::cout << "West" << std::endl;
-	if (west != NULL)
-	{
-		west_dist = west->distanceTo(target);
-		if (west_dist != MAX_VALUE)
-			west_dist++;
-	}
-#endif
-
-	int min_dist = north_dist;
-	if (min_dist > east_dist)
-		min_dist = east_dist;
-	if (min_dist > south_dist)
-		min_dist = south_dist;
-	if (min_dist > west_dist)
-		min_dist = west_dist;
-
-	return min_dist;
+	// Recursive function, check number of hops required from next closest step.
+	hops = next_tile->findMinimumPath(target, hops) + 1;
+	return hops;
 }

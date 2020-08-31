@@ -30,8 +30,8 @@ public:
 	// Get specific tile by contents.
 	Tile* get(object *toFind);
 	// Finds distance to another tile.
-	int distanceTo(Tile *target);
-	int findMinimumPath(Tile* target, int hops);
+	int findMinimumPath(Tile* target);			// Accessor for when calling within code.
+	int findMinimumPath(Tile* target, int hops);		// Recursive function.
 
 	// Getters/setters
 	object* getContents() { return contents; };

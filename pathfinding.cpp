@@ -46,7 +46,6 @@ location::location(std::string str)
 
 float find_euc(location rhs, location lhs)
 {
-	std::cout << "locations: " << rhs << "), (" << lhs << std::endl;
 	float x_d = abs(float(rhs.x) - float(lhs.x));
 	float y_d = abs(float(rhs.y) - float(lhs.y));
 	float z_d = abs(float(rhs.z) - float(lhs.z));
