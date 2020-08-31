@@ -175,7 +175,7 @@ int combatant::take_turn(node* self)
 	for (int i = 0; i < potential_targets; i++)
 	{
 		target = target->next;
-		distances.push_back(this->coordinates.find_distance(target->player->coordinates));
+		distances.push_back(this->coordinates.find_distance(target->player->getCoordinates()));
 	}
 
 	// Find minimum distance in list, i.e. closest opponent.
@@ -224,6 +224,7 @@ int combatant::take_turn(node* self)
 				remove_from_list(target);
 				potential_targets--;
 			}
+		break;
 		}
 	}
 
@@ -235,7 +236,7 @@ int combatant::take_turn(node* self)
    param:	target - Passed by reference. Combatant for the attacks to be made against.
    return:	status of target after attack, i.e. dead or alive.
 */
-life_status combatant::make_attack(combatant & target)
+life_status combatant::make_attack(object & target)
 {
 	int wc = 0;							// Weapon choice
 
@@ -268,7 +269,7 @@ life_status combatant::make_attack(combatant & target)
 		target - Passed by reference. Combatant for the attacks to be made against.
    return:	status of target after attack, i.e. dead or alive.
 */
-life_status combatant::make_attack(weapon_type weapon, combatant & target)
+life_status combatant::make_attack(weapon_type weapon, object & target)
 {
 	int attack_roll = make_roll(weapon.getAttack());		// Initialise attack_roll to randomly generated value in dice range.
 

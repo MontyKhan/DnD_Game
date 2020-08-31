@@ -20,8 +20,6 @@
 
 using namespace rapidxml;
 
-enum life_status {alive, death_1, death_2, dead};
-
 class node;				// Forward declaration for take_turn(node* self) function.
 
 // Class for each combatant in an encounter
@@ -53,9 +51,9 @@ public:
 	// Move and then make attack
 	virtual int take_turn(node* self);
 	// Roll both attack and damage against a target.
-	virtual life_status make_attack(combatant & target);
+	virtual life_status make_attack(object & target);
 	// Roll both attack and damage against a target, supplying a weapon.
-	life_status make_attack(weapon_type weapon, combatant & target);	// Pass by reference
+	life_status make_attack(weapon_type weapon, object & target);	// Pass by reference
 	// Reduce hp by dam
 	life_status take_damage(int dam);
 	// Reduce hp by dam, specific to damage type.

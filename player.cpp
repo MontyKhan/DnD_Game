@@ -10,43 +10,45 @@
 */
 int Player::take_turn(node* self)
 {
-	// Set target to start at attacker (origin).
-	node * target = self;
+	cout << "Currently at: " << this->coordinates << endl;
+	cout << "Move by ";
+	std::string move_str;
+	cin >> move_str;
+	
+	location move_vector(move_str);
+	location new_location = this->coordinates + move_vector;
+	if (new_location != this->coordinates)
+	{
+		Tile* new_tile = this->parent->get(new_location);
+		moveTo(this->parent->findMidPoint(new_tile, this->speed));
+	}
+	cout << "Now at " << this->coordinates << endl;
 
-	cout << "Select target:\t";
-
-	// Count other combatants in initiative list.
+	// Count other combatants in neighbouring tiles.
 	int potential_targets = 0;
-	while (target->next != self) 
+	std::vector<Tile*> adjacent_foes = this->getOccupiedNeighbours();
+
+	if (adjacent_foes.size() > 0)
 	{
-		target = target->next;
-		cout << target->player->getName() << " (" << ++potential_targets << ")" << endl << "\t\t";
-	}
-	cout << endl;
+		cout << "Select target:\t";
+		for(Tile* T : adjacent_foes) 
+		{
+			cout << T->getContents()->getName() << " (" << ++potential_targets << ")" << endl << "\t\t";
+		}
 
-	// Reset target to origin.
-	target = self;
+		// Ask user for which enemy to attack.
+		int tc;
+		cin >> tc;
 
-	// Select random number between 1 and the number of enemies.
-	int target_selector;
+		// Make attack against target. If attack kills them, result is set to dead. Else, alive.
+		life_status result = self->player->make_attack(*(adjacent_foes[tc-1]->getContents()));
 
-	cin >> target_selector;
-
-	// Progress the head of the circular list ahead by target_selector.
-	// i.e. 1 means go to next. Cannot go completely around the list.
-	for (int i = 0; i < target_selector; i++)
-	{
-		target = target->next;
-	}
-
-	// Make attack against target. If attack kills them, result is set to dead. Else, alive.
-	life_status result = self->player->make_attack(*(target->player));
-
-	// If target is killed, remove them from the list and decrement the number of potential targets.
-	if (result == dead)
-	{
-		remove_from_list(target);
-		potential_targets--;
+		// If target is killed, remove them from the list and decrement the number of potential targets.
+		if (result == dead)
+		{
+			self->remove(adjacent_foes[tc-1]->getContents());
+			potential_targets--;
+		}
 	}
 
 	return 0;
@@ -57,7 +59,7 @@ int Player::take_turn(node* self)
    param: 	Address of target, called by reference.
    returns:	The status of the target.
 */
-life_status Player::make_attack(combatant & target)
+life_status Player::make_attack(object & target)
 {
 	std::string input;
 	cout << endl << "Please give number of weapon to use: ";

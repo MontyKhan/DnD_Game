@@ -52,6 +52,7 @@ public:
 
 	// Friend functions
 	friend std::vector<Tile*> object::getFreeNeighbours();
+	friend std::vector<Tile*> object::getOccupiedNeighbours();
 };
 
 #endif
