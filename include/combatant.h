@@ -7,6 +7,7 @@
 #include <vector>
 #include "weapon_type.h"
 #include "pathfinding.h"
+#include "object.h"
 #include "rapidxml/rapidxml_utils.hpp"
 
 #define NAME_VAR 	0
@@ -19,20 +20,16 @@
 
 using namespace rapidxml;
 
-enum life_status {alive, death_1, death_2, dead};
-
 class node;				// Forward declaration for take_turn(node* self) function.
 
 // Class for each combatant in an encounter
-class combatant {
-//private:
+class combatant : public object {
 protected:
 	std::string name;
 	int hp;
 	int ac;
 	int speed;
 	roll init;
-	location coordinates;
 	std::vector<weapon_type> weapons;
 	life_status status;
 
@@ -45,7 +42,7 @@ public:
 	combatant(rapidxml::xml_node<> *node);
 	// Default constructor
 	combatant() 
-		: name(""), hp(0), ac(0), speed(0), init(roll()), coordinates(location()), status(dead) {};
+		: name(""), hp(0), ac(0), speed(0), init(roll()), object(location()), status(dead) {};
 
 	// Roll a dice
 	int make_roll(roll x);
@@ -54,13 +51,15 @@ public:
 	// Move and then make attack
 	virtual int take_turn(node* self);
 	// Roll both attack and damage against a target.
-	virtual life_status make_attack(combatant & target);
+	virtual life_status make_attack(object & target);
 	// Roll both attack and damage against a target, supplying a weapon.
-	life_status make_attack(weapon_type weapon, combatant & target);	// Pass by reference
+	life_status make_attack(weapon_type weapon, object & target);	// Pass by reference
 	// Reduce hp by dam
 	life_status take_damage(int dam);
 	// Reduce hp by dam, specific to damage type.
 	life_status take_damage(int dam, type damage_type);
+	// Move to a tile next to another tile.
+	virtual int moveTo(Tile* target);
 
 	// Getter/Setters
 	std::string getName() { return name; };				// Name

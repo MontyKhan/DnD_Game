@@ -4,8 +4,11 @@
 #include "include/tools.h"
 #include "include/load_file.h"
 #include "include/monster.h"
+#include "include/tile.h"
 
 using namespace std;
+
+Tile *map;
 
 /* brief: 	Roll initiative for all players and monsters involved, then have each perform an action
 	  	on their turn.
@@ -13,7 +16,7 @@ using namespace std;
    param: 	players - vector of pointers to players and monsters involved in encounter.
    returns: 	nothing
 */
-void run_encounter(std::vector <combatant*> players)
+void run_encounter(std::vector <object*> players)
 {
 	node * active_player = new node();		// Create initialisation node for players.
 	int i = 0;					// Initialise counter to 0.
@@ -26,6 +29,8 @@ void run_encounter(std::vector <combatant*> players)
 	sf::RenderWindow window(sf::VideoMode(200,200), "SFML works!");
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
+
+	cout << endl;
 
 	// Repeat until only one player is left.
 	while (active_player->next != active_player)
@@ -62,17 +67,28 @@ int main() {
 
 	srand(time(NULL));							// Generate random seed.
 
-	std::vector<combatant*> players; 					// Create vector of players and monsters.
+	std::vector<object*> players; 					// Create vector of players and monsters.
 
 	players = interpret_nodes("./stats/encounter1.enctr");
 
+	map = new Tile(125,35);
+
 	// Range based for loop. Print stats of each player to screen.
-	for(combatant* D : players) {
-		D->print_stats();
+	// Also adds players to map.
+	for(object* O : players) {
+		O->print_stats();
+		Tile *tile = map->get(O->getCoordinates());
+		tile->setContents(O);
 	}
+
+	map->print_map();
+
+	std::cout << std::endl;
 
 	// Loop for combat.
 	run_encounter(players);
+
+	delete(map);
 
     	return 0;
 };

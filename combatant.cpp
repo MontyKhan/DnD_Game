@@ -1,8 +1,10 @@
 #include "include/combatant.h"
 #include "include/tools.h"
 #include "include/load_file.h"
+#include "include/pathfinding.h"
 #include "include/rapidxml/rapidxml_print.hpp"
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 using namespace rapidxml;
@@ -63,9 +65,6 @@ combatant::combatant(xml_node<> *root)
 
 		if (str_name == "weapon")					// If has grandchildren, weapon.
 		{
-			// interpret_node(child);
-			//combatant new_player = combatant(child);
-			//players.push_back(new_player);
 			weapons.push_back(weapon_type(child));
 		}
 		else if (str_name == "coordinates")
@@ -168,24 +167,65 @@ int combatant::take_turn(node* self)
 	// Reset target to origin.
 	target = self;
 
-	// Select random number between 1 and the number of enemies.
-	int target_selector = (rand() % potential_targets+1);
+	vector<int> distances;
 
 	// Progress the head of the circular list ahead by target_selector.
 	// i.e. 1 means go to next. Cannot go completely around the list.
-	for (int i = 0; i < target_selector; i++)
+	// for (int i = 0; i < target_selector; i++)
+	for (int i = 0; i < potential_targets; i++)
 	{
 		target = target->next;
+		distances.push_back(this->coordinates.find_distance(target->player->getCoordinates()));
 	}
 
-	// Make attack against target. If attack kills them, result is set to dead. Else, alive.
-	life_status result = self->player->make_attack(*(target->player));
-
-	// If target is killed, remove them from the list and decrement the number of potential targets.
-	if (result == dead)
+	// Find minimum distance in list, i.e. closest opponent.
+	target = self;
+	auto min = *min_element(distances.begin(), distances.end());
+	for (int D : distances)
 	{
-		remove_from_list(target);
-		potential_targets--;
+		target = target->next;
+		if (D == min)
+		{
+			std::vector<Tile*> free_cells = target->player->getFreeNeighbours();
+			int min_dist = MAX_VALUE;
+			Tile* new_location;
+			bool reached = false;
+			for (Tile* T : free_cells)
+			{
+				int dist = this->parent->findMinimumPath(T);
+				if (dist < min_dist)
+				{
+					min_dist = dist;
+
+					if (min_dist <= this->speed)
+					{
+						new_location = T;
+						reached = true;
+					}
+					else
+						new_location = parent->findMidPoint(T, this->speed);
+				}
+			}
+
+			// Select new tile to move to.
+			moveTo(new_location);
+			
+			// If next to target, attack. Otherwise, do nothing but print message.
+			life_status result = alive;
+			if (reached)
+				// Make attack against target. If attack kills them, result is set to dead. Else, alive.
+				result = self->player->make_attack(*(target->player));
+			else
+				cout << this->name << " moved to " << this->coordinates << "." << endl;
+
+			// If target is killed, remove them from the list and decrement the number of potential targets.
+			if (result == dead)
+			{
+				remove_from_list(target);
+				potential_targets--;
+			}
+		break;
+		}
 	}
 
 	return 0;
@@ -196,7 +236,7 @@ int combatant::take_turn(node* self)
    param:	target - Passed by reference. Combatant for the attacks to be made against.
    return:	status of target after attack, i.e. dead or alive.
 */
-life_status combatant::make_attack(combatant & target)
+life_status combatant::make_attack(object & target)
 {
 	int wc = 0;							// Weapon choice
 
@@ -229,7 +269,7 @@ life_status combatant::make_attack(combatant & target)
 		target - Passed by reference. Combatant for the attacks to be made against.
    return:	status of target after attack, i.e. dead or alive.
 */
-life_status combatant::make_attack(weapon_type weapon, combatant & target)
+life_status combatant::make_attack(weapon_type weapon, object & target)
 {
 	int attack_roll = make_roll(weapon.getAttack());		// Initialise attack_roll to randomly generated value in dice range.
 
@@ -289,4 +329,18 @@ life_status combatant::take_damage(int dam, type damage_type)
 	}
 
 	return status;
+}
+
+/* brief:	Move to a specified tile.
+   param:	The tile to be moved to.
+   returns:	A 0 on a success.
+*/
+int combatant::moveTo(Tile* target)
+{
+	Tile* tmp = this->parent;
+	this->coordinates = target->getCoordinates();
+	if (target->setContents(this) == 0)
+		tmp->clearContents();
+
+	return 0;	
 }
