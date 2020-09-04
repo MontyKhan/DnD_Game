@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Tile *map;
+Tile *battlemap;
 
 /* brief: 	Roll initiative for all players and monsters involved, then have each perform an action
 	  	on their turn.
@@ -71,24 +71,24 @@ int main() {
 
 	players = interpret_nodes("./stats/encounter1.enctr");
 
-	map = new Tile(125,35);
+	battlemap = new Tile(125,35);
 
 	// Range based for loop. Print stats of each player to screen.
 	// Also adds players to map.
 	for(object* O : players) {
 		O->print_stats();
-		Tile *tile = map->get(O->getCoordinates());
+		Tile *tile = battlemap->get(O->getCoordinates());
 		tile->setContents(O);
 	}
 
-	map->print_map();
+	battlemap->print_map();
 
 	std::cout << std::endl;
 
 	// Loop for combat.
 	run_encounter(players);
 
-	delete(map);
+	delete(battlemap);
 
     	return 0;
 };
