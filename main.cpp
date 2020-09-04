@@ -1,3 +1,4 @@
+#include <SFML/Graphics.hpp>
 #include "include/csv_reader.h"
 #include "include/combatant.h"
 #include "include/tools.h"
@@ -21,6 +22,11 @@ void run_encounter(std::vector <combatant*> players)
 
 	cout << endl;					// Add line break for readability.
 
+	// Graphics loop crudely inserted below, so declaring variables here for time being.
+	sf::RenderWindow window(sf::VideoMode(200,200), "SFML works!");
+	sf::CircleShape shape(100.f);
+	shape.setFillColor(sf::Color::Green);
+
 	// Repeat until only one player is left.
 	while (active_player->next != active_player)
 	{
@@ -29,6 +35,18 @@ void run_encounter(std::vector <combatant*> players)
 
 		// Progress iterator node to the next one.
 		active_player = active_player->next;
+
+		// Going to stick graphics loop here temporarily, and rewrite everything when it's more developed.
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
+
+		window.clear();
+		window.draw(shape);
+		window.display();
 	}
 
 	// Debug code. State last fighter standing.
