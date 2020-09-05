@@ -26,9 +26,18 @@ void run_encounter(std::vector <object*> players)
 	cout << endl;					// Add line break for readability.
 
 	// Graphics loop crudely inserted below, so declaring variables here for time being.
-	sf::RenderWindow window(sf::VideoMode(200,200), "SFML works!");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
+	sf::RenderWindow window(sf::VideoMode(800,600), "DnD_Game");
+	sf::Image background;
+
+	if (!(background.loadFromFile("./images/maps/river_bridge.jpg")))
+		std::cout << "Could not load from file!" << std::endl;
+
+	sf::Texture bg_texture;
+	bg_texture.loadFromImage(background);
+
+	sf::Sprite bg;
+	bg.setTexture(bg_texture);
+	bg.setScale(0.391,0.391);
 
 	cout << endl;
 
@@ -50,7 +59,7 @@ void run_encounter(std::vector <object*> players)
 		}
 
 		window.clear();
-		window.draw(shape);
+		window.draw(bg);
 		window.display();
 	}
 
