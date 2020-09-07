@@ -61,7 +61,7 @@ void run_encounter(std::vector <object*> players)
 	while (event.type != sf::Event::Closed)
 	{
 		// Make move and take attack
-		active_player->player->take_turn(active_player);
+		// active_player->player->take_turn(active_player);
 
 		// Progress iterator node to the next one.
 		active_player = active_player->next;
@@ -70,8 +70,20 @@ void run_encounter(std::vector <object*> players)
 		
 		while (window.pollEvent(event))
 		{
-			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::S))
-				entities[1].move(0.f, 5.f);
+			if (event.type == sf::Event::KeyPressed)
+			{
+				if (event.key.code == sf::Keyboard::W)
+					entities[1].move(0.f, -5.f);
+
+				if (event.key.code == sf::Keyboard::A)
+					entities[1].move(-5.f, 0.f);
+
+				if (event.key.code == sf::Keyboard::S)
+					entities[1].move(0.f, 5.f);
+
+				if (event.key.code == sf::Keyboard::D)
+					entities[1].move(5.f, 0.f);
+			}
 		}
 
 		/*window.clear();
