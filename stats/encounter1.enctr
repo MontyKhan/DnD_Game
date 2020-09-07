@@ -131,7 +131,7 @@
 			<damage>1d6 + 3</damage>
 			<type>slashing</damage>
 		</weapon>
-		<coordinates>115,5,0</coordinates>
+		<coordinates>2,2,0</coordinates>
 	</player>
 
 </encounter>
