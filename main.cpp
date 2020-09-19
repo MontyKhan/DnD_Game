@@ -58,7 +58,7 @@ void run_encounter(std::vector <object*> players)
 
 	sf::Sprite bg;
 	bg.setTexture(bg_texture);
-	bg.setScale(0.391,0.391);
+	bg.setScale(float(WINDOW_W)/float(bg_texture.getSize().x),float(WINDOW_H)/float(bg_texture.getSize().y));
 	std::vector<sf::Sprite> entities;
 	entities.push_back(bg);
 
