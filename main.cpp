@@ -5,10 +5,31 @@
 #include "include/monster.h"
 #include "include/tile.h"
 #include "include/display.h"
+#include <math.h>
 
 using namespace std;
 
 Tile *battlemap;
+
+/* brief:	Return the correct number in degrees needed to face the mouse.
+   param:	sprite - The sprite to rotate.
+		&window - The game window, called by reference.
+   returns:	The float value for the number of degrees needed to rotate by, in the range 0-360.
+*/
+float face_mouse(sf::Sprite sprite, sf::RenderWindow &window)
+{
+	sf::Vector2f spr_pos = sprite.getPosition();
+	sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+
+	const float pi = 3.14159265;
+
+	float dx = spr_pos.x - mouse_pos.x;
+	float dy = spr_pos.y - mouse_pos.y;
+
+	float rotation = (atan2(dy,dx)) * (180/pi);
+
+	return rotation + 180;
+}
 
 /* brief: 	Roll initiative for all players and monsters involved, then have each perform an action
 	  	on their turn.
@@ -51,7 +72,7 @@ void run_encounter(std::vector <object*> players)
 
 	sf::Sprite player;
 	player.setTexture(player_texture);
-	//bg.setScale(0.391,0.391);
+	player.setPosition(50.f, 50.f);
 	entities.push_back(player);
 
 	cout << endl;
@@ -86,9 +107,12 @@ void run_encounter(std::vector <object*> players)
 			}
 		}
 
-		/*window.clear();
-		window.draw(bg);
-		window.display();*/
+		// Rotate player to face mouse
+		float x_size = entities[1].getLocalBounds().width / 2.f;
+		float y_size = entities[1].getLocalBounds().height / 2.f;
+		entities[1].setOrigin(x_size, y_size);
+		entities[1].setRotation(face_mouse(entities[1],window));
+
 		updateScreen(&window,entities);
 
 		if (active_player->next == active_player)
