@@ -6,6 +6,7 @@
 #include "include/tile.h"
 #include "include/display.h"
 #include <math.h>
+#include <map>
 
 using namespace std;
 
@@ -48,6 +49,10 @@ void run_encounter(std::vector <object*> players)
 
 	// Graphics loop crudely inserted below, so declaring variables here for time being.
 	sf::RenderWindow window(sf::VideoMode(WINDOW_W,WINDOW_H), "DnD_Game");
+	// Create map containers
+	std::map<std::string, sf::Texture> textures;
+	std::map<std::string, sf::Sprite> sprites;
+
 	sf::Image background;
 
 	if (!(background.loadFromFile("./images/maps/river_bridge.jpg")))
@@ -56,11 +61,12 @@ void run_encounter(std::vector <object*> players)
 	sf::Texture bg_texture;
 	bg_texture.loadFromImage(background);
 
+	textures.insert({"background", bg_texture});
+
 	sf::Sprite bg;
-	bg.setTexture(bg_texture);
+	bg.setTexture(textures["background"]);
 	bg.setScale(float(WINDOW_W)/float(bg_texture.getSize().x),float(WINDOW_H)/float(bg_texture.getSize().y));
-	std::vector<sf::Sprite> entities;
-	entities.push_back(bg);
+	sprites.insert({"background", bg});
 
 	sf::Image p_img;
 
@@ -69,11 +75,12 @@ void run_encounter(std::vector <object*> players)
 
 	sf::Texture player_texture;
 	player_texture.loadFromImage(p_img);
+	textures.insert({"player", player_texture});
 
 	sf::Sprite player;
-	player.setTexture(player_texture);
+	player.setTexture(textures["player"]);
 	player.setPosition(50.f, 50.f);
-	entities.push_back(player);
+	sprites.insert({"player", player});
 
 	cout << endl;
 
@@ -94,26 +101,26 @@ void run_encounter(std::vector <object*> players)
 			if (event.type == sf::Event::KeyPressed)
 			{
 				if (event.key.code == sf::Keyboard::W)
-					entities[1].move(0.f, -5.f);
+					sprites["player"].move(0.f, -5.f);
 
 				if (event.key.code == sf::Keyboard::A)
-					entities[1].move(-5.f, 0.f);
+					sprites["player"].move(-5.f, 0.f);
 
 				if (event.key.code == sf::Keyboard::S)
-					entities[1].move(0.f, 5.f);
+					sprites["player"].move(0.f, 5.f);
 
 				if (event.key.code == sf::Keyboard::D)
-					entities[1].move(5.f, 0.f);
+					sprites["player"].move(5.f, 0.f);
 			}
 		}
 
 		// Rotate player to face mouse
-		float x_size = entities[1].getLocalBounds().width / 2.f;
-		float y_size = entities[1].getLocalBounds().height / 2.f;
-		entities[1].setOrigin(x_size, y_size);
-		entities[1].setRotation(face_mouse(entities[1],window));
+		float x_size = sprites["player"].getLocalBounds().width / 2.f;
+		float y_size = sprites["player"].getLocalBounds().height / 2.f;
+		sprites["player"].setOrigin(x_size, y_size);
+		sprites["player"].setRotation(face_mouse(sprites["player"],window));
 
-		updateScreen(&window,entities);
+		updateScreen(&window,sprites);
 
 		if (active_player->next == active_player)
 			break;

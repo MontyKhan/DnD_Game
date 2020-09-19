@@ -6,13 +6,13 @@
 		entities - A vector containing all sprites to be drawn.
    returns:	Nothing.
 */
-void updateScreen(sf::RenderWindow *window, std::vector<sf::Sprite> entities)
+void updateScreen(sf::RenderWindow *window, std::map<std::string, sf::Sprite> sprites)
 {
 	window->clear();
 
-	for (sf::Sprite s : entities)
+	for (std::pair<std::string, sf::Sprite> p : sprites)
 	{
-		window->draw(s);
+		window->draw(p.second);
 	}
 
 	window->display();
