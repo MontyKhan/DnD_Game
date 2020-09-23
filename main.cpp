@@ -7,6 +7,8 @@
 #include "include/display.h"
 #include <math.h>
 #include <map>
+#include <filesystem>
+#include <cstring>
 
 using namespace std;
 
@@ -30,45 +32,6 @@ float face_mouse(sf::Sprite sprite, sf::RenderWindow &window)
 	float rotation = (atan2(dy,dx)) * (180/pi);
 
 	return rotation + 180;
-}
-
-/* brief:	Fill the texture and sprite maps with files to optimise load times.
-   param:	&textures - Map containing textures loaded from images. Passed by reference.
-		&sprites - Map containing sprites, containing pointers to textures. Passed by reference.
-   returns:	0, to be changed later to how many textures couldn't be loaded.
-*/
-int load_sprites(std::map<std::string, sf::Texture> &textures, std::map<std::string, sf::Sprite> &sprites)
-{
-	sf::Image background;
-
-	if (!(background.loadFromFile("./images/maps/river_bridge.jpg")))
-		std::cout << "Could not load from file!" << std::endl;
-
-	sf::Texture bg_texture;
-	bg_texture.loadFromImage(background);
-
-	textures.insert({"background", bg_texture});
-
-	sf::Sprite bg;
-	bg.setTexture(textures["background"]);
-	bg.setScale(float(WINDOW_W)/float(bg_texture.getSize().x),float(WINDOW_H)/float(bg_texture.getSize().y));
-	sprites.insert({"background", bg});
-
-	sf::Image p_img;
-
-	if (!(p_img.loadFromFile("./images/sprites/player.png")))
-		std::cout << "Could not load from file!" << std::endl;
-
-	sf::Texture player_texture;
-	player_texture.loadFromImage(p_img);
-	textures.insert({"player", player_texture});
-
-	sf::Sprite player;
-	player.setTexture(textures["player"]);
-	player.setPosition(50.f, 50.f);
-	sprites.insert({"player", player});
-
-	return 0;
 }
 
 /* brief: 	Roll initiative for all players and monsters involved, then have each perform an action
@@ -104,7 +67,6 @@ void run_encounter(std::vector <object*> players, std::map<std::string, sf::Text
 		active_player = active_player->next;
 
 		// Going to stick graphics loop here temporarily, and rewrite everything when it's more developed.
-		
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::KeyPressed)
@@ -124,9 +86,6 @@ void run_encounter(std::vector <object*> players, std::map<std::string, sf::Text
 		}
 
 		// Rotate player to face mouse
-		float x_size = sprites["player"].getLocalBounds().width / 2.f;
-		float y_size = sprites["player"].getLocalBounds().height / 2.f;
-		sprites["player"].setOrigin(x_size, y_size);
 		sprites["player"].setRotation(face_mouse(sprites["player"],window));
 
 		updateScreen(&window,sprites);

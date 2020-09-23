@@ -9,5 +9,7 @@
 
 // Draw all sprites within the vector "entities" to screen.
 void updateScreen(sf::RenderWindow *window, std::map<std::string, sf::Sprite> sprites);
+// Preload all sprites and textures and store them in maps.
+int load_sprites(std::map<std::string, sf::Texture> &textures, std::map<std::string, sf::Sprite> &sprites);
 
 #endif
