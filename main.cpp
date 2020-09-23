@@ -32,27 +32,13 @@ float face_mouse(sf::Sprite sprite, sf::RenderWindow &window)
 	return rotation + 180;
 }
 
-/* brief: 	Roll initiative for all players and monsters involved, then have each perform an action
-	  	on their turn.
-	  	Currently only supports melee attacks against random opponents.
-   param: 	players - vector of pointers to players and monsters involved in encounter.
-   returns: 	nothing
+/* brief:	Fill the texture and sprite maps with files to optimise load times.
+   param:	&textures - Map containing textures loaded from images. Passed by reference.
+		&sprites - Map containing sprites, containing pointers to textures. Passed by reference.
+   returns:	0, to be changed later to how many textures couldn't be loaded.
 */
-void run_encounter(std::vector <object*> players)
+int load_sprites(std::map<std::string, sf::Texture> &textures, std::map<std::string, sf::Sprite> &sprites)
 {
-	node * active_player = new node();		// Create initialisation node for players.
-	int i = 0;					// Initialise counter to 0.
-
-	active_player = initiative_round(players);	// Create circular list of players sorted by intiative. Point active_player at head.
-
-	cout << endl;					// Add line break for readability.
-
-	// Graphics loop crudely inserted below, so declaring variables here for time being.
-	sf::RenderWindow window(sf::VideoMode(WINDOW_W,WINDOW_H), "DnD_Game");
-	// Create map containers
-	std::map<std::string, sf::Texture> textures;
-	std::map<std::string, sf::Sprite> sprites;
-
 	sf::Image background;
 
 	if (!(background.loadFromFile("./images/maps/river_bridge.jpg")))
@@ -81,6 +67,29 @@ void run_encounter(std::vector <object*> players)
 	player.setTexture(textures["player"]);
 	player.setPosition(50.f, 50.f);
 	sprites.insert({"player", player});
+
+	return 0;
+}
+
+/* brief: 	Roll initiative for all players and monsters involved, then have each perform an action
+	  	on their turn.
+	  	Currently only supports melee attacks against random opponents.
+   param: 	players - vector of pointers to players and monsters involved in encounter.
+		textures - map containing all textures to display
+		sprites - map containing all sprites to display
+   returns: 	nothing
+*/
+void run_encounter(std::vector <object*> players, std::map<std::string, sf::Texture> &textures, std::map<std::string, sf::Sprite> &sprites)
+{
+	node * active_player = new node();		// Create initialisation node for players.
+	int i = 0;					// Initialise counter to 0.
+
+	active_player = initiative_round(players);	// Create circular list of players sorted by intiative. Point active_player at head.
+
+	cout << endl;					// Add line break for readability.
+
+	// Graphics loop crudely inserted below, so declaring variables here for time being.
+	sf::RenderWindow window(sf::VideoMode(WINDOW_W,WINDOW_H), "DnD_Game");
 
 	cout << endl;
 
@@ -141,11 +150,18 @@ int main() {
 
 	srand(time(NULL));							// Generate random seed.
 
-	std::vector<object*> players; 					// Create vector of players and monsters.
+	std::vector<object*> players; 						// Create vector of players and monsters.
 
 	players = interpret_nodes("./stats/encounter1.enctr");
 
 	battlemap = new Tile(125,35);
+
+	// Create map containers
+	std::map<std::string, sf::Texture> textures;
+	std::map<std::string, sf::Sprite> sprites;
+
+	// Fill texture and sprite maps with contents.
+	load_sprites(textures, sprites);
 
 	// Range based for loop. Print stats of each player to screen.
 	// Also adds players to map.
@@ -160,7 +176,7 @@ int main() {
 	std::cout << std::endl;
 
 	// Loop for combat.
-	run_encounter(players);
+	run_encounter(players, textures, sprites);
 
 	delete(battlemap);
 
