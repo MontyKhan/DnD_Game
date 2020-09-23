@@ -72,21 +72,21 @@ void run_encounter(std::vector <object*> players, std::map<std::string, sf::Text
 			if (event.type == sf::Event::KeyPressed)
 			{
 				if (event.key.code == sf::Keyboard::W)
-					sprites["player"].move(0.f, -5.f);
+					sprites["Player"].move(0.f, -5.f);
 
 				if (event.key.code == sf::Keyboard::A)
-					sprites["player"].move(-5.f, 0.f);
+					sprites["Player"].move(-5.f, 0.f);
 
 				if (event.key.code == sf::Keyboard::S)
-					sprites["player"].move(0.f, 5.f);
+					sprites["Player"].move(0.f, 5.f);
 
 				if (event.key.code == sf::Keyboard::D)
-					sprites["player"].move(5.f, 0.f);
+					sprites["Player"].move(5.f, 0.f);
 			}
 		}
 
 		// Rotate player to face mouse
-		sprites["player"].setRotation(face_mouse(sprites["player"],window));
+		sprites["Player"].setRotation(face_mouse(sprites["Player"],window));
 
 		updateScreen(&window,sprites);
 
@@ -123,9 +123,10 @@ int main() {
 	load_sprites(textures, sprites);
 
 	// Range based for loop. Print stats of each player to screen.
-	// Also adds players to map.
+	// Also adds players to map and screen in correct location.
 	for(object* O : players) {
 		O->print_stats();
+		sprites[O->getName()].setPosition(50.f*float(O->getCoordinates().getX()), 50.f*float(O->getCoordinates().getY()));
 		Tile *tile = battlemap->get(O->getCoordinates());
 		tile->setContents(O);
 	}

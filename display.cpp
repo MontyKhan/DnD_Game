@@ -35,7 +35,7 @@ int load_sprites(std::map<std::string, sf::Texture> &textures, std::map<std::str
 
 	for(auto& p: fs::directory_iterator(directory))
 	{
-		std::string name = p.path().filename();
+		std::string name = p.path().stem();
 		
 		sf::Image image;
 
@@ -54,15 +54,13 @@ int load_sprites(std::map<std::string, sf::Texture> &textures, std::map<std::str
 		float y_size = sprite.getLocalBounds().height / 2.f;
 		sprite.setOrigin(x_size, y_size);
 		sprite.setPosition(mult*25.f, 50.f);
-		if (name.compare("river_bridge.jpg") == 0)	// Come up with better solution for this later.
+		if (name.compare("river_bridge") == 0)	// Come up with better solution for this later.
 		{
 			sprite.setOrigin(0.f, 0.f);
 			sprite.setScale(float(WINDOW_W)/float(texture.getSize().x),float(WINDOW_H)/float(texture.getSize().y));
 			sprite.setPosition(0.f, 0.f);
-			sprites.insert({"aaaa", sprite});
+			sprites.insert({"AAAAA", sprite});
 		}
-		else if (name.compare("player.png") == 0)
-			sprites.insert({"player", sprite});
 		else
 			sprites.insert({name, sprite});
 
