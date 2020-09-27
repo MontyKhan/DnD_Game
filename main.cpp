@@ -5,6 +5,7 @@
 #include "include/monster.h"
 #include "include/tile.h"
 #include "include/display.h"
+#include "include/linegrid.h"
 #include <math.h>
 #include <map>
 #include <filesystem>
@@ -88,7 +89,14 @@ void run_encounter(std::vector <object*> players, std::map<std::string, sf::Text
 		// Rotate player to face mouse
 		sprites["Player"].setRotation(face_mouse(sprites["Player"],window));
 
+		window.clear();
+		LineGrid tiles;
+		tiles.create(50);
+
 		updateScreen(&window,sprites);
+
+		window.draw(tiles);
+		window.display();
 
 		if (active_player->next == active_player)
 			break;

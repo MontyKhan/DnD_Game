@@ -12,14 +12,14 @@ namespace fs = std::filesystem;
 */
 void updateScreen(sf::RenderWindow *window, std::map<std::string, sf::Sprite> sprites)
 {
-	window->clear();
+	// window->clear();
 
 	for (std::pair<std::string, sf::Sprite> p : sprites)
 	{
 		window->draw(p.second);
 	}
 
-	window->display();
+	// window->display();
 }
 
 /* brief:	Fill the texture and sprite maps with files to optimise load times.
