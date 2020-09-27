@@ -2,6 +2,7 @@
 #define LINEGRID_H
 
 #include "display.h"
+#include "tile.h"
 
 class LineGrid : public sf::Drawable, public sf::Transformable
 {
@@ -17,10 +18,10 @@ class LineGrid : public sf::Drawable, public sf::Transformable
 		int col_num = (WINDOW_W+1)/dim;	// Calculate number of columns required.
 
 		m_vertices.setPrimitiveType(sf::Lines);
-		m_vertices.resize((row_num + col_num) * 2);
+		m_vertices.resize((row_num + col_num + 2) * 2);
 
 		// Create vertical lines.
-		for (int i = 0; i < col_num; i++)
+		for (int i = 0; i <= col_num; i++)
 		{
 			sf::Vertex* line = &m_vertices[i * 2];
 		
@@ -30,9 +31,9 @@ class LineGrid : public sf::Drawable, public sf::Transformable
 		}
 
 		// Create horizontal lines.
-		for (int j = 0; j < row_num; j++)
+		for (int j = 0; j <= row_num; j++)
 		{
-			sf::Vertex* line = &m_vertices[(col_num * 2) + (j * 2)];
+			sf::Vertex* line = &m_vertices[(col_num * 2) + (j * 2) + 2];
 
 			line[0].position = sf::Vector2f(0, j * dim);
 			line[1].position = sf::Vector2f(WINDOW_W, j * dim);

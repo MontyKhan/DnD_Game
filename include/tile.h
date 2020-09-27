@@ -4,6 +4,8 @@
 #include "object.h"
 #include "pathfinding.h"
 
+extern Tile* battlemap;
+
 class Tile {
 private:
 	object* contents;

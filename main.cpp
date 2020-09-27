@@ -91,7 +91,7 @@ void run_encounter(std::vector <object*> players, std::map<std::string, sf::Text
 
 		window.clear();
 		LineGrid tiles;
-		tiles.create(50);
+		tiles.create((WINDOW_W+1)/battlemap->width());
 
 		updateScreen(&window,sprites);
 
@@ -121,7 +121,7 @@ int main() {
 
 	players = interpret_nodes("./stats/encounter1.enctr");
 
-	battlemap = new Tile(125,35);
+	battlemap = new Tile(25,19);
 
 	// Create map containers
 	std::map<std::string, sf::Texture> textures;

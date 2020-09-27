@@ -50,8 +50,10 @@ int load_sprites(std::map<std::string, sf::Texture> &textures, std::map<std::str
 		sf::Sprite sprite;
 		sprite.setTexture(textures[name]);
 
-		float x_size = sprite.getLocalBounds().width / 2.f;
+		sprite.scale(32.f / sprite.getLocalBounds().height, 32.f / sprite.getLocalBounds().height);
+
 		float y_size = sprite.getLocalBounds().height / 2.f;
+		float x_size = sprite.getLocalBounds().width / 2.f;
 		sprite.setOrigin(x_size, y_size);
 		sprite.setPosition(mult*25.f, 50.f);
 		if (name.compare("river_bridge") == 0)	// Come up with better solution for this later.
