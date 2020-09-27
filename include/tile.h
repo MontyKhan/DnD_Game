@@ -33,6 +33,9 @@ public:
 	int findMinimumPath(Tile* target, int hops);		// Recursive function.
 	// Find closest point to target that can be reached in a set number of hops.
 	Tile* findMidPoint(Tile* target, int moves);
+	// Return size of tile map.
+	int width();
+	int height();
 
 	// Getters/setters
 	object* getContents() { return contents; };

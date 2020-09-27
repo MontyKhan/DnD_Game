@@ -327,3 +327,39 @@ Tile* Tile::findMidPoint(Tile* target, int moves)
 	Tile* midpoint = next_tile->findMidPoint(target,--moves);
 	return midpoint;
 }
+
+/* brief:	Return the width of the tile map.
+   param:	None.
+   returns:	The width of the tile map.
+*/
+int Tile::width()
+{
+	int i = 0;
+	Tile *tile = this->origin;
+
+	while (tile->getEast() != NULL)
+	{	
+		tile = tile->getEast();
+		i++;
+	}
+
+	return i;
+}
+
+/* brief:	Return the height of the tile map.
+   param:	None.
+   returns:	The height of the tile map.
+*/
+int Tile::height()
+{
+	int i = 0;
+	Tile *tile = this->origin;
+
+	while (tile->getSouth() != NULL)
+	{
+		tile = tile->getSouth();
+		i++;
+	}
+
+	return i;
+}
