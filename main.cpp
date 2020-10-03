@@ -134,7 +134,7 @@ int main() {
 	// Also adds players to map and screen in correct location.
 	for(object* O : players) {
 		O->print_stats();
-		sprites[O->getName()].setPosition(50.f*float(O->getCoordinates().getX()), 50.f*float(O->getCoordinates().getY()));
+		sprites[O->getName()].setPosition(16.f+(32.f*float(O->getCoordinates().getX())), 16.f+(32.f*float(O->getCoordinates().getY())));
 		Tile *tile = battlemap->get(O->getCoordinates());
 		tile->setContents(O);
 	}

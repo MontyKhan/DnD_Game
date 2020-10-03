@@ -1,7 +1,8 @@
 #ifndef LOAD_FILE_H
 #define LOAD_FILE_H
 
-#include "combatant.h"
+#include <map>
+#include "object.h"
 #include "rapidxml/rapidxml_utils.hpp"
 
 using namespace rapidxml;

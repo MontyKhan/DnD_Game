@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <iostream>
 #include "include/display.h"
+#include "include/combatant.h"
 
 namespace fs = std::filesystem;
 

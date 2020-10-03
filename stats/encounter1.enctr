@@ -12,7 +12,7 @@
 			<damage>1d12 + 3</damage>
 			<type>slashing</type>
 		</weapon>
-		<coordinates>4,2,0</coordinates>
+		<coordinates>0,0,0</coordinates>
 	</monster>
 
 	<monster>
@@ -28,7 +28,7 @@
 			<damage>1d6 + 2</damage>
 			<type>slashing</type>
 		</weapon>
-		<coordinates>6,2,0</coordinates>
+		<coordinates>1,0,0</coordinates>
 	</monster>
 
 	<monster>
@@ -44,7 +44,7 @@
 			<damage>2d8 + 2</damage>
 			<type>bludgeoning</type>
 		</weapon>
-		<coordinates>8,2,0</coordinates>
+		<coordinates>2,0,0</coordinates>
 	</monster>
 
 	<monster>
@@ -60,7 +60,7 @@
 			<damage>1d6 + 1</damage>
 			<type>bludgeoning</damage>
 		</weapon>
-		<coordinates>2,4,0</coordinates>
+		<coordinates>0,1,0</coordinates>
 	</monster>
 
 	<monster>
@@ -76,7 +76,7 @@
 			<damage>1d4 + 2</damage>
 			<type>piercing</type>
 		</weapon>
-		<coordinates>4,4,0</coordinates>
+		<coordinates>1,1,0</coordinates>
 	</monster>
 
 	<monster>
@@ -92,7 +92,7 @@
 			<damage>1d10 + 1</damage>
 			<type>slashing</type>
 		</weapon>
-		<coordinates>6,4,0</coordinates>
+		<coordinates>2,1,0</coordinates>
 	</monster>
 
 	<monster>
@@ -108,7 +108,7 @@
 			<damage>1d6 + 2</damage>
 			<type>piercing</type>
 		</weapon>
-		<coordinates>8,4,0</coordinates>
+		<coordinates>0,2,0</coordinates>
 	</monster>
 
 	<player>
@@ -131,7 +131,7 @@
 			<damage>1d6 + 3</damage>
 			<type>slashing</damage>
 		</weapon>
-		<coordinates>2,2,0</coordinates>
+		<coordinates>1,2,0</coordinates>
 	</player>
 
 </encounter>
