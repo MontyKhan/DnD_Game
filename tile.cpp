@@ -29,6 +29,7 @@ Tile::Tile(int x, int y)
 	{
 		Tile* new_tile = new Tile();
 		new_tile->origin = this->origin;
+		new_tile->contents = new OutOfBoundsObject();
 		new_tile->west = x_iter;			// All else will be NULL by default.
 		new_tile->setCoordinates(i+1,0,0);
 		x_iter->east = new_tile;
@@ -55,8 +56,14 @@ Tile::Tile(int x, int y)
 			if (prev_y->east != NULL)
 				prev_y->east->south = new_tile;
 			new_tile->setCoordinates(i+1,j,0);
+
+			if ((i == 0) || (i == x-1))
+				new_tile->contents = new OutOfBoundsObject();
+
+			if (j == y - 1)
+				new_tile->contents = new OutOfBoundsObject();
+
 			x_iter->east = new_tile;
-			//x_iter->setCoordinates(i,j,0);
 			
 			prev_y = prev_y->east;
 			x_iter = x_iter->east;
@@ -106,6 +113,8 @@ void Tile::print_from()
 	{
 		if (tile->contents == NULL)
 			std::cout << "x";
+		else if (tile->contents->getObjectType() == OutOfBounds)
+			std::cout << "w";
 		else
 			std::cout << "p";
 		tile = tile->east;

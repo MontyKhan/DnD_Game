@@ -186,7 +186,10 @@ int combatant::take_turn(node* self)
 		target = target->next;
 		if (D == min)
 		{
+			std::cout << "test_take_turn_1" << std::endl;
+			std::cout << "target position: " << target->player->getCoordinates() << std::endl;
 			std::vector<Tile*> free_cells = target->player->getFreeNeighbours();
+			std::cout << "test_take_turn_2" << std::endl;
 			int min_dist = MAX_VALUE;
 			Tile* new_location;
 			bool reached = false;

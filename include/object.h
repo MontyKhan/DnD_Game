@@ -9,6 +9,7 @@
 #define MAX_VALUE 32767
 
 enum life_status {alive, death_1, death_2, dead};
+enum object_type {OutOfBounds, type_object, type_player, type_combatant};
 
 class Tile;
 class node;
@@ -68,6 +69,16 @@ public:
 	virtual int setInit(int val) { return -1; };
 	virtual life_status getStatus() { return dead; };				// Status
 	virtual int setStatus(life_status val) { return -1; };
+
+	// Get type
+	virtual object_type getObjectType() {return type_object; };			// Return ennumerated type value.
+};
+
+class OutOfBoundsObject : public object
+{
+	using object::object;
+
+	object_type getObjectType() {return OutOfBounds; };
 };
 
 #endif

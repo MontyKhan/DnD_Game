@@ -49,20 +49,27 @@ void run_encounter(std::vector <object*> players, std::map<std::string, sf::Text
 	int i = 0;					// Initialise counter to 0.
 
 	active_player = initiative_round(players);	// Create circular list of players sorted by intiative. Point active_player at head.
+	active_player->print();
 
 	cout << endl;					// Add line break for readability.
 
 	// Graphics loop crudely inserted below, so declaring variables here for time being.
 	sf::RenderWindow window(sf::VideoMode(WINDOW_W,WINDOW_H), "DnD_Game");
 
-	cout << endl;
+	std::cout << endl;
+
+	node * first_player = active_player;
 
 	sf::Event event;
 	// Repeat until only one player is left.
 	while (event.type != sf::Event::Closed)
 	{
+		std::cout << "character name: " << active_player->player->getName() << std::endl;
+		std::cout << "character location: " << active_player->player->getCoordinates() << std::endl;
 		// Make move and take attack
-		// active_player->player->take_turn(active_player);
+		active_player->player->take_turn(active_player);
+
+		std::cout << "turn taken" << std::endl;
 
 		// Progress iterator node to the next one.
 		active_player = active_player->next;
@@ -85,7 +92,7 @@ void run_encounter(std::vector <object*> players, std::map<std::string, sf::Text
 					sprites["Player"].move(5.f, 0.f);
 			}
 		}
-
+		
 		// Rotate player to face mouse
 		sprites["Player"].setRotation(face_mouse(sprites["Player"],window));
 
@@ -123,9 +130,12 @@ int main() {
 
 	battlemap = new Tile(25,19);
 
+	battlemap->print_map();
+
 	// Create map containers
 	std::map<std::string, sf::Texture> textures;
 	std::map<std::string, sf::Sprite> sprites;
+	std::map<std::string, object> combatants;
 
 	// Fill texture and sprite maps with contents.
 	load_sprites(textures, sprites);
@@ -134,9 +144,11 @@ int main() {
 	// Also adds players to map and screen in correct location.
 	for(object* O : players) {
 		O->print_stats();
-		sprites[O->getName()].setPosition(16.f+(32.f*float(O->getCoordinates().getX())), 16.f+(32.f*float(O->getCoordinates().getY())));
+		sprites[O->getName()].setPosition(16.f+(32.f*float(O->getCoordinates().getX())), 
+						  16.f+(32.f*float(O->getCoordinates().getY())));
 		Tile *tile = battlemap->get(O->getCoordinates());
 		tile->setContents(O);
+		combatants.insert(std::pair<std::string, object>(O->getName(), *O));
 	}
 
 	battlemap->print_map();
