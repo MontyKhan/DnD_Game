@@ -1,5 +1,6 @@
 #include "include/tools.h"
 #include "include/csv_reader.h"
+#include "include/display.h"
 #include <vector>
 #include <sstream>
 
@@ -162,6 +163,8 @@ void remove_from_list(node * target)
 	// If not first node in list, point "next" of previous node to subsequent node.
 	if (target->prev != NULL)
 		target->prev->next = target->next;
+
+	sprites.erase(target->player->getName());
 
 	delete target;	// Free up memory.
 }

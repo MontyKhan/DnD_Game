@@ -6,21 +6,22 @@
 
 namespace fs = std::filesystem;
 
+// Create map containers
+std::map<std::string, sf::Texture> textures;
+std::map<std::string, sf::Sprite> sprites;
+std::map<std::string, object> combatants;
+
 /* brief:	Update the screen with all entities that need to be drawn.
    param:	*window - Pointed to the window used as the UI.
 		entities - A vector containing all sprites to be drawn.
    returns:	Nothing.
 */
-void updateScreen(sf::RenderWindow *window, std::map<std::string, sf::Sprite> sprites)
+void updateScreen(sf::RenderWindow *window)
 {
-	// window->clear();
-
 	for (std::pair<std::string, sf::Sprite> p : sprites)
 	{
 		window->draw(p.second);
 	}
-
-	// window->display();
 }
 
 /* brief:	Fill the texture and sprite maps with files to optimise load times.
@@ -28,7 +29,7 @@ void updateScreen(sf::RenderWindow *window, std::map<std::string, sf::Sprite> sp
 		&sprites - Map containing sprites, containing pointers to textures. Passed by reference.
    returns:	0, to be changed later to how many textures couldn't be loaded.
 */
-int load_sprites(std::map<std::string, sf::Texture> &textures, std::map<std::string, sf::Sprite> &sprites)
+int load_sprites()
 {
 	std::string directory = "./images/sprites";
 

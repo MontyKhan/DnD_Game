@@ -43,7 +43,7 @@ float face_mouse(sf::Sprite sprite, sf::RenderWindow &window)
 		sprites - map containing all sprites to display
    returns: 	nothing
 */
-void run_encounter(std::vector <object*> players, std::map<std::string, sf::Texture> &textures, std::map<std::string, sf::Sprite> &sprites)
+void run_encounter(std::vector <object*> players)
 {
 	node * active_player = new node();		// Create initialisation node for players.
 	int i = 0;					// Initialise counter to 0.
@@ -62,8 +62,7 @@ void run_encounter(std::vector <object*> players, std::map<std::string, sf::Text
 
 	sf::Event event;
 	// Repeat until only one player is left.
-	while (event.type != sf::Event::Closed)
-	{
+	do {
 		std::cout << "character name: " << active_player->player->getName() << std::endl;
 		std::cout << "character location: " << active_player->player->getCoordinates() << std::endl;
 		// Make move and take attack
@@ -108,15 +107,18 @@ void run_encounter(std::vector <object*> players, std::map<std::string, sf::Text
 			LineGrid tiles;
 			tiles.create((WINDOW_W+1)/battlemap->width());
 	
-			updateScreen(&window,sprites);
+			updateScreen(&window);
 	
 			window.draw(tiles);
 			window.display();
 		}
 
 		if (active_player->next == active_player)
+		{
+			std::cout << "Finished" << std::endl;
 			break;
-	}
+		}
+	} while (event.type != sf::Event::Closed);
 
 	window.close();
 
@@ -141,13 +143,8 @@ int main() {
 
 	battlemap->print_map();
 
-	// Create map containers
-	std::map<std::string, sf::Texture> textures;
-	std::map<std::string, sf::Sprite> sprites;
-	std::map<std::string, object> combatants;
-
 	// Fill texture and sprite maps with contents.
-	load_sprites(textures, sprites);
+	load_sprites();
 
 	// Range based for loop. Print stats of each player to screen.
 	// Also adds players to map and screen in correct location.
@@ -165,7 +162,7 @@ int main() {
 	std::cout << std::endl;
 
 	// Loop for combat.
-	run_encounter(players, textures, sprites);
+	run_encounter(players);
 
 	delete(battlemap);
 
