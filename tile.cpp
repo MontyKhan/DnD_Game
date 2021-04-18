@@ -19,7 +19,7 @@ Tile::Tile(int x, int y)
 	this->east = NULL;
 	this->south = NULL;
 	this->west = NULL;
-	this->contents = NULL;
+	this->contents = new OutOfBoundsObject();
 	this->coordinates = location(0,0,0);
 	this->origin = this;
 

@@ -192,31 +192,39 @@ int combatant::take_turn(node* self)
 			std::vector<Tile*> free_cells = target->player->getFreeNeighbours();
 			std::cout << "test_take_turn_2" << std::endl;
 			int min_dist = MAX_VALUE;
-			Tile* new_location;
 			bool reached = false;
-			for (Tile* T : free_cells)
+	
+			if (free_cells.size() > 0)
 			{
-				std::cout << "T: " << T->getCoordinates();
-				int dist = this->parent->findMinimumPath(T);
-				std::cout << ", dist: " << dist << std::endl;
-				if (dist < min_dist)
+				Tile* new_location;
+				for (Tile* T : free_cells)
 				{
-					min_dist = dist;
-
-					if (min_dist <= this->speed)
+					std::cout << "T: " << T->getCoordinates();
+					int dist = this->parent->findMinimumPath(T);
+					std::cout << ", dist: " << dist << std::endl;
+					if (dist < min_dist)
 					{
-						new_location = T;
-						reached = true;
+						min_dist = dist;
+
+						if (min_dist <= this->speed)
+						{
+							new_location = T;
+							reached = true;
+						}
+						else
+							new_location = parent->findMidPoint(T, this->speed);
 					}
-					else
-						new_location = parent->findMidPoint(T, this->speed);
 				}
+
+				std::cout << "new location: " << new_location->getCoordinates() << std::endl;
+
+				// Select new tile to move to.
+				moveTo(new_location);
 			}
-
-			std::cout << "new location: " << new_location->getCoordinates() << std::endl;
-
-			// Select new tile to move to.
-			moveTo(new_location);
+			else
+			{
+				std::cout << "staying in place." << std::endl;
+			}
 			
 			// If next to target, attack. Otherwise, do nothing but print message.
 			life_status result = alive;
