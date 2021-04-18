@@ -3,6 +3,7 @@
 #include "include/load_file.h"
 #include "include/pathfinding.h"
 #include "include/rapidxml/rapidxml_print.hpp"
+#include "include/display.h"
 #include <sstream>
 #include <algorithm>
 
@@ -347,7 +348,11 @@ int combatant::moveTo(Tile* target)
 	Tile* tmp = this->parent;
 	this->coordinates = target->getCoordinates();
 	if (target->setContents(this) == 0)
+	{
 		tmp->clearContents();
+		sprites[this->name].setPosition(16.f+(32.f*float(this->coordinates.getX())), 
+						16.f+(32.f*float(this->coordinates.getY())));
+	}
 
 	return 0;	
 }
