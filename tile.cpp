@@ -44,6 +44,7 @@ Tile::Tile(int x, int y)
 		y_iter = new Tile();
 		y_iter->north = prev_y;
 		y_iter->setCoordinates(0,j,0);
+		y_iter->contents = new OutOfBoundsObject();
 		prev_y->south = y_iter;
 
 		Tile* x_iter = y_iter;
@@ -57,7 +58,7 @@ Tile::Tile(int x, int y)
 				prev_y->east->south = new_tile;
 			new_tile->setCoordinates(i+1,j,0);
 
-			if ((i == 0) || (i == x-1))
+			if (i == x-1)
 				new_tile->contents = new OutOfBoundsObject();
 
 			if (j == y - 1)

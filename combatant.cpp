@@ -195,7 +195,9 @@ int combatant::take_turn(node* self)
 			bool reached = false;
 			for (Tile* T : free_cells)
 			{
+				std::cout << "T: " << T->getCoordinates();
 				int dist = this->parent->findMinimumPath(T);
+				std::cout << ", dist: " << dist << std::endl;
 				if (dist < min_dist)
 				{
 					min_dist = dist;
@@ -209,6 +211,8 @@ int combatant::take_turn(node* self)
 						new_location = parent->findMidPoint(T, this->speed);
 				}
 			}
+
+			std::cout << "new location: " << new_location->getCoordinates() << std::endl;
 
 			// Select new tile to move to.
 			moveTo(new_location);

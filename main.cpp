@@ -74,36 +74,45 @@ void run_encounter(std::vector <object*> players, std::map<std::string, sf::Text
 		// Progress iterator node to the next one.
 		active_player = active_player->next;
 
-		// Going to stick graphics loop here temporarily, and rewrite everything when it's more developed.
-		while (window.pollEvent(event))
+		bool nextTurn = false;
+		while (nextTurn == false) 
 		{
-			if (event.type == sf::Event::KeyPressed)
+			if (window.pollEvent(event))
 			{
-				if (event.key.code == sf::Keyboard::W)
-					sprites["Player"].move(0.f, -5.f);
+				if (event.type == sf::Event::KeyPressed)
+				{
+					if (event.key.code == sf::Keyboard::W)
+						sprites["Player"].move(0.f, -5.f);
 
-				if (event.key.code == sf::Keyboard::A)
-					sprites["Player"].move(-5.f, 0.f);
+					if (event.key.code == sf::Keyboard::A)
+						sprites["Player"].move(-5.f, 0.f);
 
-				if (event.key.code == sf::Keyboard::S)
-					sprites["Player"].move(0.f, 5.f);
+					if (event.key.code == sf::Keyboard::S)
+						sprites["Player"].move(0.f, 5.f);
 
-				if (event.key.code == sf::Keyboard::D)
-					sprites["Player"].move(5.f, 0.f);
+					if (event.key.code == sf::Keyboard::D)
+						sprites["Player"].move(5.f, 0.f);
+
+					if (event.key.code == sf::Keyboard::P)
+						std::cout << "print" << std::endl;
+
+					if (event.key.code == sf::Keyboard::Return)
+						nextTurn = true;
+				}
 			}
+
+			// Rotate player to face mouse
+			sprites["Player"].setRotation(face_mouse(sprites["Player"],window));
+
+			window.clear();
+			LineGrid tiles;
+			tiles.create((WINDOW_W+1)/battlemap->width());
+	
+			updateScreen(&window,sprites);
+	
+			window.draw(tiles);
+			window.display();
 		}
-		
-		// Rotate player to face mouse
-		sprites["Player"].setRotation(face_mouse(sprites["Player"],window));
-
-		window.clear();
-		LineGrid tiles;
-		tiles.create((WINDOW_W+1)/battlemap->width());
-
-		updateScreen(&window,sprites);
-
-		window.draw(tiles);
-		window.display();
 
 		if (active_player->next == active_player)
 			break;
