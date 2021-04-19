@@ -77,6 +77,9 @@ public:
 
 	// Debugging functions
 	void print_stats();
+
+	// Get object type
+	object_type getObjectType() {return type_combatant; };
 };
 
 #endif

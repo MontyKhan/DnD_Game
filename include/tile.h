@@ -4,6 +4,8 @@
 #include "object.h"
 #include "pathfinding.h"
 
+extern Tile* battlemap;
+
 class Tile {
 private:
 	object* contents;
@@ -33,6 +35,9 @@ public:
 	int findMinimumPath(Tile* target, int hops);		// Recursive function.
 	// Find closest point to target that can be reached in a set number of hops.
 	Tile* findMidPoint(Tile* target, int moves);
+	// Return size of tile map.
+	int width();
+	int height();
 
 	// Getters/setters
 	object* getContents() { return contents; };
@@ -42,13 +47,13 @@ public:
 	int setCoordinates(location Coordinates) { coordinates = Coordinates; return 0; };
 	object* clearContents() { contents = NULL; return contents; };
 	Tile* getNorth() { return north; };
-	int setNorth(Tile* North) { north = North; };
+	int setNorth(Tile* North) { north = North; return 0;};
 	Tile* getEast() { return east; };
-	int setEast(Tile* East) { east = East; };
+	int setEast(Tile* East) { east = East; return 0;};
 	Tile* getSouth() { return south; };
-	int setSouth(Tile* South) { south = South; };
+	int setSouth(Tile* South) { south = South; return 0;};
 	Tile* getWest() { return west; };
-	int setWest(Tile* West) { west = West; };
+	int setWest(Tile* West) { west = West; return 0;};
 
 	// Friend functions
 	friend std::vector<Tile*> object::getFreeNeighbours();

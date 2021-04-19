@@ -1,6 +1,8 @@
 #include "include/object.h"
 #include "include/tile.h"
 
+using namespace std;
+
 /* brief:	Get a list of all neighbouring cells with no contents.
    param:	None.
    returns:	A vector containing the empty neighbouring cells.
@@ -9,7 +11,8 @@ std::vector<Tile*> object::getFreeNeighbours()
 {
 	// Vector to contain neighbouring vacant tiles.
 	std::vector<Tile*> free_tiles;
-	
+
+	cout << "test_getFreeNeighbours_1" << endl;	
 	// Check neighbouring tiles, clockwise starting at North.
 	if (this->parent->north->contents == NULL)
 		free_tiles.push_back(this->parent->north);
@@ -27,6 +30,7 @@ std::vector<Tile*> object::getFreeNeighbours()
 		free_tiles.push_back(this->parent->west);
 	if (this->parent->west->north->contents == NULL)
 		free_tiles.push_back(this->parent->west->north);
+	cout << "test_getFreeNeighbours_1" << endl;
 
 	return free_tiles;
 }

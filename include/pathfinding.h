@@ -5,6 +5,8 @@
 #include <iostream>
 #include <math.h>
 
+const float DIAGONAL_NEIGHBOUR = sqrt(2);
+
 class location {
 private:
 	int x;

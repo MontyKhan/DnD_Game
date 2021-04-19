@@ -3,12 +3,14 @@
 
 #include "pathfinding.h"
 #include "weapon_type.h"
+#include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
 
 #define MAX_VALUE 32767
 
 enum life_status {alive, death_1, death_2, dead};
+enum object_type {OutOfBounds, type_object, type_player, type_combatant};
 
 class Tile;
 class node;
@@ -18,10 +20,11 @@ protected:
 	std::string name;
 	location coordinates;
 	Tile* parent;
+	sf::RenderWindow* parentWindow;
 public:
 	// Constructors
-	object() : name(""), coordinates(location(0,0,0)), parent(NULL) {};
-	object(location Coordinates) : name(""), coordinates(Coordinates), parent(NULL) {};
+	object() : name(""), coordinates(location(0,0,0)), parent(NULL), parentWindow(NULL) {};
+	object(location Coordinates) : name(""), coordinates(Coordinates), parent(NULL), parentWindow(NULL) {};
 
 	// Get a list of vacant neighbouring tiles.
 	std::vector<Tile*> getFreeNeighbours();
@@ -54,6 +57,8 @@ public:
 	int setCoordinates(location Coordinates) { coordinates = Coordinates; return 0; };
 	Tile* getParent() { return parent; };
 	int setParent( Tile* Parent ) { parent = Parent; return 0; };
+	sf::RenderWindow* getParentWindow() { return parentWindow; };		// Parent Window
+	int setParentWindow(sf::RenderWindow &window) { parentWindow = &window; return 0; };
 
 	// Virtual getters/setters
 	virtual std::string getName() { return name; };				// Name
@@ -64,10 +69,20 @@ public:
 	virtual int setAc(int val) { return -1; };
 	virtual int getSpd() { return -1; };					// Speed
 	virtual int setSpd(int val) { return -1; };
-	virtual roll getInit() { return roll(); };					// Initiative
+	virtual roll getInit() { return roll(); };				// Initiative
 	virtual int setInit(int val) { return -1; };
-	virtual life_status getStatus() { return dead; };				// Status
+	virtual life_status getStatus() { return dead; };			// Status
 	virtual int setStatus(life_status val) { return -1; };
+
+	// Get type
+	virtual object_type getObjectType() {return type_object; };			// Return ennumerated type value.
+};
+
+class OutOfBoundsObject : public object
+{
+	using object::object;
+
+	object_type getObjectType() {return OutOfBounds; };
 };
 
 #endif

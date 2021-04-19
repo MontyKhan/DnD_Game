@@ -4,15 +4,43 @@
 #include "include/load_file.h"
 #include "include/monster.h"
 #include "include/tile.h"
+#include "include/display.h"
+#include "include/linegrid.h"
+#include <math.h>
+#include <map>
+#include <filesystem>
+#include <cstring>
 
 using namespace std;
 
-Tile *map;
+Tile *battlemap;
+
+/* brief:	Return the correct number in degrees needed to face the mouse.
+   param:	sprite - The sprite to rotate.
+		&window - The game window, called by reference.
+   returns:	The float value for the number of degrees needed to rotate by, in the range 0-360.
+*/
+float face_mouse(sf::Sprite sprite, sf::RenderWindow &window)
+{
+	sf::Vector2f spr_pos = sprite.getPosition();
+	sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+
+	const float pi = 3.14159265;
+
+	float dx = spr_pos.x - mouse_pos.x;
+	float dy = spr_pos.y - mouse_pos.y;
+
+	float rotation = (atan2(dy,dx)) * (180/pi);
+
+	return rotation + 180;
+}
 
 /* brief: 	Roll initiative for all players and monsters involved, then have each perform an action
 	  	on their turn.
 	  	Currently only supports melee attacks against random opponents.
    param: 	players - vector of pointers to players and monsters involved in encounter.
+		textures - map containing all textures to display
+		sprites - map containing all sprites to display
    returns: 	nothing
 */
 void run_encounter(std::vector <object*> players)
@@ -20,23 +48,81 @@ void run_encounter(std::vector <object*> players)
 	node * active_player = new node();		// Create initialisation node for players.
 	int i = 0;					// Initialise counter to 0.
 
-	active_player = initiative_round(players);	// Create circular list of players sorted by intiative. Point active_player at head.
+	// Graphics loop crudely inserted below, so declaring variables here for time being.
+	sf::RenderWindow window(sf::VideoMode(WINDOW_W,WINDOW_H), "DnD_Game");
+
+	/* Create circular list of players sorted by intiative. Point active_player at head. */
+	active_player = initiative_round(players, window);
+	active_player->print();
 
 	cout << endl;					// Add line break for readability.
 
-	active_player->print();
+	std::cout << endl;
 
-	cout << endl;
+	node * first_player = active_player;
 
+	sf::Event event;
 	// Repeat until only one player is left.
-	while (active_player->next != active_player)
-	{
+	do {
+		std::cout << "character name: " << active_player->player->getName() << std::endl;
+		std::cout << "character location: " << active_player->player->getCoordinates() << std::endl;
 		// Make move and take attack
 		active_player->player->take_turn(active_player);
 
+		std::cout << "turn taken" << std::endl;
+
 		// Progress iterator node to the next one.
 		active_player = active_player->next;
-	}
+
+		bool nextTurn = false;
+		while (nextTurn == false) 
+		{
+			if (window.pollEvent(event))
+			{
+				// Keyboard events
+				if (event.type == sf::Event::KeyPressed)
+				{
+					if (event.key.code == sf::Keyboard::W)
+						sprites["Player"].move(0.f, -5.f);
+
+					if (event.key.code == sf::Keyboard::A)
+						sprites["Player"].move(-5.f, 0.f);
+
+					if (event.key.code == sf::Keyboard::S)
+						sprites["Player"].move(0.f, 5.f);
+
+					if (event.key.code == sf::Keyboard::D)
+						sprites["Player"].move(5.f, 0.f);
+
+					if (event.key.code == sf::Keyboard::P)
+						std::cout << "print" << std::endl;
+
+					if (event.key.code == sf::Keyboard::Return)
+						nextTurn = true;
+				}
+			}
+
+			// Rotate player to face mouse
+			sprites["Player"].setRotation(face_mouse(sprites["Player"],window));
+
+			window.clear();
+			LineGrid tiles;
+			tiles.create((WINDOW_W+1)/battlemap->width());
+	
+			updateScreen(&window);
+	
+			window.draw(tiles);
+			window.display();
+		}
+
+		if (active_player->next == active_player)
+		{
+			std::cout << "Finished" << std::endl;
+			break;
+		}
+	} while (event.type != sf::Event::Closed);
+
+	window.close();
 
 	// Debug code. State last fighter standing.
 	cout << active_player->player->getName() << " wins!" << endl;
@@ -51,28 +137,36 @@ int main() {
 
 	srand(time(NULL));							// Generate random seed.
 
-	std::vector<object*> players; 					// Create vector of players and monsters.
+	std::vector<object*> players; 						// Create vector of players and monsters.
 
 	players = interpret_nodes("./stats/encounter1.enctr");
 
-	map = new Tile(125,35);
+	battlemap = new Tile(25,19);
+
+	battlemap->print_map();
+
+	// Fill texture and sprite maps with contents.
+	load_sprites();
 
 	// Range based for loop. Print stats of each player to screen.
-	// Also adds players to map.
+	// Also adds players to map and screen in correct location.
 	for(object* O : players) {
 		O->print_stats();
-		Tile *tile = map->get(O->getCoordinates());
+		sprites[O->getName()].setPosition(16.f+(32.f*float(O->getCoordinates().getX())), 
+						  16.f+(32.f*float(O->getCoordinates().getY())));
+		Tile *tile = battlemap->get(O->getCoordinates());
 		tile->setContents(O);
+		combatants.insert(std::pair<std::string, object>(O->getName(), *O));
 	}
 
-	map->print_map();
+	battlemap->print_map();
 
 	std::cout << std::endl;
 
 	// Loop for combat.
 	run_encounter(players);
 
-	delete(map);
+	delete(battlemap);
 
     	return 0;
 };

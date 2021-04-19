@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 #include "include/rapidxml/rapidxml_utils.hpp"
 #include "include/combatant.h"
 #include "include/monster.h"

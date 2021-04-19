@@ -19,7 +19,7 @@ Tile::Tile(int x, int y)
 	this->east = NULL;
 	this->south = NULL;
 	this->west = NULL;
-	this->contents = NULL;
+	this->contents = new OutOfBoundsObject();
 	this->coordinates = location(0,0,0);
 	this->origin = this;
 
@@ -29,6 +29,7 @@ Tile::Tile(int x, int y)
 	{
 		Tile* new_tile = new Tile();
 		new_tile->origin = this->origin;
+		new_tile->contents = new OutOfBoundsObject();
 		new_tile->west = x_iter;			// All else will be NULL by default.
 		new_tile->setCoordinates(i+1,0,0);
 		x_iter->east = new_tile;
@@ -43,6 +44,7 @@ Tile::Tile(int x, int y)
 		y_iter = new Tile();
 		y_iter->north = prev_y;
 		y_iter->setCoordinates(0,j,0);
+		y_iter->contents = new OutOfBoundsObject();
 		prev_y->south = y_iter;
 
 		Tile* x_iter = y_iter;
@@ -55,8 +57,14 @@ Tile::Tile(int x, int y)
 			if (prev_y->east != NULL)
 				prev_y->east->south = new_tile;
 			new_tile->setCoordinates(i+1,j,0);
+
+			if (i == x-1)
+				new_tile->contents = new OutOfBoundsObject();
+
+			if (j == y - 1)
+				new_tile->contents = new OutOfBoundsObject();
+
 			x_iter->east = new_tile;
-			//x_iter->setCoordinates(i,j,0);
 			
 			prev_y = prev_y->east;
 			x_iter = x_iter->east;
@@ -106,6 +114,8 @@ void Tile::print_from()
 	{
 		if (tile->contents == NULL)
 			std::cout << "x";
+		else if (tile->contents->getObjectType() == OutOfBounds)
+			std::cout << "w";
 		else
 			std::cout << "p";
 		tile = tile->east;
@@ -326,4 +336,40 @@ Tile* Tile::findMidPoint(Tile* target, int moves)
 	// Recursive function, keep going until remaining steps is zero or you reach the target.
 	Tile* midpoint = next_tile->findMidPoint(target,--moves);
 	return midpoint;
+}
+
+/* brief:	Return the width of the tile map.
+   param:	None.
+   returns:	The width of the tile map.
+*/
+int Tile::width()
+{
+	int i = 0;
+	Tile *tile = this->origin;
+
+	while (tile->getEast() != NULL)
+	{	
+		tile = tile->getEast();
+		i++;
+	}
+
+	return i;
+}
+
+/* brief:	Return the height of the tile map.
+   param:	None.
+   returns:	The height of the tile map.
+*/
+int Tile::height()
+{
+	int i = 0;
+	Tile *tile = this->origin;
+
+	while (tile->getSouth() != NULL)
+	{
+		tile = tile->getSouth();
+		i++;
+	}
+
+	return i;
 }

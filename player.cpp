@@ -11,12 +11,27 @@
 int Player::take_turn(node* self)
 {
 	cout << "Currently at: " << this->coordinates << endl;
-	cout << "Move by ";
-	std::string move_str;
-	cin >> move_str;
-	
-	location move_vector(move_str);
-	location new_location = this->coordinates + move_vector;
+
+	location new_location = location();
+	bool location_set = false;
+
+	sf::Event event;
+
+	while (location_set == false)
+	{
+		if (this->parentWindow->pollEvent(event))
+		{
+			if (event.type == sf::Event::MouseButtonPressed)
+			{
+				new_location.setX(int(event.mouseButton.x/32.f));
+				new_location.setY(int(event.mouseButton.y/32.f));
+				cout << "x: " << event.mouseButton.x/32.f << ", y: " << event.mouseButton.y/32.f << endl;
+				location_set = true;
+			}
+		}
+	}
+
+	//location new_location = this->coordinates + move_vector;
 	if (new_location != this->coordinates)
 	{
 		Tile* new_tile = this->parent->get(new_location);
