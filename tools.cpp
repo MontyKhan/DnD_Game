@@ -190,12 +190,13 @@ void change_head(node * head, object* new_player, int new_initiative)
    param: players - A vector containing pointers to all monsters and players involved via downcasting.
    returns: 	Pointer to the head of the new circular doubly linked list.
 */
-node * initiative_round(vector <object*> players)
+node * initiative_round(vector <object*> players, sf::RenderWindow &window)
 {
 	node * head = new node();				// Declare new empty node for head of list.
 	node * iterator = head;					// Declare new node for use as an iterator, pointing to head.
 
 	head->player = players[0];				// Set player value for head to first value in vector.
+	head->player->setParentWindow(window);			// Assign parent window.
 	head->initiative = players[0]->roll_initiative();	// Set initiative value for head to RNGed value.
 	head->next = NULL;					// Point next towards empty space.
 	head->prev = NULL;					// Point prev towards empty space.
@@ -211,6 +212,7 @@ node * initiative_round(vector <object*> players)
 		node * tmp2 = head;				// Declare second iterator node, point to head.
 
 		int initiative_roll = players[i]->roll_initiative();	// Set initiative to randomly generated value.
+		players[i]->setParentWindow(window);			// Assign parent window.
 
 		// Keep iterating through list until you reach the end.
 		while (tmp != NULL) {

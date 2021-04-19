@@ -48,13 +48,14 @@ void run_encounter(std::vector <object*> players)
 	node * active_player = new node();		// Create initialisation node for players.
 	int i = 0;					// Initialise counter to 0.
 
-	active_player = initiative_round(players);	// Create circular list of players sorted by intiative. Point active_player at head.
+	// Graphics loop crudely inserted below, so declaring variables here for time being.
+	sf::RenderWindow window(sf::VideoMode(WINDOW_W,WINDOW_H), "DnD_Game");
+
+	/* Create circular list of players sorted by intiative. Point active_player at head. */
+	active_player = initiative_round(players, window);
 	active_player->print();
 
 	cout << endl;					// Add line break for readability.
-
-	// Graphics loop crudely inserted below, so declaring variables here for time being.
-	sf::RenderWindow window(sf::VideoMode(WINDOW_W,WINDOW_H), "DnD_Game");
 
 	std::cout << endl;
 
@@ -78,6 +79,7 @@ void run_encounter(std::vector <object*> players)
 		{
 			if (window.pollEvent(event))
 			{
+				// Keyboard events
 				if (event.type == sf::Event::KeyPressed)
 				{
 					if (event.key.code == sf::Keyboard::W)

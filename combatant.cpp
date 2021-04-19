@@ -206,6 +206,12 @@ int combatant::take_turn(node* self)
 					{
 						min_dist = dist;
 
+						if (min_dist <= DIAGONAL_NEIGHBOUR)
+						{
+							new_location = this->parent;
+							std::cout << "Already neighbour. Stay in place." << std::endl;
+							reached = true;
+						}
 						if (min_dist <= this->speed)
 						{
 							new_location = T;
