@@ -134,7 +134,7 @@ int combatant::make_roll(roll x)
 
 	// Disable for now, as level of complexity of current program too low.
 	//if (x.num > 1)
-	//	print_vector(results);	
+	//	print_vector(results);
 
 	return damage + x.mod;
 }
@@ -159,7 +159,7 @@ int combatant::take_turn(node* self)
 
 	// Count other combatants in initiative list.
 	int potential_targets = 0;
-	while (target->next != self) 
+	while (target->next != self)
 	{
 		potential_targets++;
 		target = target->next;
@@ -193,7 +193,7 @@ int combatant::take_turn(node* self)
 			std::cout << "test_take_turn_2" << std::endl;
 			int min_dist = MAX_VALUE;
 			bool reached = false;
-	
+
 			if (free_cells.size() > 0)
 			{
 				Tile* new_location;
@@ -231,7 +231,7 @@ int combatant::take_turn(node* self)
 			{
 				std::cout << "staying in place." << std::endl;
 			}
-			
+
 			// If next to target, attack. Otherwise, do nothing but print message.
 			life_status result = alive;
 			if (reached)
@@ -250,7 +250,7 @@ int combatant::take_turn(node* self)
 		}
 	}
 
-	return 0;
+	return 1;
 }
 
 /* brief:	Roll attack. If it's greater than the target's AC, roll damage and subtract that from the target's HP. Print result.
@@ -273,14 +273,14 @@ life_status combatant::make_attack(object & target)
 	// Then print message about hitting and dealing damage to stdout. Check target's status.
 	else {
 		int damage_roll = make_roll(weapons[wc].getDamage());
-		cout << name << " hit " << target.getName() << " with their " << weapons[wc].getName() << " for " 
+		cout << name << " hit " << target.getName() << " with their " << weapons[wc].getName() << " for "
 		     << damage_roll << " " << weapons[wc].getTypeStr() << " damage! ";
 		life_status target_status = target.take_damage(damage_roll);
 		if (target_status != dead)
 			cout << target.getHp() << " HP remaining." << endl;
 		return target_status;			// Return status of target.
 	}
-	
+
 	return alive;				// Should not reach here.
 }
 
@@ -310,7 +310,7 @@ life_status combatant::make_attack(weapon_type weapon, object & target)
 			cout << target.getHp() << " HP remaining." << endl;
 		return target_status;			// Return status of target.
 	}
-	
+
 	return alive;				// Should not reach here.
 }
 
@@ -364,9 +364,9 @@ int combatant::moveTo(Tile* target)
 	if (target->setContents(this) == 0)
 	{
 		tmp->clearContents();
-		sprites[this->name].setPosition(16.f+(32.f*float(this->coordinates.getX())), 
+		sprites[this->name].setPosition(16.f+(32.f*float(this->coordinates.getX())),
 						16.f+(32.f*float(this->coordinates.getY())));
 	}
 
-	return 0;	
+	return 0;
 }

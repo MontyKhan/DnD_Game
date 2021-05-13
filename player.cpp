@@ -14,6 +14,7 @@ int Player::take_turn(node* self)
 
 	location new_location = location();
 	bool location_set = false;
+	int turn_finished = 0;
 
 	sf::Event event;
 
@@ -27,6 +28,7 @@ int Player::take_turn(node* self)
 				new_location.setY(int(event.mouseButton.y/32.f));
 				cout << "x: " << event.mouseButton.x/32.f << ", y: " << event.mouseButton.y/32.f << endl;
 				location_set = true;
+				turn_finished = 1;
 			}
 		}
 	}
@@ -46,7 +48,7 @@ int Player::take_turn(node* self)
 	if (adjacent_foes.size() > 0)
 	{
 		cout << "Select target:\t";
-		for(Tile* T : adjacent_foes) 
+		for(Tile* T : adjacent_foes)
 		{
 			cout << T->getContents()->getName() << " (" << ++potential_targets << ")" << endl << "\t\t";
 		}
@@ -66,7 +68,7 @@ int Player::take_turn(node* self)
 		}
 	}
 
-	return 0;
+	return turn_finished;
 }
 
 /* brief: 	Roll attack against the target's AC, then roll damage.
@@ -94,13 +96,13 @@ life_status Player::make_attack(object & target)
 	// Then print message about hitting and dealing damage to stdout. Check target's status.
 	else {
 		int damage_roll = make_roll(weapons[wc].getDamage());
-		cout << name << " hit " << target.getName() << " with their " << weapons[wc].getName() << " for " 
+		cout << name << " hit " << target.getName() << " with their " << weapons[wc].getName() << " for "
 		     << damage_roll << " " << weapons[wc].getTypeStr() << " damage! ";
 		life_status target_status = target.take_damage(damage_roll);
 		if (target_status != dead)
 			cout << target.getHp() << " HP remaining." << endl;
 		return target_status;			// Return status of target.
 	}
-	
+
 	return alive;				// Should not reach here.
 }
