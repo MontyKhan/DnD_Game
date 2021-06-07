@@ -10,6 +10,7 @@
 #include <map>
 #include <filesystem>
 #include <cstring>
+#include <SFML/Graphics/Color.hpp>
 
 using namespace std;
 
@@ -35,6 +36,22 @@ float face_mouse(sf::Sprite sprite, sf::RenderWindow &window)
 	return rotation + 180;
 }
 
+/** @brief: Move a rectangle to the tile corresponding to the mouse cursor.
+	  @param: highlighter - Rectangle, passed by reference.
+						window - Game window, passed by reference.
+						hl_width - Width of rectangle.
+		@returns: Nothing.
+**/
+void moveToMousedOverTile(sf::RectangleShape &highlighter, sf::RenderWindow &window, float hl_width)
+{
+	sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+
+	float x_pos = (mouse_pos.x - (mouse_pos.x%int(hl_width))) + (hl_width/2);
+	float y_pos = (mouse_pos.y - (mouse_pos.y%int(hl_width))) + (hl_width/2);
+
+	highlighter.setPosition(x_pos, y_pos);
+}
+
 /* brief: 	Roll initiative for all players and monsters involved, then have each perform an action
 	  	on their turn.
 	  	Currently only supports melee attacks against random opponents.
@@ -50,6 +67,12 @@ void run_encounter(std::vector <object*> players)
 
 	// Graphics loop crudely inserted below, so declaring variables here for time being.
 	sf::RenderWindow window(sf::VideoMode(WINDOW_W,WINDOW_H), "DnD_Game");
+
+	// Spawn mouse over tile icon.
+	float hl_width = (WINDOW_W+1)/battlemap->width();
+	sf::RectangleShape highlighter(sf::Vector2f(hl_width,hl_width));
+	highlighter.setOrigin(hl_width/2, hl_width/2);
+	highlighter.setFillColor(sf::Color(0xFF,0xFF,0x66,0x70));
 
 	/* Create circular list of players sorted by intiative. Point active_player at head. */
 	active_player = initiative_round(players, window);
@@ -67,15 +90,16 @@ void run_encounter(std::vector <object*> players)
 		std::cout << "character name: " << active_player->player->getName() << std::endl;
 		std::cout << "character location: " << active_player->player->getCoordinates() << std::endl;
 		// Make move and take attack
-		active_player->player->take_turn(active_player);
+		bool turn_finished = active_player->player->take_turn(active_player);
 
 		std::cout << "turn taken" << std::endl;
 
-		// Progress iterator node to the next one.
-		active_player = active_player->next;
+		// Progress iterator node to the next one unless waiting for input.
+		if (turn_finished == true)
+			active_player = active_player->next;
 
 		bool nextTurn = false;
-		while (nextTurn == false) 
+		while (nextTurn == false)
 		{
 			if (window.pollEvent(event))
 			{
@@ -105,12 +129,16 @@ void run_encounter(std::vector <object*> players)
 			// Rotate player to face mouse
 			sprites["Player"].setRotation(face_mouse(sprites["Player"],window));
 
+			// Move tile highlighter to mouse.
+			moveToMousedOverTile(highlighter, window, hl_width);
+
 			window.clear();
 			LineGrid tiles;
 			tiles.create((WINDOW_W+1)/battlemap->width());
-	
+
 			updateScreen(&window);
-	
+
+			window.draw(highlighter);
 			window.draw(tiles);
 			window.display();
 		}
@@ -152,7 +180,7 @@ int main() {
 	// Also adds players to map and screen in correct location.
 	for(object* O : players) {
 		O->print_stats();
-		sprites[O->getName()].setPosition(16.f+(32.f*float(O->getCoordinates().getX())), 
+		sprites[O->getName()].setPosition(16.f+(32.f*float(O->getCoordinates().getX())),
 						  16.f+(32.f*float(O->getCoordinates().getY())));
 		Tile *tile = battlemap->get(O->getCoordinates());
 		tile->setContents(O);
