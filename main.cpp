@@ -196,5 +196,5 @@ int main() {
 
 	delete(battlemap);
 
-    	return 0;
+    return 0;
 };

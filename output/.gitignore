@@ -1,6 +1,0 @@
-# Ignore everything in this directory
-*
-# Except this file
-!.gitignore
-
-# Necessary as makefile has output built in this folder, so will not build unless this folder here.

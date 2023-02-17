@@ -261,5 +261,9 @@ std::vector<std::string> split_string(std::string& str, std::string delim)
 		str.erase(0, pos + 1);	// +1 represents delimiter
 	}
 
+	// Check if any information after final delimiter.
+	if (str.size() > 0)
+		arr.push_back(str);
+
 	return arr;
 }
