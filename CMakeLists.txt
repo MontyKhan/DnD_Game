@@ -21,7 +21,14 @@ main.cpp
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 set(LIBS_PATH libs/)
-set(LIBS 
+set(LIBS_DEBUG 
+${LIBS_PATH}sfml-graphics-d
+${LIBS_PATH}sfml-window-d
+${LIBS_PATH}sfml-system-d
+${LIBS_PATH}sfml
+${LIBS_PATH}rapidxml
+)
+set(LIBS_RELEASE 
 ${LIBS_PATH}sfml-graphics
 ${LIBS_PATH}sfml-window
 ${LIBS_PATH}sfml-system
@@ -33,4 +40,7 @@ ${LIBS_PATH}rapidxml
 add_executable(dnd_game ${SOURCE_FILES})
 target_include_directories(dnd_game PRIVATE ${LIBS_PATH}include include/)
 
-TARGET_LINK_LIBRARIES(dnd_game ${LIBS} )
+TARGET_LINK_LIBRARIES(dnd_game debug ${LIBS_DEBUG} )
+TARGET_LINK_LIBRARIES(dnd_game optimized ${LIBS_RELEASE} )
+
+set_property(TARGET dnd_game PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Debug/")

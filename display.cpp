@@ -31,7 +31,7 @@ void updateScreen(sf::RenderWindow *window)
 */
 int load_sprites()
 {
-	std::string directory = "./images/sprites";
+	std::string directory = ".\\images\\sprites\\";
 
 	float mult = 1;
 
@@ -41,6 +41,9 @@ int load_sprites()
 		
 		sf::Image image;
 
+		std::string imagepath = p.path().string();
+		std::cout << "Absolute path for " << p << " is " << fs::absolute(p) << '\n';
+		bool exists = std::filesystem::exists(p.path().string());
 		if (!(image.loadFromFile(p.path().string())))
 			std::cout << "Could not load from file!" << std::endl;
 

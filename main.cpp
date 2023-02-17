@@ -101,6 +101,22 @@ void run_encounter(std::vector <object*> players)
 		bool nextTurn = false;
 		while (nextTurn == false)
 		{
+			// Rotate player to face mouse
+			sprites["Player"].setRotation(face_mouse(sprites["Player"], window));
+
+			// Move tile highlighter to mouse.
+			moveToMousedOverTile(highlighter, window, hl_width);
+
+			window.clear();
+			LineGrid tiles;
+			tiles.create((WINDOW_W + 1) / battlemap->width());
+
+			updateScreen(&window);
+
+			window.draw(highlighter);
+			window.draw(tiles);
+			window.display();
+
 			if (window.pollEvent(event))
 			{
 				// Keyboard events
@@ -125,22 +141,6 @@ void run_encounter(std::vector <object*> players)
 						nextTurn = true;
 				}
 			}
-
-			// Rotate player to face mouse
-			sprites["Player"].setRotation(face_mouse(sprites["Player"],window));
-
-			// Move tile highlighter to mouse.
-			moveToMousedOverTile(highlighter, window, hl_width);
-
-			window.clear();
-			LineGrid tiles;
-			tiles.create((WINDOW_W+1)/battlemap->width());
-
-			updateScreen(&window);
-
-			window.draw(highlighter);
-			window.draw(tiles);
-			window.display();
 		}
 
 		if (active_player->next == active_player)
