@@ -1,7 +1,7 @@
-#include "include/player.h"
-#include "include/combatant.h"
-#include "include/roll.h"
-#include "include/tools.h"
+#include "player.h"
+#include "combatant.h"
+#include "roll.h"
+#include "tools.h"
 
 /* brief: 	Make move and then make attack against specified target.
 	  	Virtual overloaded function from combatant.

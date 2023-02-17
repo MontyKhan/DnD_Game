@@ -1,0 +1,46 @@
+cmake_minimum_required(VERSION 3.16)  # CMake version check
+project(DnD_Game LANGUAGES CXX)               	# Create project "DnD_Game"
+set(CMAKE_CXX_STANDARD 17)            # Enable c++17 standard
+
+# Add main.cpp file of project root directory as source file
+set (SOURCE_FILES
+combatant.cpp 
+csv_reader.cpp 
+tools.cpp 
+load_file.cpp 
+weapon_type.cpp 
+roll.cpp 
+pathfinding.cpp 
+player.cpp 
+tile.cpp 
+object.cpp 
+display.cpp 
+main.cpp
+)
+
+link_directories(${CMAKE_SOURCE_DIR}/lib)
+
+set(LIBS_PATH libs/)
+set(LIBS_DEBUG 
+${LIBS_PATH}sfml-graphics-d
+${LIBS_PATH}sfml-window-d
+${LIBS_PATH}sfml-system-d
+${LIBS_PATH}sfml
+${LIBS_PATH}rapidxml
+)
+set(LIBS_RELEASE 
+${LIBS_PATH}sfml-graphics
+${LIBS_PATH}sfml-window
+${LIBS_PATH}sfml-system
+${LIBS_PATH}sfml
+${LIBS_PATH}rapidxml
+)
+
+# Add executable target with source files listed in SOURCE_FILES variable
+add_executable(dnd_game ${SOURCE_FILES})
+target_include_directories(dnd_game PRIVATE ${LIBS_PATH}include include/)
+
+TARGET_LINK_LIBRARIES(dnd_game debug ${LIBS_DEBUG} )
+TARGET_LINK_LIBRARIES(dnd_game optimized ${LIBS_RELEASE} )
+
+set_property(TARGET dnd_game PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Debug/")

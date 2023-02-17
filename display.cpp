@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <filesystem>
 #include <iostream>
-#include "include/display.h"
-#include "include/combatant.h"
+#include "display.h"
+#include "combatant.h"
 
 namespace fs = std::filesystem;
 
@@ -31,16 +31,19 @@ void updateScreen(sf::RenderWindow *window)
 */
 int load_sprites()
 {
-	std::string directory = "./images/sprites";
+	std::string directory = ".\\images\\sprites\\";
 
 	float mult = 1;
 
 	for(auto& p: fs::directory_iterator(directory))
 	{
-		std::string name = p.path().stem();
+		std::string name = p.path().stem().string();
 		
 		sf::Image image;
 
+		std::string imagepath = p.path().string();
+		std::cout << "Absolute path for " << p << " is " << fs::absolute(p) << '\n';
+		bool exists = std::filesystem::exists(p.path().string());
 		if (!(image.loadFromFile(p.path().string())))
 			std::cout << "Could not load from file!" << std::endl;
 

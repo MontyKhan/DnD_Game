@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\robbi\source\repos\DnD_Game\CMakeFiles\742f2420248dd31f07eeb5325325e988\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{3D050ACE-14BF-381E-9130-635D69D54820}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

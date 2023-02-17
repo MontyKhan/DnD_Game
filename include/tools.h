@@ -33,6 +33,7 @@ void change_head(node * head, object* new_player, int new_initiative);		 // Add 
 void remove_from_list(node * target);						 // Remove node from list.
 void node_to_str(std::string &name, std::string &value, xml_node<> *node);	 // Convert whatever nodes store their values in to string.
 type get_damage_type(std::string str);						 // Returns to string value of the enum's name
+std::vector<std::string> split_string(std::string& str, std::string delim);	// Populate vector with split string
 
 extern Tile* map;
 

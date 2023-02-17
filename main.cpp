@@ -1,11 +1,11 @@
-#include "include/csv_reader.h"
-#include "include/combatant.h"
-#include "include/tools.h"
-#include "include/load_file.h"
-#include "include/monster.h"
-#include "include/tile.h"
-#include "include/display.h"
-#include "include/linegrid.h"
+#include "csv_reader.h"
+#include "combatant.h"
+#include "tools.h"
+#include "load_file.h"
+#include "monster.h"
+#include "tile.h"
+#include "display.h"
+#include "linegrid.h"
 #include <math.h>
 #include <map>
 #include <filesystem>
@@ -101,6 +101,22 @@ void run_encounter(std::vector <object*> players)
 		bool nextTurn = false;
 		while (nextTurn == false)
 		{
+			// Rotate player to face mouse
+			sprites["Player"].setRotation(face_mouse(sprites["Player"], window));
+
+			// Move tile highlighter to mouse.
+			moveToMousedOverTile(highlighter, window, hl_width);
+
+			window.clear();
+			LineGrid tiles;
+			tiles.create((WINDOW_W + 1) / battlemap->width());
+
+			updateScreen(&window);
+
+			window.draw(highlighter);
+			window.draw(tiles);
+			window.display();
+
 			if (window.pollEvent(event))
 			{
 				// Keyboard events
@@ -125,22 +141,6 @@ void run_encounter(std::vector <object*> players)
 						nextTurn = true;
 				}
 			}
-
-			// Rotate player to face mouse
-			sprites["Player"].setRotation(face_mouse(sprites["Player"],window));
-
-			// Move tile highlighter to mouse.
-			moveToMousedOverTile(highlighter, window, hl_width);
-
-			window.clear();
-			LineGrid tiles;
-			tiles.create((WINDOW_W+1)/battlemap->width());
-
-			updateScreen(&window);
-
-			window.draw(highlighter);
-			window.draw(tiles);
-			window.display();
 		}
 
 		if (active_player->next == active_player)
@@ -163,7 +163,7 @@ void run_encounter(std::vector <object*> players)
 */
 int main() {
 
-	srand(time(NULL));							// Generate random seed.
+	srand(time(nullptr));							// Generate random seed.
 
 	std::vector<object*> players; 						// Create vector of players and monsters.
 
@@ -196,5 +196,5 @@ int main() {
 
 	delete(battlemap);
 
-    	return 0;
+    return 0;
 };
