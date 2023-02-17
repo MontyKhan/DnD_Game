@@ -13,7 +13,7 @@ public:
 	// Make move, then attack.
 	int take_turn(node* self);
 	// Deal damage to target, then check if they survive.
-	life_status make_attack(object & target);
+	life_status make_attack(Object & target);
 
 	// Get object type
 	object_type getObjectType() {return type_player; };

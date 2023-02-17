@@ -8,6 +8,6 @@
 using namespace rapidxml;
 
 // Parses through an xml formatted .enctr file for combatants.
-std::vector<object*> interpret_nodes(const char* filepath);
+std::vector<Object*> interpret_nodes(const char* filepath);
 
 #endif

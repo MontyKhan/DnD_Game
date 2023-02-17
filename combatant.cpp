@@ -22,13 +22,13 @@ using namespace rapidxml;
    return:	Nothing, as constructor.
 */
 
-combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, location Coordinates, life_status Status)
+combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status Status)
 {
 	name = Name;
 	hp = HP;
 	ac = AC;
 	speed = Spd;
-	init = roll(1,20,Init);
+	init = Roll(1,20,Init);
 	coordinates = Coordinates;
 	status = Status;
 }
@@ -43,8 +43,8 @@ combatant::combatant(std::vector<std::string> line)
 	hp = stoi(line[HP_VAR]);			// Get HP (int)
 	ac = stoi(line[AC_VAR]);			// Get AC (int)
 	speed = stoi(line[SPD_VAR]);			// Get speed (int)
-	init = roll(1,20,stoi(line[INIT_VAR]));		// Create initiative roll
-	coordinates = location();
+	init = Roll(1,20,stoi(line[INIT_VAR]));		// Create initiative roll
+	coordinates = Location();
 	status = dead;
 }
 
@@ -70,7 +70,7 @@ combatant::combatant(xml_node<> *root)
 		}
 		else if (str_name == "coordinates")
 		{
-			coordinates = location(str_value);
+			coordinates = Location(str_value);
 		}
 		else
 		{
@@ -93,7 +93,7 @@ combatant::combatant(xml_node<> *root)
 			}
 			else if (str_name == "initiative")
 			{
-				init = roll(1,20,stoi(str_value));
+				init = Roll(1,20,stoi(str_value));
 			}
 		}
 	}
@@ -118,7 +118,7 @@ void combatant::print_stats()
    param: 	roll value, containing the number of dice, the size of the dice and the modifier.
    returns: 	The result of the roll, plus the modifier.
 */
-int combatant::make_roll(roll x)
+int combatant::make_roll(Roll x)
 {
 	int damage = 0;					// Initialise damage to 0.
 	vector <int> results;				// Declare empty vector of ints for containing results of each roll.
@@ -145,7 +145,8 @@ int combatant::make_roll(roll x)
 */
 int combatant::roll_initiative()
 {
-	return make_roll(init);
+	initiative = make_roll(init);
+	return initiative;
 }
 
 /* brief:	Select opponent and make attack.
@@ -196,7 +197,7 @@ int combatant::take_turn(node* self)
 
 			if (free_cells.size() > 0)
 			{
-				Tile* new_location;
+				Tile* new_Location;
 				for (Tile* T : free_cells)
 				{
 					std::cout << "T: " << T->getCoordinates();
@@ -208,24 +209,24 @@ int combatant::take_turn(node* self)
 
 						if (min_dist <= DIAGONAL_NEIGHBOUR)
 						{
-							new_location = this->parent;
+							new_Location = this->parent;
 							std::cout << "Already neighbour. Stay in place." << std::endl;
 							reached = true;
 						}
 						if (min_dist <= this->speed)
 						{
-							new_location = T;
+							new_Location = T;
 							reached = true;
 						}
 						else
-							new_location = parent->findMidPoint(T, this->speed);
+							new_Location = parent->findMidPoint(T, this->speed);
 					}
 				}
 
-				std::cout << "new location: " << new_location->getCoordinates() << std::endl;
+				std::cout << "new Location: " << new_Location->getCoordinates() << std::endl;
 
 				// Select new tile to move to.
-				moveTo(new_location);
+				moveTo(new_Location);
 			}
 			else
 			{
@@ -258,7 +259,7 @@ int combatant::take_turn(node* self)
    param:	target - Passed by reference. Combatant for the attacks to be made against.
    return:	status of target after attack, i.e. dead or alive.
 */
-life_status combatant::make_attack(object & target)
+life_status combatant::make_attack(Object & target)
 {
 	int wc = 0;							// Weapon choice
 
@@ -291,7 +292,7 @@ life_status combatant::make_attack(object & target)
 		target - Passed by reference. Combatant for the attacks to be made against.
    return:	status of target after attack, i.e. dead or alive.
 */
-life_status combatant::make_attack(weapon_type weapon, object & target)
+life_status combatant::make_attack(weapon_type weapon, Object & target)
 {
 	int attack_roll = make_roll(weapon.getAttack());		// Initialise attack_roll to randomly generated value in dice range.
 

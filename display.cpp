@@ -9,7 +9,7 @@ namespace fs = std::filesystem;
 // Create map containers
 std::map<std::string, sf::Texture> textures;
 std::map<std::string, sf::Sprite> sprites;
-std::map<std::string, object> combatants;
+std::map<std::string, Object> combatants;
 
 /* brief:	Update the screen with all entities that need to be drawn.
    param:	*window - Pointed to the window used as the UI.

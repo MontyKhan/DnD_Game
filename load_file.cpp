@@ -14,7 +14,7 @@ using namespace std;
    returns: 	A vector of pointers to combatants, as described by the .enctr file.
 		Uses downcasting to actually contain Players and monsters.
 */
-std::vector<object*> interpret_nodes(const char* filepath)
+std::vector<Object*> interpret_nodes(const char* filepath)
 {
 	rapidxml::file<> xmlFile(filepath); // Default template is char
     	rapidxml::xml_document<> doc;
@@ -22,7 +22,7 @@ std::vector<object*> interpret_nodes(const char* filepath)
 
 	xml_node<> *root = doc.first_node();
 
-	std::vector<object*> combatants;	// Stores both monsters and players through downcasting.
+	std::vector<Object*> combatants;	// Stores both monsters and players through downcasting.
 
 	for (xml_node<> *child = root->first_node(); child; child = child->next_sibling())	// Monster
 	{

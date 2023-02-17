@@ -6,6 +6,7 @@
 #include "tile.h"
 #include "display.h"
 #include "linegrid.h"
+#include "battlemap.h"
 #include <math.h>
 #include <map>
 #include <filesystem>
@@ -60,9 +61,9 @@ void moveToMousedOverTile(sf::RectangleShape &highlighter, sf::RenderWindow &win
 		sprites - map containing all sprites to display
    returns: 	nothing
 */
-void run_encounter(std::vector <object*> players)
+void run_encounter(BattleMap *battlemap)
 {
-	node * active_player = new node();		// Create initialisation node for players.
+	auto active_player = battlemap->initiative_order.begin();
 	int i = 0;					// Initialise counter to 0.
 
 	// Graphics loop crudely inserted below, so declaring variables here for time being.
@@ -74,21 +75,15 @@ void run_encounter(std::vector <object*> players)
 	highlighter.setOrigin(hl_width/2, hl_width/2);
 	highlighter.setFillColor(sf::Color(0xFF,0xFF,0x66,0x70));
 
-	/* Create circular list of players sorted by intiative. Point active_player at head. */
-	active_player = initiative_round(players, window);
-	active_player->print();
-
-	cout << endl;					// Add line break for readability.
-
 	std::cout << endl;
 
-	node * first_player = active_player;
+	auto first_player = active_player;
 
 	sf::Event event;
 	// Repeat until only one player is left.
 	do {
-		std::cout << "character name: " << active_player->player->getName() << std::endl;
-		std::cout << "character location: " << active_player->player->getCoordinates() << std::endl;
+		std::cout << "character name: " << active_player->getName() << std::endl;
+		std::cout << "character Location: " << active_player->player->getCoordinates() << std::endl;
 		// Make move and take attack
 		bool turn_finished = active_player->player->take_turn(active_player);
 
@@ -101,22 +96,6 @@ void run_encounter(std::vector <object*> players)
 		bool nextTurn = false;
 		while (nextTurn == false)
 		{
-			// Rotate player to face mouse
-			sprites["Player"].setRotation(face_mouse(sprites["Player"], window));
-
-			// Move tile highlighter to mouse.
-			moveToMousedOverTile(highlighter, window, hl_width);
-
-			window.clear();
-			LineGrid tiles;
-			tiles.create((WINDOW_W + 1) / battlemap->width());
-
-			updateScreen(&window);
-
-			window.draw(highlighter);
-			window.draw(tiles);
-			window.display();
-
 			if (window.pollEvent(event))
 			{
 				// Keyboard events
@@ -141,6 +120,22 @@ void run_encounter(std::vector <object*> players)
 						nextTurn = true;
 				}
 			}
+
+			// Rotate player to face mouse
+			sprites["Player"].setRotation(face_mouse(sprites["Player"], window));
+
+			// Move tile highlighter to mouse.
+			moveToMousedOverTile(highlighter, window, hl_width);
+
+			window.clear();
+			LineGrid tiles;
+			tiles.create((WINDOW_W + 1) / battlemap->width());
+
+			updateScreen(&window);
+
+			window.draw(highlighter);
+			window.draw(tiles);
+			window.display();
 		}
 
 		if (active_player->next == active_player)
@@ -165,11 +160,11 @@ int main() {
 
 	srand(time(nullptr));							// Generate random seed.
 
-	std::vector<object*> players; 						// Create vector of players and monsters.
+	std::vector<Object*> players; 						// Create vector of players and monsters.
 
 	players = interpret_nodes("./stats/encounter1.enctr");
 
-	battlemap = new Tile(25,19);
+	BattleMap *battlemap = new BattleMap(25,19,players);
 
 	battlemap->print_map();
 
@@ -177,14 +172,14 @@ int main() {
 	load_sprites();
 
 	// Range based for loop. Print stats of each player to screen.
-	// Also adds players to map and screen in correct location.
-	for(object* O : players) {
+	// Also adds players to map and screen in correct Location.
+	for(Object* O : players) {
 		O->print_stats();
 		sprites[O->getName()].setPosition(16.f+(32.f*float(O->getCoordinates().getX())),
 						  16.f+(32.f*float(O->getCoordinates().getY())));
 		Tile *tile = battlemap->get(O->getCoordinates());
 		tile->setContents(O);
-		combatants.insert(std::pair<std::string, object>(O->getName(), *O));
+		combatants.insert(std::pair<std::string, Object>(O->getName(), *O));
 	}
 
 	battlemap->print_map();
@@ -192,7 +187,7 @@ int main() {
 	std::cout << std::endl;
 
 	// Loop for combat.
-	run_encounter(players);
+	run_encounter(battlemap);
 
 	delete(battlemap);
 

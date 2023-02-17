@@ -10,7 +10,7 @@ using namespace std;
 		&r - roll to print.
    returns:	output stream.
 */
-std::ostream & operator << (std::ostream &out, const roll &r)
+std::ostream & operator << (std::ostream &out, const Roll &r)
 {
 	out << r.num << "d" << r.dice << " + " << r.mod;
 	return out;
@@ -20,7 +20,7 @@ std::ostream & operator << (std::ostream &out, const roll &r)
    param:	std::string input, in the format %d% + %.
    returns:	Nothing, as constructor.
 */
-roll::roll(std::string input)
+Roll::Roll(std::string input)
 {
 	int d = input.find("d");			// Find number of characters in the 'd' char is.
 	int dice_length = input.length() - d + 1;	// Assign length of dice string to one less than the number of chars in d is.

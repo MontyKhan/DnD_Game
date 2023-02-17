@@ -12,31 +12,31 @@ int Player::take_turn(node* self)
 {
 	cout << "Currently at: " << this->coordinates << endl;
 
-	location new_location = location();
-	bool location_set = false;
+	Location new_Location = Location();
+	bool Location_set = false;
 	int turn_finished = 0;
 
 	sf::Event event;
 
-	while (location_set == false)
+	while (Location_set == false)
 	{
-		if (this->parentWindow->pollEvent(event))
+		//if (this->parentWindow->pollEvent(event))
 		{
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
-				new_location.setX(int(event.mouseButton.x/32.f));
-				new_location.setY(int(event.mouseButton.y/32.f));
+				new_Location.setX(int(event.mouseButton.x/32.f));
+				new_Location.setY(int(event.mouseButton.y/32.f));
 				cout << "x: " << event.mouseButton.x/32.f << ", y: " << event.mouseButton.y/32.f << endl;
-				location_set = true;
+				Location_set = true;
 				turn_finished = 1;
 			}
 		}
 	}
 
-	//location new_location = this->coordinates + move_vector;
-	if (new_location != this->coordinates)
+	//Location new_Location = this->coordinates + move_vector;
+	if (new_Location != this->coordinates)
 	{
-		Tile* new_tile = this->parent->get(new_location);
+		Tile* new_tile = this->parent->get(new_Location);
 		moveTo(this->parent->findMidPoint(new_tile, this->speed));
 	}
 	cout << "Now at " << this->coordinates << endl;
@@ -76,7 +76,7 @@ int Player::take_turn(node* self)
    param: 	Address of target, called by reference.
    returns:	The status of the target.
 */
-life_status Player::make_attack(object & target)
+life_status Player::make_attack(Object & target)
 {
 	std::string input;
 	cout << endl << "Please give number of weapon to use: ";

@@ -4,12 +4,10 @@
 #include "object.h"
 #include "pathfinding.h"
 
-extern Tile* battlemap;
-
 class Tile {
 private:
-	object* contents;
-	location coordinates;
+	Object* contents;
+	Location coordinates;
 	Tile* north;
 	Tile* east;
 	Tile* south;
@@ -24,12 +22,12 @@ public:
 	void print_map();
 	// Print map starting Tile, each tile represented by "x"
 	void print_from();
-	// Get specific tile by map reference, location.
-	Tile* get(location coordinates);
+	// Get specific tile by map reference, Location.
+	Tile* get(Location coordinates);
 	// Get specific tile by map reference, individual ints.
 	Tile* get(int x, int y);
 	// Get specific tile by contents.
-	Tile* get(object *toFind);
+	Tile* get(Object *toFind);
 	// Finds distance to another tile.
 	int findMinimumPath(Tile* target);			// Accessor for when calling within code.
 	int findMinimumPath(Tile* target, int hops);		// Recursive function.
@@ -40,12 +38,12 @@ public:
 	int height();
 
 	// Getters/setters
-	object* getContents() { return contents; };
-	int setContents(object* Contents);			// Defined in file
-	location getCoordinates() { return coordinates; };
-	int setCoordinates(int x, int y, int z) { coordinates = location(x,y,z); return 0; };
-	int setCoordinates(location Coordinates) { coordinates = Coordinates; return 0; };
-	object* clearContents() { contents = NULL; return contents; };
+	Object* getContents() { return contents; };
+	int setContents(Object* Contents);			// Defined in file
+	Location getCoordinates() { return coordinates; };
+	int setCoordinates(int x, int y, int z) { coordinates = Location(x,y,z); return 0; };
+	int setCoordinates(Location Coordinates) { coordinates = Coordinates; return 0; };
+	Object* clearContents() { contents = NULL; return contents; };
 	Tile* getNorth() { return north; };
 	int setNorth(Tile* North) { north = North; return 0;};
 	Tile* getEast() { return east; };
@@ -56,8 +54,8 @@ public:
 	int setWest(Tile* West) { west = West; return 0;};
 
 	// Friend functions
-	friend std::vector<Tile*> object::getFreeNeighbours();
-	friend std::vector<Tile*> object::getOccupiedNeighbours();
+	friend std::vector<Tile*> Object::getFreeNeighbours();
+	friend std::vector<Tile*> Object::getOccupiedNeighbours();
 };
 
 #endif

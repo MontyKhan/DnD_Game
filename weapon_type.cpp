@@ -32,11 +32,11 @@ weapon_type::weapon_type(rapidxml::xml_node<> *root)
 		}
 		else if (str_name == "attack")
 		{
-			attack = roll(1,20,stoi(str_value));
+			attack = Roll(1,20,stoi(str_value));
 		}
 		else if (str_name == "damage")
 		{
-			damage = roll(str_value);
+			damage = Roll(str_value);
 		}
 		else if (str_name == "range")
 		{

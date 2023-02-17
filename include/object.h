@@ -3,6 +3,7 @@
 
 #include "pathfinding.h"
 #include "weapon_type.h"
+#include "battlemap.h"
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
@@ -13,18 +14,19 @@ enum life_status {alive, death_1, death_2, dead};
 enum object_type {OutOfBounds, type_object, type_player, type_combatant};
 
 class Tile;
-class node;
 
-class object {
+class Object {
 protected:
 	std::string name;
-	location coordinates;
-	Tile* parent;
-	sf::RenderWindow* parentWindow;
+	Location coordinates;
+	Tile *parent;
+	uint8_t initiative;
+	BattleMap *parentMap;
+
 public:
 	// Constructors
-	object() : name(""), coordinates(location(0,0,0)), parent(NULL), parentWindow(NULL) {};
-	object(location Coordinates) : name(""), coordinates(Coordinates), parent(NULL), parentWindow(NULL) {};
+	Object() : name(""), coordinates(Location(0,0,0)), parent(NULL), initiative(0) {};
+	Object(Location Coordinates) : name(""), coordinates(Coordinates), parent(NULL), initiative(0) {};
 
 	// Get a list of vacant neighbouring tiles.
 	std::vector<Tile*> getFreeNeighbours();
@@ -36,15 +38,15 @@ public:
 
 	// Virtual functions for downcasting
 	// Roll a dice
-	virtual int make_roll(roll x) { return -1; };
+	virtual int make_roll(Roll x) { return -1; };
 	// Roll initiative specifically
 	virtual int roll_initiative() { return -1; };
 	// Move and then make attack
 	virtual int take_turn(node* self) { return -1; };
 	// Roll both attack and damage against a target.
-	virtual life_status make_attack(object & target) { return dead; };
+	virtual life_status make_attack(Object & target) { return dead; };
 	// Roll both attack and damage against a target, supplying a weapon.
-	virtual life_status make_attack(weapon_type weapon, object & target) { return dead; };	// Pass by reference
+	virtual life_status make_attack(weapon_type weapon, Object & target) { return dead; };	// Pass by reference
 	// Reduce hp by dam
 	virtual life_status take_damage(int dam) { return dead; };
 	// Reduce hp by dam, specific to damage type.
@@ -53,12 +55,12 @@ public:
 	virtual int moveTo(Tile* target) { return -1; };
 
 	// Getters/setters
-	location getCoordinates() { return coordinates; };
-	int setCoordinates(location Coordinates) { coordinates = Coordinates; return 0; };
-	Tile* getParent() { return parent; };
+	Location getCoordinates() { return coordinates; };
+	int setCoordinates(Location Coordinates) { coordinates = Coordinates; return 0; };
+	Tile *getParent() { return parent; };
 	int setParent( Tile* Parent ) { parent = Parent; return 0; };
-	sf::RenderWindow* getParentWindow() { return parentWindow; };		// Parent Window
-	int setParentWindow(sf::RenderWindow &window) { parentWindow = &window; return 0; };
+	BattleMap *getBattleMap() { return parentMap; };
+	int setBattleMap(BattleMap* map) { parentMap = map; return 0; };
 
 	// Virtual getters/setters
 	virtual std::string getName() { return name; };				// Name
@@ -69,18 +71,20 @@ public:
 	virtual int setAc(int val) { return -1; };
 	virtual int getSpd() { return -1; };					// Speed
 	virtual int setSpd(int val) { return -1; };
-	virtual roll getInit() { return roll(); };				// Initiative
+	virtual Roll getInit() { return Roll(0,0,0); };				// Initiative roll
 	virtual int setInit(int val) { return -1; };
 	virtual life_status getStatus() { return dead; };			// Status
 	virtual int setStatus(life_status val) { return -1; };
+	virtual int getInitiative() { return -1; };					// Initiative value
+	virtual int setInitiative(int init) { return -1; };
 
 	// Get type
 	virtual object_type getObjectType() {return type_object; };			// Return ennumerated type value.
 };
 
-class OutOfBoundsObject : public object
+class OutOfBoundsObject : public Object
 {
-	using object::object;
+	using Object::Object;
 
 	object_type getObjectType() {return OutOfBounds; };
 };

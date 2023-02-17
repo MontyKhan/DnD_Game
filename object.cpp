@@ -7,7 +7,7 @@ using namespace std;
    param:	None.
    returns:	A vector containing the empty neighbouring cells.
 */
-std::vector<Tile*> object::getFreeNeighbours()
+std::vector<Tile*> Object::getFreeNeighbours()
 {
 	// Vector to contain neighbouring vacant tiles.
 	std::vector<Tile*> free_tiles;
@@ -30,7 +30,6 @@ std::vector<Tile*> object::getFreeNeighbours()
 		free_tiles.push_back(this->parent->west);
 	if (this->parent->west->north->contents == nullptr)
 		free_tiles.push_back(this->parent->west->north);
-	cout << "test_getFreeNeighbours_1" << endl;
 
 	return free_tiles;
 }
@@ -39,7 +38,7 @@ std::vector<Tile*> object::getFreeNeighbours()
    param:	None.
    returns:	A vector containing the occupied neighbouring cells.
 */
-std::vector<Tile*> object::getOccupiedNeighbours()
+std::vector<Tile*> Object::getOccupiedNeighbours()
 {
 	// Vector to contain neighbouring vacant tiles.
 	std::vector<Tile*> occupied_tiles;
@@ -65,11 +64,11 @@ std::vector<Tile*> object::getOccupiedNeighbours()
 	return occupied_tiles;
 }
 
-/* brief:	Print name and location to console.
+/* brief:	Print name and Location to console.
    param:	None.
    returns:	Nothing.
 */
-void object::print_stats()
+void Object::print_stats()
 {
 	std::cout << "Name: " << this->name << std::endl;
 	std::cout << "Coordinates: " << this->coordinates << std::endl;
