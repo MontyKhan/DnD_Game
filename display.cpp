@@ -37,7 +37,7 @@ int load_sprites()
 
 	for(auto& p: fs::directory_iterator(directory))
 	{
-		std::string name = p.path().stem();
+		std::string name = p.path().stem().string();
 		
 		sf::Image image;
 

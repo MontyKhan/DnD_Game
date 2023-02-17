@@ -18,10 +18,19 @@ display.cpp
 main.cpp
 )
 
-set( LIBS libs/rapidxml libs/sfml )
+link_directories(${CMAKE_SOURCE_DIR}/lib)
+
+set(LIBS_PATH libs/)
+set(LIBS 
+${LIBS_PATH}sfml-graphics
+${LIBS_PATH}sfml-window
+${LIBS_PATH}sfml-system
+${LIBS_PATH}sfml
+${LIBS_PATH}rapidxml
+)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(dnd_game ${SOURCE_FILES})
-target_include_directories(dnd_game PRIVATE libs/include include/)
+target_include_directories(dnd_game PRIVATE ${LIBS_PATH}include include/)
 
 TARGET_LINK_LIBRARIES(dnd_game ${LIBS} )

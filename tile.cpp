@@ -13,12 +13,12 @@
 */
 Tile::Tile(int x, int y)
 {
-	// Assign values of links to NULL, to be filled in later.
+	// Assign values of links to nullptr, to be filled in later.
 	// Could use simplifying?
-	this->north = NULL;
-	this->east = NULL;
-	this->south = NULL;
-	this->west = NULL;
+	this->north = nullptr;
+	this->east = nullptr;
+	this->south = nullptr;
+	this->west = nullptr;
 	this->contents = new OutOfBoundsObject();
 	this->coordinates = location(0,0,0);
 	this->origin = this;
@@ -30,7 +30,7 @@ Tile::Tile(int x, int y)
 		Tile* new_tile = new Tile();
 		new_tile->origin = this->origin;
 		new_tile->contents = new OutOfBoundsObject();
-		new_tile->west = x_iter;			// All else will be NULL by default.
+		new_tile->west = x_iter;			// All else will be nullptr by default.
 		new_tile->setCoordinates(i+1,0,0);
 		x_iter->east = new_tile;
 		x_iter = x_iter->east;
@@ -54,7 +54,7 @@ Tile::Tile(int x, int y)
 			new_tile->origin = this->origin;
 			new_tile->west = x_iter;
 			new_tile->north = prev_y->east;
-			if (prev_y->east != NULL)
+			if (prev_y->east != nullptr)
 				prev_y->east->south = new_tile;
 			new_tile->setCoordinates(i+1,j,0);
 
@@ -85,13 +85,13 @@ void Tile::print_map()
 	Tile* origin = this;
 
 	// Iterate upwards
-	while (origin->north != NULL)
+	while (origin->north != nullptr)
 	{
 		origin = origin->north;
 	}
 
 	// Iterate to the right
-	while (origin->west != NULL)
+	while (origin->west != nullptr)
 	{
 		origin = origin->west;
 	}
@@ -110,9 +110,9 @@ void Tile::print_from()
 	Tile* tile = this;
 
 	// Iterate through row, print "x" for each tile.
-	while (tile != NULL)
+	while (tile != nullptr)
 	{
-		if (tile->contents == NULL)
+		if (tile->contents == nullptr)
 			std::cout << "x";
 		else if (tile->contents->getObjectType() == OutOfBounds)
 			std::cout << "w";
@@ -125,7 +125,7 @@ void Tile::print_from()
 	std::cout << std::endl;
 
 	// If there's a row below, call self recursively.
-	if (south != NULL)
+	if (south != nullptr)
 		south->print_from();
 }
 
@@ -142,7 +142,7 @@ Tile* Tile::get(int x, int y)
 		// Iterate down column.
 		for (int j = 0; j < y; j++)
 		{
-			if (tile->south == NULL)
+			if (tile->south == nullptr)
 				throw "Out of range!";
 			tile = tile->south;
 		}
@@ -150,7 +150,7 @@ Tile* Tile::get(int x, int y)
 		// Iterate across row
 		for (int i = 0; i < x; i++)
 		{	
-			if (tile->east == NULL)
+			if (tile->east == nullptr)
 				throw "Out of range!";
 			tile = tile->east;
 		}
@@ -197,7 +197,7 @@ int Tile::setContents(object* Contents)
 	try
 	{
 		// Don't want to accidentally clear occupied tile, so check if empty first.
-		if (contents == NULL)
+		if (contents == nullptr)
 		{
 			if (Contents->getCoordinates() == this->coordinates)
 			{
@@ -257,13 +257,13 @@ int Tile::findMinimumPath(Tile* target, int hops)
 	
 	// By default, set the minimum distance to an arbitarily large value. Will be overriden if a path is found.
 	float north_dist = MAX_VALUE, east_dist = MAX_VALUE, south_dist = MAX_VALUE, west_dist = MAX_VALUE;
-	if (this->north != NULL)
+	if (this->north != nullptr)
 		north_dist = find_euc(this->north->coordinates, target->coordinates);
-	if (this->east != NULL)
+	if (this->east != nullptr)
 		east_dist = find_euc(this->east->coordinates, target->coordinates);
-	if (this->south != NULL)
+	if (this->south != nullptr)
 		south_dist = find_euc(this->south->coordinates, target->coordinates);
-	if (this->west != NULL)
+	if (this->west != nullptr)
 		west_dist = find_euc(this->west->coordinates, target->coordinates);
 
 	// Check if any of the neighbouring tiles are closer to the target.
@@ -305,13 +305,13 @@ Tile* Tile::findMidPoint(Tile* target, int moves)
 	
 	// By default, set the minimum distance to an arbitarily large value. Will be overriden if a path is found.
 	float north_dist = MAX_VALUE, east_dist = MAX_VALUE, south_dist = MAX_VALUE, west_dist = MAX_VALUE;
-	if (this->north != NULL)
+	if (this->north != nullptr)
 		north_dist = find_euc(this->north->coordinates, target->coordinates);
-	if (this->east != NULL)
+	if (this->east != nullptr)
 		east_dist = find_euc(this->east->coordinates, target->coordinates);
-	if (this->south != NULL)
+	if (this->south != nullptr)
 		south_dist = find_euc(this->south->coordinates, target->coordinates);
-	if (this->west != NULL)
+	if (this->west != nullptr)
 		west_dist = find_euc(this->west->coordinates, target->coordinates);
 
 	// Check if any of the neighbouring tiles are closer to the target.
@@ -347,7 +347,7 @@ int Tile::width()
 	int i = 0;
 	Tile *tile = this->origin;
 
-	while (tile->getEast() != NULL)
+	while (tile->getEast() != nullptr)
 	{	
 		tile = tile->getEast();
 		i++;
@@ -365,7 +365,7 @@ int Tile::height()
 	int i = 0;
 	Tile *tile = this->origin;
 
-	while (tile->getSouth() != NULL)
+	while (tile->getSouth() != nullptr)
 	{
 		tile = tile->getSouth();
 		i++;

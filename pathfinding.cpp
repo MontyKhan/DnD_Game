@@ -1,5 +1,5 @@
 #include "pathfinding.h"
-#include <boost/algorithm/string.hpp>
+#include "tools.h"
 #include <string>
 #include <vector>
 #include <math.h>
@@ -81,9 +81,7 @@ location operator - (const location &rhs, const location &lhs)
 */
 location::location(std::string str)
 {
-	std::vector<std::string> vals;
-
-	boost::algorithm::split(vals,str,boost::is_any_of(","));
+	std::vector<std::string> vals = split_string(str, ",");
 
 	x = stoi(vals[0]);
 	y = stoi(vals[1]);

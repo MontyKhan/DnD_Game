@@ -163,7 +163,7 @@ void run_encounter(std::vector <object*> players)
 */
 int main() {
 
-	srand(time(NULL));							// Generate random seed.
+	srand(time(nullptr));							// Generate random seed.
 
 	std::vector<object*> players; 						// Create vector of players and monsters.
 

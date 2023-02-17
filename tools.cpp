@@ -137,7 +137,7 @@ void add_to_list(node * head, int initiative, object* player)
 	entry->player = player;				// Add data
 	entry->initiative = initiative;
 
-	if (head->next != NULL) {
+	if (head->next != nullptr) {
 		node * tmp = new node();		// Declare new node
 		tmp = head->next;			// Bump next node along
 		entry->next = tmp;
@@ -158,10 +158,10 @@ void add_to_list(node * head, int initiative, object* player)
 void remove_from_list(node * target)
 {
 	// If not last node in list, point "prev" of subsequent node to previous node.
-	if (target->next != NULL)
+	if (target->next != nullptr)
 		target->next->prev = target->prev;
 	// If not first node in list, point "next" of previous node to subsequent node.
-	if (target->prev != NULL)
+	if (target->prev != nullptr)
 		target->prev->next = target->next;
 
 	sprites.erase(target->player->getName());
@@ -198,31 +198,31 @@ node * initiative_round(vector <object*> players, sf::RenderWindow &window)
 	head->player = players[0];				// Set player value for head to first value in vector.
 	head->player->setParentWindow(window);			// Assign parent window.
 	head->initiative = players[0]->roll_initiative();	// Set initiative value for head to RNGed value.
-	head->next = NULL;					// Point next towards empty space.
-	head->prev = NULL;					// Point prev towards empty space.
+	head->next = nullptr;					// Point next towards empty space.
+	head->prev = nullptr;					// Point prev towards empty space.
 
 	// Starting at next value in vector, append contents of vector onto each other.
 	// Sort by initiative values.
 	for (int i = 1; i < players.size(); i++)
 	{
-		node * entry = new node();			// Declare empty node to be added to previous node.
-		node * tmp = new node();			// Declare empty node to be used as an iterator.
+		node *entry = new node();			// Declare empty node to be added to previous node.
+		node *tmp = new node();			// Declare empty node to be used as an iterator.
 
 		tmp = head;					// Point iterator node to head.
-		node * tmp2 = head;				// Declare second iterator node, point to head.
+		node *tmp2 = head;				// Declare second iterator node, point to head.
 
 		int initiative_roll = players[i]->roll_initiative();	// Set initiative to randomly generated value.
 		players[i]->setParentWindow(window);			// Assign parent window.
 
 		// Keep iterating through list until you reach the end.
-		while (tmp != NULL) {
+		while (tmp != nullptr) {
 			// If initiative is greater than that of tmp, add new node before it.
 			if (initiative_roll > tmp->initiative) {
 				change_head(tmp, players[i], initiative_roll);
 				break;
 			}
 			// If current node is last in list, add new node after it.
-			else if (tmp->next == NULL) {
+			else if (tmp->next == nullptr) {
 				add_to_list(tmp, initiative_roll, players[i]);
 				break;
 			}
@@ -233,7 +233,7 @@ node * initiative_round(vector <object*> players, sf::RenderWindow &window)
 		}
 
 		// Set tmp2 to the last node in the list.
-		while (tmp2 != NULL)
+		while (tmp2 != nullptr)
 		{
 			tmp2 = tmp2->next;
 		}
@@ -241,7 +241,7 @@ node * initiative_round(vector <object*> players, sf::RenderWindow &window)
 	}
 
 	// Set iterator to last node in list.
-	while (iterator->next != NULL)
+	while (iterator->next != nullptr)
 	{
 		iterator = iterator->next;
 	}
@@ -249,4 +249,17 @@ node * initiative_round(vector <object*> players, sf::RenderWindow &window)
 	head->prev = iterator;				// Stitch prev value of first node to the last node.
 
 	return head;
+}
+
+std::vector<std::string> split_string(std::string& str, std::string delim)
+{
+	size_t pos = 0;
+	std::vector<std::string> arr;
+
+	while ((pos = str.find(delim)) != std::string::npos) {
+		arr.push_back(str.substr(0, pos));
+		str.erase(0, pos + 1);	// +1 represents delimiter
+	}
+
+	return arr;
 }

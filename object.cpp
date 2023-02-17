@@ -14,21 +14,21 @@ std::vector<Tile*> object::getFreeNeighbours()
 
 	cout << "test_getFreeNeighbours_1" << endl;	
 	// Check neighbouring tiles, clockwise starting at North.
-	if (this->parent->north->contents == NULL)
+	if (this->parent->north->contents == nullptr)
 		free_tiles.push_back(this->parent->north);
-	if (this->parent->north->east->contents == NULL)
+	if (this->parent->north->east->contents == nullptr)
 		free_tiles.push_back(this->parent->north->east);
-	if (this->parent->east->contents == NULL)
+	if (this->parent->east->contents == nullptr)
 		free_tiles.push_back(this->parent->east);
-	if (this->parent->east->south->contents == NULL)
+	if (this->parent->east->south->contents == nullptr)
 		free_tiles.push_back(this->parent->east->south);
-	if (this->parent->south->contents == NULL)
+	if (this->parent->south->contents == nullptr)
 		free_tiles.push_back(this->parent->south);
-	if (this->parent->south->west->contents == NULL)
+	if (this->parent->south->west->contents == nullptr)
 		free_tiles.push_back(this->parent->south->west);
-	if (this->parent->west->contents == NULL)
+	if (this->parent->west->contents == nullptr)
 		free_tiles.push_back(this->parent->west);
-	if (this->parent->west->north->contents == NULL)
+	if (this->parent->west->north->contents == nullptr)
 		free_tiles.push_back(this->parent->west->north);
 	cout << "test_getFreeNeighbours_1" << endl;
 
@@ -45,21 +45,21 @@ std::vector<Tile*> object::getOccupiedNeighbours()
 	std::vector<Tile*> occupied_tiles;
 	
 	// Check neighbouring tiles, clockwise starting at North.
-	if ((this->parent->north->contents != NULL) && (this->parent->north->contents->getStatus() == alive))
+	if ((this->parent->north->contents != nullptr) && (this->parent->north->contents->getStatus() == alive))
 		occupied_tiles.push_back(this->parent->north);
-	if ((this->parent->north->east->contents != NULL) && (this->parent->north->east->contents->getStatus() == alive))
+	if ((this->parent->north->east->contents != nullptr) && (this->parent->north->east->contents->getStatus() == alive))
 		occupied_tiles.push_back(this->parent->north->east);
-	if ((this->parent->east->contents != NULL) && (this->parent->east->contents->getStatus() == alive))
+	if ((this->parent->east->contents != nullptr) && (this->parent->east->contents->getStatus() == alive))
 		occupied_tiles.push_back(this->parent->east);
-	if ((this->parent->east->south->contents != NULL) && (this->parent->east->south->contents->getStatus() == alive))
+	if ((this->parent->east->south->contents != nullptr) && (this->parent->east->south->contents->getStatus() == alive))
 		occupied_tiles.push_back(this->parent->east->south);
-	if ((this->parent->south->contents != NULL) && (this->parent->south->contents->getStatus() == alive))
+	if ((this->parent->south->contents != nullptr) && (this->parent->south->contents->getStatus() == alive))
 		occupied_tiles.push_back(this->parent->south);
-	if ((this->parent->south->west->contents != NULL) && (this->parent->south->west->contents->getStatus() == alive))
+	if ((this->parent->south->west->contents != nullptr) && (this->parent->south->west->contents->getStatus() == alive))
 		occupied_tiles.push_back(this->parent->south->west);
-	if ((this->parent->west->contents != NULL) && (this->parent->west->contents->getStatus() == alive))
+	if ((this->parent->west->contents != nullptr) && (this->parent->west->contents->getStatus() == alive))
 		occupied_tiles.push_back(this->parent->west);
-	if ((this->parent->west->north->contents != NULL) && (this->parent->west->north->contents->getStatus() == alive))
+	if ((this->parent->west->north->contents != nullptr) && (this->parent->west->north->contents->getStatus() == alive))
 		occupied_tiles.push_back(this->parent->west->north);
 
 	return occupied_tiles;
