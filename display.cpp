@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <filesystem>
 #include <iostream>
-#include "include/display.h"
-#include "include/combatant.h"
+#include "display.h"
+#include "combatant.h"
 
 namespace fs = std::filesystem;
 

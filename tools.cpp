@@ -1,6 +1,6 @@
-#include "include/tools.h"
-#include "include/csv_reader.h"
-#include "include/display.h"
+#include "tools.h"
+#include "csv_reader.h"
+#include "display.h"
 #include <vector>
 #include <sstream>
 

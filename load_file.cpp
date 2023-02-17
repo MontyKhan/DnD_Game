@@ -1,10 +1,10 @@
 #include <iostream>
 #include <map>
-#include "include/rapidxml/rapidxml_utils.hpp"
-#include "include/combatant.h"
-#include "include/monster.h"
-#include "include/player.h"
-#include "include/tools.h"
+#include "rapidxml/rapidxml_utils.hpp"
+#include "combatant.h"
+#include "monster.h"
+#include "player.h"
+#include "tools.h"
 
 using namespace rapidxml;
 using namespace std;

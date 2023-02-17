@@ -1,5 +1,5 @@
-#include "include/tile.h"
-#include "include/tools.h"
+#include "tile.h"
+#include "tools.h"
 #include <iostream>
 #include <exception>
 #include <stdlib.h>

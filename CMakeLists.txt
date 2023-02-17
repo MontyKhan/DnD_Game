@@ -18,9 +18,10 @@ display.cpp
 main.cpp
 )
 
-set( LIBS libs/rapidxml )
+set( LIBS libs/rapidxml libs/sfml )
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(dnd_game ${SOURCE_FILES})
+target_include_directories(dnd_game PRIVATE libs/include include/)
 
 TARGET_LINK_LIBRARIES(dnd_game ${LIBS} )

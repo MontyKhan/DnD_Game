@@ -1,5 +1,5 @@
-#include "include/object.h"
-#include "include/tile.h"
+#include "object.h"
+#include "tile.h"
 
 using namespace std;
 

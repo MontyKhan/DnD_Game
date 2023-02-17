@@ -2,7 +2,7 @@
 #define WEAPON_TYPE_H
 
 #include "roll.h"
-#include "rapidxml_utils.hpp"
+#include "rapidxml/rapidxml_utils.hpp"
 
 using namespace rapidxml;
 

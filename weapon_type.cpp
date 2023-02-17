@@ -1,8 +1,8 @@
-#include "include/combatant.h"
-#include "include/tools.h"
-#include "include/load_file.h"
-#include "include/weapon_type.h"
-#include "include/rapidxml/rapidxml_print.hpp"
+#include "combatant.h"
+#include "tools.h"
+#include "load_file.h"
+#include "weapon_type.h"
+#include "rapidxml/rapidxml_print.hpp"
 #include <sstream>
 
 using namespace std;

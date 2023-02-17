@@ -1,4 +1,4 @@
-#include "include/pathfinding.h"
+#include "pathfinding.h"
 #include <boost/algorithm/string.hpp>
 #include <string>
 #include <vector>

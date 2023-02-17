@@ -1,9 +1,9 @@
-#include "include/combatant.h"
-#include "include/tools.h"
-#include "include/load_file.h"
-#include "include/pathfinding.h"
-#include "libs/rapidxml/rapidxml_print.hpp"
-#include "include/display.h"
+#include "combatant.h"
+#include "tools.h"
+#include "load_file.h"
+#include "pathfinding.h"
+#include "rapidxml/rapidxml_print.hpp"
+#include "display.h"
 #include <sstream>
 #include <algorithm>
 
