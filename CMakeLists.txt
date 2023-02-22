@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)  # CMake version check
-project(DnD_Game LANGUAGES CXX)               	# Create project "DnD_Game"
+project(DnD_Game LANGUAGES CXX)       # Create project "DnD_Game"
 set(CMAKE_CXX_STANDARD 17)            # Enable c++17 standard
 
 # Add main.cpp file of project root directory as source file
@@ -20,27 +20,48 @@ main.cpp
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
-set(LIBS_PATH libs/)
-set(LIBS_DEBUG 
-${LIBS_PATH}sfml-graphics-d
-${LIBS_PATH}sfml-window-d
-${LIBS_PATH}sfml-system-d
-${LIBS_PATH}sfml
-${LIBS_PATH}rapidxml
-)
-set(LIBS_RELEASE 
-${LIBS_PATH}sfml-graphics
-${LIBS_PATH}sfml-window
-${LIBS_PATH}sfml-system
-${LIBS_PATH}sfml
-${LIBS_PATH}rapidxml
-)
+if (WIN32)
+  set(LIBS_PATH ${CMAKE_SOURCE_DIR}/libs/windows/)
+  
+  set(LIBS_DEBUG 
+  sfml-graphics-d
+  sfml-window-d
+  sfml-system-d
+  )
+  set(LIBS_RELEASE 
+  sfml-graphics
+  sfml-window
+  sfml-system
+  )
+endif (WIN32)
+
+if (UNIX)
+  set(LIBS_PATH ${CMAKE_SOURCE_DIR}/libs/linux/)
+  
+  set(LIBS_DEBUG 
+  sfml-graphics
+  sfml-window
+  sfml-system
+  )
+  set(LIBS_RELEASE 
+  sfml-graphics
+  sfml-window
+  sfml-system
+  )
+endif (UNIX)
 
 # Add executable target with source files listed in SOURCE_FILES variable
-add_executable(dnd_game ${SOURCE_FILES})
-target_include_directories(dnd_game PRIVATE ${LIBS_PATH}include include/)
+add_executable(dnd_game ${CMAKE_SOURCE_DIR}/${SOURCE_FILES})
+target_include_directories(dnd_game PRIVATE ${LIBS_PATH}include ${CMAKE_SOURCE_DIR}/include/)
 
-TARGET_LINK_LIBRARIES(dnd_game debug ${LIBS_DEBUG} )
-TARGET_LINK_LIBRARIES(dnd_game optimized ${LIBS_RELEASE} )
+foreach(LIB ${LIBS_DEBUG})
+  find_library(FOUND_LIB_${LIB} ${LIB}
+               HINTS ${LIBS_PATH}
+              )
+  message("Lib: ${LIB}")
+  message("Found lib: ${FOUND_LIB_${LIB}}")
+  
+  target_link_libraries(dnd_game debug ${LIB})
+endforeach(LIB)
 
 set_property(TARGET dnd_game PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Debug/")
