@@ -21,6 +21,7 @@ main.cpp
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 if (WIN32)
+  message("Platform identified as Windows")
   set(LIBS_PATH ${CMAKE_SOURCE_DIR}/libs/windows/)
   
   set(LIBS_DEBUG 
@@ -36,6 +37,7 @@ if (WIN32)
 endif (WIN32)
 
 if (UNIX)
+  message("Platform identified as Unix")
   set(LIBS_PATH ${CMAKE_SOURCE_DIR}/libs/linux/)
   
   set(LIBS_DEBUG 
@@ -54,14 +56,33 @@ endif (UNIX)
 add_executable(dnd_game ${CMAKE_SOURCE_DIR}/${SOURCE_FILES})
 target_include_directories(dnd_game PRIVATE ${LIBS_PATH}include ${CMAKE_SOURCE_DIR}/include/)
 
-foreach(LIB ${LIBS_DEBUG})
+if (CMAKE_BUILD_TYPE STREQUAL "RELEASE")
+  message("Release build")
+  set(LIBS ${LIBS_RELEASE})
+  set(OUTPUT_DIRECTORY "build/release")
+else ()
+  message("Debug build")
+  set(LIBS ${LIBS_DEBUG})
+  set(OUTPUT_DIRECTORY "build/debug")
+endif ()
+
+foreach(LIB ${LIBS})
   find_library(FOUND_LIB_${LIB} ${LIB}
                HINTS ${LIBS_PATH}
               )
   message("Lib: ${LIB}")
-  message("Found lib: ${FOUND_LIB_${LIB}}")
+  if (FOUND_LIB_${LIB})
+    message("Found lib: ${FOUND_LIB_${LIB}}")
+    set(FOUND_LIBS ${FOUND_LIBS} ${FOUND_LIB_${LIB}})
+  else ()
+    message("Lib not found!")
+  endif ()
   
-  target_link_libraries(dnd_game debug ${LIB})
 endforeach(LIB)
 
-set_property(TARGET dnd_game PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Debug/")
+target_link_libraries(dnd_game ${FOUND_LIBS})
+
+set_target_properties(dnd_game 
+                      PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Debug/"
+                                 RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY}
+                     )
