@@ -2,6 +2,7 @@
 
 #include "object.h"
 #include "display.h"
+#include "linegrid.h"
 
 
 BattleMap::BattleMap(uint8_t x, uint8_t y, std::vector<Object*> objects) :
@@ -154,7 +155,7 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 
 			window.clear();
 			LineGrid tiles;
-			tiles.create((WINDOW_W + 1) / battlemap->width());
+			tiles.create((WINDOW_W + 1) / this->width());
 
 			updateScreen(&window);
 

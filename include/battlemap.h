@@ -1,6 +1,8 @@
 #pragma once
 #include "tile.h"
 
+#include "display.h"
+
 #include <list>
 #include <vector>
 
@@ -28,7 +30,7 @@ public:
 	uint8_t height() { return origin->height(); };
 
 	// Game running
-	void run_encounter(sf::RenderWindow &window));
+	void run_encounter(sf::RenderWindow &window);
 
 	// Public variables
 	std::vector<Object*> objects;
