@@ -27,6 +27,9 @@ public:
 	uint8_t width() { return origin->width(); };
 	uint8_t height() { return origin->height(); };
 
+	// Game running
+	void run_encounter(sf::RenderWindow &window));
+
 	// Public variables
 	std::vector<Object*> objects;
 	std::list<Object*> initiative_order;

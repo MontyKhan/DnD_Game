@@ -15,12 +15,15 @@ private:
 public:
 	// Default constructor
 	Location() :
-		x(0), y(0), z(0) {};
+		x{ 0 }, y{ 0 }, z{ 0 } {};
 	// Constructor for each argument seperately.
 	Location(int X, int Y, int Z) :
-		x(X), y(Y), z(Z) {};
+		x{ X }, y{ Y }, z{ Z } {};
 	// Constructor for string, defined in file.
 	Location(std::string str);
+	// Copy constructor
+	Location(Location &l) :
+		x{ l.x }, y{ l.y }, z(l.z) {};
 
 	// Find euclidean distance to other point.
 	int find_distance(Location coords);

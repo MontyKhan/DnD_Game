@@ -9,7 +9,7 @@ using namespace rapidxml;
 enum type {acid, bludgeoning, cold, fire, force, lightning, necrotic, piercing, poison, psychic, radiant, slashing, thunder};
 
 
-// Class for each weapon wielded by combatant
+// Class for each weapon wielded by Combatant
 class weapon_type {
 private:
 	std::string name;

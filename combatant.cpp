@@ -17,27 +17,23 @@ using namespace rapidxml;
 		AC - Combatant Armour Class as int.
 		Spd - Combatant speed in feet as an int.
 		Init - Initiative modifier as an int. Is converted into a roll equal to 1d20 + Init.
-		Coordinates - 3D coordinates of combatant
-		Status - life_status of combatant
+		Coordinates - 3D coordinates of Combatant
+		Status - life_status of Combatant
    return:	Nothing, as constructor.
 */
 
-combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status Status)
+Combatant::Combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status Status) :
+	hp{ HP }, ac{ AC }, speed{ Spd }, init{ Roll(1, 20, Init) }, status{ Status }
 {
 	name = Name;
-	hp = HP;
-	ac = AC;
-	speed = Spd;
-	init = Roll(1,20,Init);
 	coordinates = Coordinates;
-	status = Status;
 }
 
 /* brief:	Constructor for reading variables from a vector of strings.
    param:	line - Stats in order of Name, HP, AC, Spd, Init as in above formats.
    return:	Nothing, as constructor.
 */
-combatant::combatant(std::vector<std::string> line)
+Combatant::Combatant(std::vector<std::string> line)
 {
 	name = line[NAME_VAR];				// Get name (string)
 	hp = stoi(line[HP_VAR]);			// Get HP (int)
@@ -52,7 +48,8 @@ combatant::combatant(std::vector<std::string> line)
    param:	*node - Pointer to an xml node containing values
    return:	Nothing, as constructor.
 */
-combatant::combatant(xml_node<> *root)
+Combatant::Combatant(xml_node<> *root) :
+	hp{ 0 }, ac{ 0 }, speed{ 0 }, status{ dead }
 {
 	for (xml_node<> *child = root->first_node(); child; child = child->next_sibling())	// Monster
 	{
@@ -99,11 +96,11 @@ combatant::combatant(xml_node<> *root)
 	}
 }
 
-/* brief:	Print all stats of combatant to screen.
+/* brief:	Print all stats of Combatant to screen.
    param:	None.
    returns:	Nothing.
 */
-void combatant::print_stats()
+void Combatant::print_stats()
 {
 	cout << "Name: " << name << endl;
 	cout << "HP: " << hp << endl;
@@ -118,7 +115,7 @@ void combatant::print_stats()
    param: 	roll value, containing the number of dice, the size of the dice and the modifier.
    returns: 	The result of the roll, plus the modifier.
 */
-int combatant::make_roll(Roll x)
+int Combatant::make_roll(Roll x)
 {
 	int damage = 0;					// Initialise damage to 0.
 	vector <int> results;				// Declare empty vector of ints for containing results of each roll.
@@ -143,7 +140,7 @@ int combatant::make_roll(Roll x)
    param:	None
    returns:	The result of the 1d20 + init roll.
 */
-int combatant::roll_initiative()
+int Combatant::roll_initiative()
 {
 	initiative = make_roll(init);
 	return initiative;
@@ -152,7 +149,7 @@ int combatant::roll_initiative()
 /* brief:	Select opponent and make attack.
    returns:	0 if successful.
 */
-int combatant::take_turn()
+int Combatant::take_turn()
 {
 	// Count other combatants in initiative list.
 	int potential_targets = this->parentMap->initiative_order.size() - 1;
@@ -184,7 +181,7 @@ int combatant::take_turn()
 
 			if (free_cells.size() > 0)
 			{
-				Tile* new_Location;
+				Tile* new_Location = nullptr;
 				for (Tile* T : free_cells)
 				{
 					std::cout << "T: " << T->getCoordinates();
@@ -246,7 +243,7 @@ int combatant::take_turn()
    param:	target - Passed by reference. Combatant for the attacks to be made against.
    return:	status of target after attack, i.e. dead or alive.
 */
-life_status combatant::make_attack(Object & target)
+life_status Combatant::make_attack(Object & target)
 {
 	int wc = 0;							// Weapon choice
 
@@ -279,7 +276,7 @@ life_status combatant::make_attack(Object & target)
 		target - Passed by reference. Combatant for the attacks to be made against.
    return:	status of target after attack, i.e. dead or alive.
 */
-life_status combatant::make_attack(weapon_type weapon, Object & target)
+life_status Combatant::make_attack(weapon_type weapon, Object & target)
 {
 	int attack_roll = make_roll(weapon.getAttack());		// Initialise attack_roll to randomly generated value in dice range.
 
@@ -306,7 +303,7 @@ life_status combatant::make_attack(weapon_type weapon, Object & target)
    param:	dam, the damage to be taken by the recipitent.
    returns:	The recipitent's status, i.e. dead or alive.
 */
-life_status combatant::take_damage(int dam)
+life_status Combatant::take_damage(int dam)
 {
 	// If damage is less than the target's HP, just reduce HP.
 	if (dam < hp)
@@ -326,7 +323,7 @@ life_status combatant::take_damage(int dam)
 		damage_type, the type of the damage. Currently ignored.
    returns:	The recipitent's status, i.e. dead or alive.
 */
-life_status combatant::take_damage(int dam, type damage_type)
+life_status Combatant::take_damage(int dam, type damage_type)
 {
 	// If damage is less than the target's HP, just reduce HP.
 	if (dam < hp)
@@ -345,7 +342,7 @@ life_status combatant::take_damage(int dam, type damage_type)
    param:	The tile to be moved to.
    returns:	A 0 on a success.
 */
-int combatant::moveTo(Tile* target)
+int Combatant::moveTo(Tile* target)
 {
 	Tile* tmp = this->parent;
 	this->coordinates = target->getCoordinates();

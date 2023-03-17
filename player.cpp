@@ -4,7 +4,7 @@
 #include "tools.h"
 
 /* brief: 	Make move and then make attack against specified target.
-	  		Virtual overloaded function from combatant.
+	  		Virtual overloaded function from Combatant.
    returns:	0 if successful.
 */
 int Player::take_turn()
@@ -77,7 +77,7 @@ int Player::take_turn()
 }
 
 /* brief: 	Roll attack against the target's AC, then roll damage.
-	 	Virtual overloaded function from combatant.
+	 	Virtual overloaded function from Combatant.
    param: 	Address of target, called by reference.
    returns:	The status of the target.
 */

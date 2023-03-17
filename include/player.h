@@ -5,9 +5,9 @@
 
 using namespace std;
 
-class Player : public combatant
+class Player : public Combatant
 {
-	using combatant::combatant;
+	using Combatant::Combatant;
 
 public:
 	// Make move, then attack.

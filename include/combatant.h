@@ -22,10 +22,9 @@ using namespace rapidxml;
 
 class node;				// Forward declaration for take_turn(node* self) function.
 
-// Class for each combatant in an encounter
-class combatant : public Object {
+// Class for each Combatant in an encounter
+class Combatant : public Object {
 protected:
-	std::string name;
 	int hp;
 	int ac;
 	int speed;
@@ -35,14 +34,14 @@ protected:
 
 public:
 	// Constructor for individual variables
-	combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status Status);
+	Combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status Status);
 	// Constructor for vector of strings, as read from .csv.
-	combatant(std::vector<std::string> line);
+	Combatant(std::vector<std::string> line);
 	// Constructor for xml node
-	combatant(rapidxml::xml_node<> *node);
+	Combatant(rapidxml::xml_node<> *node);
 	// Default constructor
-	combatant() 
-		: name(""), hp(0), ac(0), speed(0), init(Roll()), Object(Location()), status(dead) {};
+	Combatant() 
+		: hp(0), ac(0), speed(0), init(Roll()), Object(Location()), status(dead) {};
 
 	// Roll a dice
 	int make_roll(Roll x);
