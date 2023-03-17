@@ -31,7 +31,7 @@ void updateScreen(sf::RenderWindow *window)
 */
 int load_sprites()
 {
-	std::string directory = ".\\images\\sprites\\";
+	std::string directory = "./images/sprites/";
 
 	float mult = 1;
 
