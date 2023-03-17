@@ -1,21 +1,23 @@
 #ifndef TILE_H
 #define TILE_H
 
-#include "object.h"
 #include "pathfinding.h"
+
+// Forward class declarations
+class Object;
 
 class Tile {
 private:
-	Object* contents;
+	Object *contents;
 	Location coordinates;
-	Tile* north;
-	Tile* east;
-	Tile* south;
-	Tile* west;
-	Tile* origin;
+	Tile *north;
+	Tile *east;
+	Tile *south;
+	Tile *west;
+	Tile *origin;
 public:
 	// Constructors
-	Tile() : contents(NULL), north(NULL), east(NULL), south(NULL), west(NULL), origin(NULL) {};	// Default
+	Tile() : contents(nullptr), north(nullptr), east(nullptr), south(nullptr), west(nullptr), origin(nullptr) {};	// Default
 	Tile(int x, int y);										// Rectangle
 
 	// Print entire tile grid to screen, each tile represented by "x"
@@ -52,10 +54,6 @@ public:
 	int setSouth(Tile* South) { south = South; return 0;};
 	Tile* getWest() { return west; };
 	int setWest(Tile* West) { west = West; return 0;};
-
-	// Friend functions
-	friend std::vector<Tile*> Object::getFreeNeighbours();
-	friend std::vector<Tile*> Object::getOccupiedNeighbours();
 };
 
 #endif

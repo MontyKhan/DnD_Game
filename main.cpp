@@ -82,16 +82,16 @@ void run_encounter(BattleMap *battlemap)
 	sf::Event event;
 	// Repeat until only one player is left.
 	do {
-		std::cout << "character name: " << active_player->getName() << std::endl;
-		std::cout << "character Location: " << active_player->player->getCoordinates() << std::endl;
+		std::cout << "character name: " << (*active_player)->getName() << std::endl;
+		std::cout << "character Location: " << (*active_player)->getCoordinates() << std::endl;
 		// Make move and take attack
-		bool turn_finished = active_player->player->take_turn(active_player);
+		bool turn_finished = (*active_player)->take_turn(active_player);
 
 		std::cout << "turn taken" << std::endl;
 
 		// Progress iterator node to the next one unless waiting for input.
 		if (turn_finished == true)
-			active_player = active_player->next;
+			active_player++;
 
 		bool nextTurn = false;
 		while (nextTurn == false)
@@ -138,7 +138,7 @@ void run_encounter(BattleMap *battlemap)
 			window.display();
 		}
 
-		if (active_player->next == active_player)
+		if (std::next(active_player) == active_player)
 		{
 			std::cout << "Finished" << std::endl;
 			break;
@@ -148,7 +148,7 @@ void run_encounter(BattleMap *battlemap)
 	window.close();
 
 	// Debug code. State last fighter standing.
-	cout << active_player->player->getName() << " wins!" << endl;
+	cout << (*active_player)->getName() << " wins!" << endl;
 }
 
 /* brief: 	main function. Loads players and monsters from .csv file with hardcoded address.

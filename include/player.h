@@ -11,7 +11,7 @@ class Player : public combatant
 
 public:
 	// Make move, then attack.
-	int take_turn(node* self);
+	int take_turn();
 	// Deal damage to target, then check if they survive.
 	life_status make_attack(Object & target);
 

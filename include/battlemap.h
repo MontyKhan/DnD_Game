@@ -1,8 +1,10 @@
 #pragma once
 #include "tile.h"
-#include "object.h"
 
 #include <list>
+#include <vector>
+
+class Object;
 
 class BattleMap
 {

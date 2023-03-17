@@ -150,47 +150,34 @@ int combatant::roll_initiative()
 }
 
 /* brief:	Select opponent and make attack.
-   param:	A pointer to the node containing the combatant making the attack.
    returns:	0 if successful.
 */
-int combatant::take_turn(node* self)
+int combatant::take_turn()
 {
-	// Set target to start at attacker (origin).
-	node * target = self;
-
 	// Count other combatants in initiative list.
-	int potential_targets = 0;
-	while (target->next != self)
-	{
-		potential_targets++;
-		target = target->next;
-	}
-
-	// Reset target to origin.
-	target = self;
+	int potential_targets = this->parentMap->initiative_order.size() - 1;
 
 	vector<int> distances;
 
 	// Progress the head of the circular list ahead by target_selector.
 	// i.e. 1 means go to next. Cannot go completely around the list.
 	// for (int i = 0; i < target_selector; i++)
-	for (int i = 0; i < potential_targets; i++)
+	for (auto const& o: this->parentMap->initiative_order)
 	{
-		target = target->next;
-		distances.push_back(this->coordinates.find_distance(target->player->getCoordinates()));
+		distances.push_back(this->coordinates.find_distance(o->getCoordinates()));
 	}
 
 	// Find minimum distance in list, i.e. closest opponent.
-	target = self;
+	auto target = this->parentMap->initiative_order.begin();
 	auto min = *min_element(distances.begin(), distances.end());
 	for (int D : distances)
 	{
-		target = target->next;
+		target++;
 		if (D == min)
 		{
 			std::cout << "test_take_turn_1" << std::endl;
-			std::cout << "target position: " << target->player->getCoordinates() << std::endl;
-			std::vector<Tile*> free_cells = target->player->getFreeNeighbours();
+			std::cout << "target position: " << (*target)->getCoordinates() << std::endl;
+			std::vector<Tile*> free_cells = (*target)->getFreeNeighbours();
 			std::cout << "test_take_turn_2" << std::endl;
 			int min_dist = MAX_VALUE;
 			bool reached = false;
@@ -237,14 +224,14 @@ int combatant::take_turn(node* self)
 			life_status result = alive;
 			if (reached)
 				// Make attack against target. If attack kills them, result is set to dead. Else, alive.
-				result = self->player->make_attack(*(target->player));
+				result = this->make_attack(**target);
 			else
 				cout << this->name << " moved to " << this->coordinates << "." << endl;
 
 			// If target is killed, remove them from the list and decrement the number of potential targets.
 			if (result == dead)
 			{
-				remove_from_list(target);
+				target = this->parentMap->initiative_order.erase(target);
 				potential_targets--;
 			}
 		break;

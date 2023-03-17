@@ -7,13 +7,30 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
+#include <list>
 
 #define MAX_VALUE 32767
 
 enum life_status {alive, death_1, death_2, dead};
 enum object_type {OutOfBounds, type_object, type_player, type_combatant};
 
+// Forward class declarations
 class Tile;
+class BattleMap;
+
+using namespace std;
+
+typedef enum {
+	eNorth,
+	eNorthEast,
+	eEast,
+	eSouthEast,
+	eSouth,
+	eSouthWest,
+	eWest,
+	eNorthWest,
+} eDirections;
+
 
 class Object {
 protected:
@@ -25,12 +42,14 @@ protected:
 
 public:
 	// Constructors
-	Object() : name(""), coordinates(Location(0,0,0)), parent(NULL), initiative(0) {};
-	Object(Location Coordinates) : name(""), coordinates(Coordinates), parent(NULL), initiative(0) {};
+	Object() : name(""), coordinates(Location(0,0,0)), parent(nullptr), initiative(0), parentMap(nullptr) {};
+	Object(Location Coordinates) : name(""), coordinates(Coordinates), parent(nullptr), initiative(0), parentMap(nullptr) {};
 
-	// Get a list of vacant neighbouring tiles.
+	// Get a vector of neighbouring tiles.
+	std::vector<Tile *> getNeighbours();
+	// Get a vector of vacant neighbouring tiles.
 	std::vector<Tile*> getFreeNeighbours();
-	// Get a list of occupied neighbouring tiles.
+	// Get a vector of occupied neighbouring tiles.
 	std::vector<Tile*> getOccupiedNeighbours();
 
 	// Debugging functions
@@ -42,7 +61,7 @@ public:
 	// Roll initiative specifically
 	virtual int roll_initiative() { return -1; };
 	// Move and then make attack
-	virtual int take_turn(node* self) { return -1; };
+	virtual int take_turn(std::list<Object *>::iterator self) { return -1; };
 	// Roll both attack and damage against a target.
 	virtual life_status make_attack(Object & target) { return dead; };
 	// Roll both attack and damage against a target, supplying a weapon.
@@ -59,8 +78,8 @@ public:
 	int setCoordinates(Location Coordinates) { coordinates = Coordinates; return 0; };
 	Tile *getParent() { return parent; };
 	int setParent( Tile* Parent ) { parent = Parent; return 0; };
-	BattleMap *getBattleMap() { return parentMap; };
-	int setBattleMap(BattleMap* map) { parentMap = map; return 0; };
+	BattleMap *getBattlemap() { return parentMap; };
+	int setBattlemap(BattleMap* map) { parentMap = map; return 0; };
 
 	// Virtual getters/setters
 	virtual std::string getName() { return name; };				// Name

@@ -3,6 +3,24 @@
 
 using namespace std;
 
+std::vector<Tile *>Object::getNeighbours()
+{
+	// Vector to contain neighbouring vacant tiles.
+	std::vector<Tile *> tiles;
+	tiles.reserve(8);
+
+	tiles[eNorth] = this->parent->getNorth();
+	tiles[eNorthEast] = tiles[eNorth] ? tiles[eNorth]->getEast() : nullptr;
+	tiles[eEast] = this->parent->getEast();
+	tiles[eSouthEast] = tiles[eEast] ? tiles[eEast]->getSouth() : nullptr;
+	tiles[eSouth] = this->parent->getSouth();
+	tiles[eSouthWest] = tiles[eSouth] ? tiles[eSouth]->getWest() : nullptr;
+	tiles[eWest] = this->parent->getWest();
+	tiles[eNorthWest] = tiles[eWest] ? tiles[eWest]->getNorth() : nullptr;
+
+	return tiles;
+}
+
 /* brief:	Get a list of all neighbouring cells with no contents.
    param:	None.
    returns:	A vector containing the empty neighbouring cells.
@@ -11,26 +29,16 @@ std::vector<Tile*> Object::getFreeNeighbours()
 {
 	// Vector to contain neighbouring vacant tiles.
 	std::vector<Tile*> free_tiles;
+	std::vector<Tile *> tiles = this->getNeighbours();
 
 	cout << "test_getFreeNeighbours_1" << endl;	
 	// Check neighbouring tiles, clockwise starting at North.
-	if (this->parent->north->contents == nullptr)
-		free_tiles.push_back(this->parent->north);
-	if (this->parent->north->east->contents == nullptr)
-		free_tiles.push_back(this->parent->north->east);
-	if (this->parent->east->contents == nullptr)
-		free_tiles.push_back(this->parent->east);
-	if (this->parent->east->south->contents == nullptr)
-		free_tiles.push_back(this->parent->east->south);
-	if (this->parent->south->contents == nullptr)
-		free_tiles.push_back(this->parent->south);
-	if (this->parent->south->west->contents == nullptr)
-		free_tiles.push_back(this->parent->south->west);
-	if (this->parent->west->contents == nullptr)
-		free_tiles.push_back(this->parent->west);
-	if (this->parent->west->north->contents == nullptr)
-		free_tiles.push_back(this->parent->west->north);
-
+	for (auto const &neighbour : tiles)
+	{
+		if (neighbour && neighbour->getContents() == nullptr)
+			free_tiles.push_back(neighbour);
+	}
+	
 	return free_tiles;
 }
 
@@ -42,24 +50,15 @@ std::vector<Tile*> Object::getOccupiedNeighbours()
 {
 	// Vector to contain neighbouring vacant tiles.
 	std::vector<Tile*> occupied_tiles;
-	
+	std::vector<Tile *> tiles = this->getNeighbours();
+
+	cout << "test_getFreeNeighbours_1" << endl;
 	// Check neighbouring tiles, clockwise starting at North.
-	if ((this->parent->north->contents != nullptr) && (this->parent->north->contents->getStatus() == alive))
-		occupied_tiles.push_back(this->parent->north);
-	if ((this->parent->north->east->contents != nullptr) && (this->parent->north->east->contents->getStatus() == alive))
-		occupied_tiles.push_back(this->parent->north->east);
-	if ((this->parent->east->contents != nullptr) && (this->parent->east->contents->getStatus() == alive))
-		occupied_tiles.push_back(this->parent->east);
-	if ((this->parent->east->south->contents != nullptr) && (this->parent->east->south->contents->getStatus() == alive))
-		occupied_tiles.push_back(this->parent->east->south);
-	if ((this->parent->south->contents != nullptr) && (this->parent->south->contents->getStatus() == alive))
-		occupied_tiles.push_back(this->parent->south);
-	if ((this->parent->south->west->contents != nullptr) && (this->parent->south->west->contents->getStatus() == alive))
-		occupied_tiles.push_back(this->parent->south->west);
-	if ((this->parent->west->contents != nullptr) && (this->parent->west->contents->getStatus() == alive))
-		occupied_tiles.push_back(this->parent->west);
-	if ((this->parent->west->north->contents != nullptr) && (this->parent->west->north->contents->getStatus() == alive))
-		occupied_tiles.push_back(this->parent->west->north);
+	for (auto const &neighbour : tiles)
+	{
+		if (neighbour && neighbour->getContents() != nullptr)
+			occupied_tiles.push_back(neighbour);
+	}
 
 	return occupied_tiles;
 }

@@ -1,5 +1,7 @@
 #include "battlemap.h"
 
+#include "object.h"
+
 BattleMap::BattleMap(uint8_t x, uint8_t y, std::vector<Object*> objects) :
 	objects(objects)
 {

@@ -4,11 +4,10 @@
 #include "tools.h"
 
 /* brief: 	Make move and then make attack against specified target.
-	  	Virtual overloaded function from combatant.
-   param: 	Pointer to node describing the player.
+	  		Virtual overloaded function from combatant.
    returns:	0 if successful.
 */
-int Player::take_turn(node* self)
+int Player::take_turn()
 {
 	cout << "Currently at: " << this->coordinates << endl;
 
@@ -58,13 +57,19 @@ int Player::take_turn(node* self)
 		cin >> tc;
 
 		// Make attack against target. If attack kills them, result is set to dead. Else, alive.
-		life_status result = self->player->make_attack(*(adjacent_foes[tc-1]->getContents()));
+		life_status result = this->make_attack(*(adjacent_foes[tc-1]->getContents()));
 
 		// If target is killed, remove them from the list and decrement the number of potential targets.
 		if (result == dead)
 		{
-			self->remove(adjacent_foes[tc-1]->getContents());
-			potential_targets--;
+			auto corpse = find(this->parentMap->initiative_order.begin(), this->parentMap->initiative_order.end(), adjacent_foes[tc - 1]->getContents());
+			if (corpse != this->parentMap->initiative_order.end())
+			{
+				this->parentMap->initiative_order.erase(corpse);
+				potential_targets--;
+			}
+			else
+				throw("Could not find corpse in initiative order!");
 		}
 	}
 

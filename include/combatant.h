@@ -49,7 +49,7 @@ public:
 	// Roll initiative specifically
 	int roll_initiative();
 	// Move and then make attack
-	virtual int take_turn(node* self);
+	virtual int take_turn();
 	// Roll both attack and damage against a target.
 	virtual life_status make_attack(Object & target);
 	// Roll both attack and damage against a target, supplying a weapon.
