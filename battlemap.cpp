@@ -6,7 +6,9 @@
 #include "player.h"
 
 BattleMap::BattleMap(uint8_t x, uint8_t y, std::vector<Object*> objects) :
-	objects(objects)
+	objects(objects),
+	width(x),
+	height(y)
 {
 	origin = new Tile(x, y);
 
@@ -15,7 +17,7 @@ BattleMap::BattleMap(uint8_t x, uint8_t y, std::vector<Object*> objects) :
 
 BattleMap::~BattleMap()
 {
-
+	delete origin;
 }
 
 // Get specific tile by map reference, Location.
@@ -101,7 +103,7 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 	int i = 0;					// Initialise counter to 0.
 
 	// Spawn mouse over tile icon.
-	float hl_width = (WINDOW_W + 1) / this->width();
+	float hl_width = (WINDOW_W + 1) / this->computeWidth();
 	sf::RectangleShape highlighter(sf::Vector2f(hl_width, hl_width));
 	highlighter.setOrigin(hl_width / 2, hl_width / 2);
 	highlighter.setFillColor(sf::Color(0xFF, 0xFF, 0x66, 0x70));
@@ -111,8 +113,6 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 	sf::Event event;
 	// Repeat until only one player is left.
 	do {
-		std::cout << "character name: " << (*active_player)->getName() << std::endl;
-		std::cout << "character Location: " << (*active_player)->getCoordinates() << std::endl;
 
 		if (this->initiative_order.size() <= 1)
 		{
@@ -123,69 +123,69 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 		// Make move and take attack
 		bool turn_finished = (*active_player)->take_turn();
 
-		std::cout << "turn taken" << std::endl;
+		if (turn_finished)
+		{
+			std::cout << "character name: " << (*active_player)->getName() << std::endl;
+			std::cout << "character Location: " << (*active_player)->getCoordinates() << std::endl;
 
-		if (std::next(active_player) == this->initiative_order.end())
-		{
-			active_player = this->initiative_order.begin();
-		}
-		else
-		{
-			active_player++;
-		}
-
-		bool nextTurn = false;
-		while (nextTurn == false)
-		{
-			if (window.pollEvent(event))
+			if (std::next(active_player) == this->initiative_order.end())
 			{
-				if (dynamic_cast<Player *>(*active_player))
-				{
-					// Keyboard events
-					if (event.type == sf::Event::KeyPressed)
-					{
-						if (event.key.code == sf::Keyboard::W)
-							sprites["Player"].move(0.f, -5.f);
-
-						if (event.key.code == sf::Keyboard::A)
-							sprites["Player"].move(-5.f, 0.f);
-
-						if (event.key.code == sf::Keyboard::S)
-							sprites["Player"].move(0.f, 5.f);
-
-						if (event.key.code == sf::Keyboard::D)
-							sprites["Player"].move(5.f, 0.f);
-
-						if (event.key.code == sf::Keyboard::P)
-							std::cout << "print" << std::endl;
-
-						if (event.key.code == sf::Keyboard::Return)
-							nextTurn = true;
-					}
-				}
-				else
-				{
-					std::cout << "Not a player!" << std::endl;
-					nextTurn = true;
-				}
+				active_player = this->initiative_order.begin();
 			}
-
-			// Rotate player to face mouse
-			sprites["Player"].setRotation(face_mouse(sprites["Player"], window));
-
-			// Move tile highlighter to mouse.
-			moveToMousedOverTile(highlighter, window, hl_width);
-
-			window.clear();
-			LineGrid tiles;
-			tiles.create((WINDOW_W + 1) / this->width());
-
-			updateScreen(&window);
-
-			window.draw(highlighter);
-			window.draw(tiles);
-			window.display();
+			else
+			{
+				active_player++;
+			}
 		}
+
+		if (window.pollEvent(event))
+		{
+			if (dynamic_cast<Player *>(*active_player))
+			{
+#if 0
+				if (event.key.code == sf::Keyboard::W)
+					sprites["Player"].move(0.f, -5.f);
+
+				if (event.key.code == sf::Keyboard::A)
+					sprites["Player"].move(-5.f, 0.f);
+
+				if (event.key.code == sf::Keyboard::S)
+					sprites["Player"].move(0.f, 5.f);
+
+				if (event.key.code == sf::Keyboard::D)
+					sprites["Player"].move(5.f, 0.f);
+
+				if (event.key.code == sf::Keyboard::P)
+					std::cout << "print" << std::endl;
+
+				if (event.key.code == sf::Keyboard::Return)
+					nextTurn = true;
+#else
+				(*active_player)->handleEvent(event, window);
+#endif
+			}
+			else
+			{
+				std::cout << "Not a player!" << std::endl;
+			}
+		}
+
+		// Rotate player to face mouse
+		sprites["Player"].setRotation(face_mouse(sprites["Player"], window));
+
+		// Move tile highlighter to mouse.
+		moveToMousedOverTile(highlighter, window, hl_width);
+
+		window.clear();
+		LineGrid tiles;
+		tiles.create((WINDOW_W + 1) / this->computeWidth());
+
+		updateScreen(&window);
+
+		window.draw(highlighter);
+		window.draw(tiles);
+		window.display();
+
 	} while (event.type != sf::Event::Closed);
 
 	window.close();

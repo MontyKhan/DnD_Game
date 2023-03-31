@@ -11,8 +11,8 @@ class Object;
 class BattleMap
 {
 	Tile *origin;
-
-	
+	uint8_t width;
+	uint8_t height;
 
 public:
 	BattleMap(uint8_t x, uint8_t y, std::vector<Object*> objects);
@@ -29,8 +29,10 @@ public:
 	Tile* get(Object* toFind);
 
 	// Map charateristics
-	uint8_t width() { return origin->width(); };
-	uint8_t height() { return origin->height(); };
+	uint8_t getWidth() { return width; };
+	uint8_t getHeight() { return height; };
+	uint8_t computeWidth() { return origin->width(); };
+	uint8_t computeHeight() { return origin->height(); };
 
 	// Game running
 	void run_encounter(sf::RenderWindow &window);

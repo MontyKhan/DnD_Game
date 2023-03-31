@@ -2,6 +2,7 @@
 #include "combatant.h"
 #include "roll.h"
 #include "tools.h"
+#include "battlemap.h"
 
 /* brief: 	Make move and then make attack against specified target.
 	  		Virtual overloaded function from Combatant.
@@ -9,7 +10,7 @@
 */
 int Player::take_turn()
 {
-	cout << "Currently at: " << this->coordinates << endl;
+	// cout << "Currently at: " << this->coordinates << endl;
 #if 0
 	Location new_Location = Location();
 	bool Location_set = false;
@@ -74,8 +75,53 @@ int Player::take_turn()
 	}
 
 	return turn_finished;
+#else
+	int state = turn_finished ? 1 : 0;
+	turn_finished = false;	// Reset before next turn
+
+	return state;
 #endif
-	return 0;
+}
+
+bool Player::handleEvent(sf::Event &event, sf::RenderWindow &window)
+{
+	if (event.type == sf::Event::KeyPressed)
+	{
+		if (event.key.code == sf::Keyboard::W)
+			moveTo(this->tile->getNorth());
+
+		if (event.key.code == sf::Keyboard::A)
+			moveTo(this->tile->getWest());
+
+		if (event.key.code == sf::Keyboard::S)
+			moveTo(this->tile->getSouth());
+
+		if (event.key.code == sf::Keyboard::D)
+			moveTo(this->tile->getEast());
+
+		if (event.key.code == sf::Keyboard::P)
+			std::cout << "print" << std::endl;
+
+		if (event.key.code == sf::Keyboard::Return)
+			turn_finished = true;
+	}
+
+	else if (event.type == sf::Event::MouseButtonReleased)
+	{
+		sf::Vector2i pos = sf::Mouse::getPosition(window);
+		sf::Vector2u window_size = window.getSize();
+
+		uint8_t x_pos = (pos.x/float(window_size.x)) * this->getBattlemap()->getWidth();
+		uint8_t y_pos = (pos.y /float(window_size.y)) * this->getBattlemap()->getHeight();
+
+		Tile *newTile = this->getBattlemap()->get(x_pos, y_pos);
+		if (newTile->getContents())
+			make_attack(*(newTile->getContents()));
+		else
+			moveTo(newTile);
+	}
+	
+	return true;
 }
 
 /* brief: 	Roll attack against the target's AC, then roll damage.
@@ -85,10 +131,10 @@ int Player::take_turn()
 */
 life_status Player::make_attack(Object & target)
 {
-	std::string input;
-	cout << endl << "Please give number of weapon to use: ";
-	cin >> input;
-	int wc = stoi(input);							// Weapon choice
+	//std::string input;
+	//cout << endl << "Please give number of weapon to use: ";
+	//cin >> input;
+	int wc = 0;							// Weapon choice
 
 	int attack_roll = make_roll(weapons[wc].getAttack());		// Initialise attack_roll to randomly generated value in dice range.
 

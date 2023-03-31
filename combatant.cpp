@@ -203,7 +203,7 @@ int Combatant::take_turn()
 				for (Tile* T : free_cells)
 				{
 					std::cout << "T: " << T->getCoordinates();
-					int dist = this->parent->findMinimumPath(T);
+					int dist = this->tile->findMinimumPath(T);
 					std::cout << ", dist: " << dist << std::endl;
 					if (dist < min_dist)
 					{
@@ -211,7 +211,7 @@ int Combatant::take_turn()
 
 						if (min_dist <= DIAGONAL_NEIGHBOUR)
 						{
-							new_Location = this->parent;
+							new_Location = this->tile;
 							std::cout << "Already neighbour. Stay in place." << std::endl;
 							reached = true;
 						}
@@ -221,7 +221,7 @@ int Combatant::take_turn()
 							reached = true;
 						}
 						else
-							new_Location = parent->findMidPoint(T, this->speed);
+							new_Location = tile->findMidPoint(T, this->speed);
 					}
 				}
 
@@ -305,6 +305,7 @@ life_status Combatant::take_damage(int dam)
 
 		auto corpse = find(this->parentMap->initiative_order.begin(), this->parentMap->initiative_order.end(), this);
 		this->parentMap->initiative_order.erase(corpse);
+		this->tile->clearContents();
 	}
 
 	return status;
@@ -316,7 +317,7 @@ life_status Combatant::take_damage(int dam)
 */
 int Combatant::moveTo(Tile* target)
 {
-	Tile* tmp = this->parent;
+	Tile* tmp = this->tile;
 	this->coordinates = target->getCoordinates();
 	if (target->setContents(this) == 0)
 	{

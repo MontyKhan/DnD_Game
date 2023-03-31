@@ -75,6 +75,16 @@ Tile::Tile(int x, int y)
 	}
 }
 
+Tile::~Tile()
+{
+	if (east)
+		delete east;
+	if (south)
+		delete south;
+	if (contents)
+		delete contents;
+}
+
 /* brief:	Prints entire map to console, starting from origin.
    param:	None.
    returns:	Nothing, just prints to console.

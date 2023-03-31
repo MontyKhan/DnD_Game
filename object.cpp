@@ -9,13 +9,13 @@ std::vector<Tile *>Object::getNeighbours()
 	std::vector<Tile *> tiles;
 	tiles.resize(8);
 
-	tiles[eNorth] = this->parent->getNorth();
+	tiles[eNorth] = this->tile->getNorth();
 	tiles[eNorthEast] = tiles[eNorth] ? tiles[eNorth]->getEast() : nullptr;
-	tiles[eEast] = this->parent->getEast();
+	tiles[eEast] = this->tile->getEast();
 	tiles[eSouthEast] = tiles[eEast] ? tiles[eEast]->getSouth() : nullptr;
-	tiles[eSouth] = this->parent->getSouth();
+	tiles[eSouth] = this->tile->getSouth();
 	tiles[eSouthWest] = tiles[eSouth] ? tiles[eSouth]->getWest() : nullptr;
-	tiles[eWest] = this->parent->getWest();
+	tiles[eWest] = this->tile->getWest();
 	tiles[eNorthWest] = tiles[eWest] ? tiles[eWest]->getNorth() : nullptr;
 
 	return tiles;

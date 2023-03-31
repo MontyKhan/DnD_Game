@@ -35,14 +35,15 @@ class Object {
 protected:
 	std::string name;
 	Location coordinates;
-	Tile *parent;
+	Tile *tile;
 	uint8_t initiative;
 	BattleMap *parentMap;
+	bool turn_finished;
 
 public:
 	// Constructors
-	Object() : name(""), coordinates(Location(0,0,0)), parent(nullptr), initiative(0), parentMap(nullptr) {};
-	Object(Location Coordinates) : name(""), coordinates(Coordinates), parent(nullptr), initiative(0), parentMap(nullptr) {};
+	Object() : name(""), coordinates(Location(0, 0, 0)), tile(nullptr), initiative(0), parentMap(nullptr), turn_finished(false) {};
+	Object(Location Coordinates) : name(""), coordinates(Coordinates), tile(nullptr), initiative(0), parentMap(nullptr), turn_finished(false) {};
 
 	// Get a vector of neighbouring tiles.
 	std::vector<Tile *> getNeighbours();
@@ -71,12 +72,16 @@ public:
 	virtual life_status take_damage(int dam, type damage_type) { return dead; };
 	// Move to a tile next to another tile.
 	virtual int moveTo(Tile* target) { return -1; };
+	// Process input event.
+	virtual bool handleEvent(sf::Event &event, sf::RenderWindow &window) {
+		return false;
+	};
 
 	// Getters/setters
 	Location getCoordinates() { return coordinates; };
 	int setCoordinates(Location Coordinates) { coordinates = Coordinates; return 0; };
-	Tile *getParent() { return parent; };
-	int setParent( Tile* Parent ) { parent = Parent; return 0; };
+	Tile *getParent() { return tile; };
+	int setParent( Tile* Parent ) { tile = Parent; return 0; };
 	BattleMap *getBattlemap() { return parentMap; };
 	int setBattlemap(BattleMap* map) { parentMap = map; return 0; };
 

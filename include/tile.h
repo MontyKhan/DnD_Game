@@ -19,6 +19,7 @@ public:
 	// Constructors
 	Tile() : contents(nullptr), north(nullptr), east(nullptr), south(nullptr), west(nullptr), origin(nullptr) {};	// Default
 	Tile(int x, int y);										// Rectangle
+	~Tile();
 
 	// Print entire tile grid to screen, each tile represented by "x"
 	void print_map();
