@@ -10,7 +10,7 @@
 int Player::take_turn()
 {
 	cout << "Currently at: " << this->coordinates << endl;
-
+#if 0
 	Location new_Location = Location();
 	bool Location_set = false;
 	int turn_finished = 0;
@@ -74,6 +74,8 @@ int Player::take_turn()
 	}
 
 	return turn_finished;
+#endif
+	return 0;
 }
 
 /* brief: 	Roll attack against the target's AC, then roll damage.

@@ -3,7 +3,6 @@
 
 #include "pathfinding.h"
 #include "weapon_type.h"
-#include "battlemap.h"
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
@@ -61,7 +60,7 @@ public:
 	// Roll initiative specifically
 	virtual int roll_initiative() { return -1; };
 	// Move and then make attack
-	virtual int take_turn(std::list<Object *>::iterator self) { return -1; };
+	virtual int take_turn() { return -1; };
 	// Roll both attack and damage against a target.
 	virtual life_status make_attack(Object & target) { return dead; };
 	// Roll both attack and damage against a target, supplying a weapon.

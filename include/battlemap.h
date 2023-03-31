@@ -12,8 +12,11 @@ class BattleMap
 {
 	Tile *origin;
 
+	
+
 public:
 	BattleMap(uint8_t x, uint8_t y, std::vector<Object*> objects);
+	~BattleMap();
 
 	void print_map() { origin->print_map(); };
 	void assignInitiativeOrder();

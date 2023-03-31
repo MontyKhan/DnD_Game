@@ -3,7 +3,7 @@
 #include "object.h"
 #include "display.h"
 #include "linegrid.h"
-
+#include "player.h"
 
 BattleMap::BattleMap(uint8_t x, uint8_t y, std::vector<Object*> objects) :
 	objects(objects)
@@ -11,6 +11,11 @@ BattleMap::BattleMap(uint8_t x, uint8_t y, std::vector<Object*> objects) :
 	origin = new Tile(x, y);
 
 	assignInitiativeOrder();
+}
+
+BattleMap::~BattleMap()
+{
+
 }
 
 // Get specific tile by map reference, Location.
@@ -44,7 +49,7 @@ void BattleMap::assignInitiativeOrder()
 
 /* brief:	Return the correct number in degrees needed to face the mouse.
    param:	sprite - The sprite to rotate.
-		&window - The game window, called by reference.
+			&window - The game window, called by reference.
    returns:	The float value for the number of degrees needed to rotate by, in the range 0-360.
 
    TODO - MOVE SOMEWHERE BETTER
@@ -103,47 +108,65 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 
 	std::cout << endl;
 
-	auto first_player = active_player;
-
 	sf::Event event;
 	// Repeat until only one player is left.
 	do {
 		std::cout << "character name: " << (*active_player)->getName() << std::endl;
 		std::cout << "character Location: " << (*active_player)->getCoordinates() << std::endl;
+
+		if (this->initiative_order.size() <= 1)
+		{
+			std::cout << "Finished" << std::endl;
+			break;
+		}
+
 		// Make move and take attack
-		bool turn_finished = (*active_player)->take_turn(active_player);
+		bool turn_finished = (*active_player)->take_turn();
 
 		std::cout << "turn taken" << std::endl;
 
-		// Progress iterator node to the next one unless waiting for input.
-		if (turn_finished == true)
+		if (std::next(active_player) == this->initiative_order.end())
+		{
+			active_player = this->initiative_order.begin();
+		}
+		else
+		{
 			active_player++;
+		}
 
 		bool nextTurn = false;
 		while (nextTurn == false)
 		{
 			if (window.pollEvent(event))
 			{
-				// Keyboard events
-				if (event.type == sf::Event::KeyPressed)
+				if (dynamic_cast<Player *>(*active_player))
 				{
-					if (event.key.code == sf::Keyboard::W)
-						sprites["Player"].move(0.f, -5.f);
+					// Keyboard events
+					if (event.type == sf::Event::KeyPressed)
+					{
+						if (event.key.code == sf::Keyboard::W)
+							sprites["Player"].move(0.f, -5.f);
 
-					if (event.key.code == sf::Keyboard::A)
-						sprites["Player"].move(-5.f, 0.f);
+						if (event.key.code == sf::Keyboard::A)
+							sprites["Player"].move(-5.f, 0.f);
 
-					if (event.key.code == sf::Keyboard::S)
-						sprites["Player"].move(0.f, 5.f);
+						if (event.key.code == sf::Keyboard::S)
+							sprites["Player"].move(0.f, 5.f);
 
-					if (event.key.code == sf::Keyboard::D)
-						sprites["Player"].move(5.f, 0.f);
+						if (event.key.code == sf::Keyboard::D)
+							sprites["Player"].move(5.f, 0.f);
 
-					if (event.key.code == sf::Keyboard::P)
-						std::cout << "print" << std::endl;
+						if (event.key.code == sf::Keyboard::P)
+							std::cout << "print" << std::endl;
 
-					if (event.key.code == sf::Keyboard::Return)
-						nextTurn = true;
+						if (event.key.code == sf::Keyboard::Return)
+							nextTurn = true;
+					}
+				}
+				else
+				{
+					std::cout << "Not a player!" << std::endl;
+					nextTurn = true;
 				}
 			}
 
@@ -162,12 +185,6 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 			window.draw(highlighter);
 			window.draw(tiles);
 			window.display();
-		}
-
-		if (std::next(active_player) == active_player)
-		{
-			std::cout << "Finished" << std::endl;
-			break;
 		}
 	} while (event.type != sf::Event::Closed);
 

@@ -2,6 +2,7 @@
 #include "tools.h"
 #include "load_file.h"
 #include "pathfinding.h"
+#include "battlemap.h"
 #include "rapidxml/rapidxml_print.hpp"
 #include "display.h"
 #include <sstream>
@@ -152,24 +153,41 @@ int Combatant::roll_initiative()
 int Combatant::take_turn()
 {
 	// Count other combatants in initiative list.
-	int potential_targets = this->parentMap->initiative_order.size() - 1;
+	std::list<Object *> *potential_targets = &(this->parentMap->initiative_order);
+	auto start = find(potential_targets->begin(), potential_targets->end(), this);
 
 	vector<int> distances;
 
 	// Progress the head of the circular list ahead by target_selector.
 	// i.e. 1 means go to next. Cannot go completely around the list.
-	// for (int i = 0; i < target_selector; i++)
-	for (auto const& o: this->parentMap->initiative_order)
+	//for (auto const& o: potential_targets->begin())
+	auto o = std::next(start);
+	while (true) 
 	{
-		distances.push_back(this->coordinates.find_distance(o->getCoordinates()));
+		if (o == potential_targets->end())
+			o = potential_targets->begin();
+
+		if (o == start)
+			break;
+
+		distances.push_back(this->coordinates.find_distance((*o)->getCoordinates()));
+		o++;
 	}
 
 	// Find minimum distance in list, i.e. closest opponent.
-	auto target = this->parentMap->initiative_order.begin();
+	auto target = (std::next(start) != potential_targets->end() ? 
+				   std::next(start) : 
+				   potential_targets->begin());
+
 	auto min = *min_element(distances.begin(), distances.end());
 	for (int D : distances)
 	{
-		target++;
+		if (*target == this)
+		{
+			// Something gone badly wrong, shouldn't reach here.
+			throw ("Combatant succumbed to self-loathing");
+		}
+
 		if (D == min)
 		{
 			std::cout << "test_take_turn_1" << std::endl;
@@ -225,13 +243,14 @@ int Combatant::take_turn()
 			else
 				cout << this->name << " moved to " << this->coordinates << "." << endl;
 
-			// If target is killed, remove them from the list and decrement the number of potential targets.
-			if (result == dead)
-			{
-				target = this->parentMap->initiative_order.erase(target);
-				potential_targets--;
-			}
 		break;
+		}
+		else
+		{
+			if (std::next(target) != potential_targets->end())
+				target++;
+			else
+				target = potential_targets->begin();
 		}
 	}
 
@@ -269,36 +288,6 @@ life_status Combatant::make_attack(Object & target)
 	return alive;				// Should not reach here.
 }
 
-/* brief:	Roll attack. If it's greater than the target's AC, roll damage and subtract that from the target's HP. Print result.
-		If it's less, just print miss to stdout.
-		Virtual function, overwritten in Player.
-   param:	weapon - Weapon with which attacks are made, using damage and attack rolls. Type checked.
-		target - Passed by reference. Combatant for the attacks to be made against.
-   return:	status of target after attack, i.e. dead or alive.
-*/
-life_status Combatant::make_attack(weapon_type weapon, Object & target)
-{
-	int attack_roll = make_roll(weapon.getAttack());		// Initialise attack_roll to randomly generated value in dice range.
-
-	// If attack roll is less than the target's AC, print message about missing.
-	if (attack_roll < target.getAc()) {
-		cout << name << " swung at " << target.getName() << " but missed!" << endl;
-		return alive; // 0
-	}
-	// If attack roll is greater than the target's AC, roll damage and subtract that from the target's HP.
-	// Then print message about hitting and dealing damage to stdout. Check target's status.
-	else {
-		int damage_roll = make_roll(weapon.getDamage());
-		cout << name << " hit " << target.getName() << " for " << damage_roll << " damage! ";
-		life_status target_status = target.take_damage(damage_roll);
-		if (target_status != dead)
-			cout << target.getHp() << " HP remaining." << endl;
-		return target_status;			// Return status of target.
-	}
-
-	return alive;				// Should not reach here.
-}
-
 /* brief:	Take a value away from HP.
    param:	dam, the damage to be taken by the recipitent.
    returns:	The recipitent's status, i.e. dead or alive.
@@ -313,26 +302,9 @@ life_status Combatant::take_damage(int dam)
 		hp = 0;
 		status = dead;
 		cout << name << " was downed!" << endl;
-	}
 
-	return status;
-}
-
-/* brief:	Take a value away from HP.
-   param:	dam, the damage to be taken by the recipitent.
-		damage_type, the type of the damage. Currently ignored.
-   returns:	The recipitent's status, i.e. dead or alive.
-*/
-life_status Combatant::take_damage(int dam, type damage_type)
-{
-	// If damage is less than the target's HP, just reduce HP.
-	if (dam < hp)
-		hp -= dam;
-	// If damage is greater than target's HP, set HP to zero and kill recipitent.
-	else {
-		hp = 0;
-		status = dead;
-		cout << name << " was downed!" << endl;
+		auto corpse = find(this->parentMap->initiative_order.begin(), this->parentMap->initiative_order.end(), this);
+		this->parentMap->initiative_order.erase(corpse);
 	}
 
 	return status;

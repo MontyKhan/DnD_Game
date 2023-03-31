@@ -57,7 +57,7 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode(WINDOW_W, WINDOW_H), "DnD_Game");
 	battlemap->run_encounter(window);
 
-	delete(battlemap);
+	delete battlemap;
 
     return 0;
 };

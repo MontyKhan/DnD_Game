@@ -51,12 +51,8 @@ public:
 	virtual int take_turn();
 	// Roll both attack and damage against a target.
 	virtual life_status make_attack(Object & target);
-	// Roll both attack and damage against a target, supplying a weapon.
-	life_status make_attack(weapon_type weapon, Object & target);	// Pass by reference
 	// Reduce hp by dam
 	life_status take_damage(int dam);
-	// Reduce hp by dam, specific to damage type.
-	life_status take_damage(int dam, type damage_type);
 	// Move to a tile next to another tile.
 	virtual int moveTo(Tile* target);
 

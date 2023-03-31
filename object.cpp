@@ -7,7 +7,7 @@ std::vector<Tile *>Object::getNeighbours()
 {
 	// Vector to contain neighbouring vacant tiles.
 	std::vector<Tile *> tiles;
-	tiles.reserve(8);
+	tiles.resize(8);
 
 	tiles[eNorth] = this->parent->getNorth();
 	tiles[eNorthEast] = tiles[eNorth] ? tiles[eNorth]->getEast() : nullptr;
