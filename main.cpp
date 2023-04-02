@@ -45,7 +45,7 @@ int main() {
 						  16.f+(32.f*float(O->getCoordinates().getY())));
 		Tile *tile = battlemap->get(O->getCoordinates());
 		tile->setContents(O);
-		combatants.insert(std::pair<std::string, Object>(O->getName(), *O));
+		actors.insert({O->getName(), O });
 	}
 
 	battlemap->print_map();

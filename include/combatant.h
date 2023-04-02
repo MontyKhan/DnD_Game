@@ -41,7 +41,7 @@ public:
 	Combatant(rapidxml::xml_node<> *node);
 	// Default constructor
 	Combatant() 
-		: hp(0), ac(0), speed(0), init(Roll()), Object(Location()), status(dead) {};
+		: hp(0), ac(0), speed(0), init(Roll()), Object(Location()), status(alive) {};
 
 	// Roll a dice
 	int make_roll(Roll x);

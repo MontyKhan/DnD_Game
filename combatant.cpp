@@ -84,6 +84,9 @@ Combatant::Combatant(xml_node<> *root) :
 			else if (str_name == "hp")
 			{
 				hp = stoi(str_value);
+
+				if (hp > 0)
+					status = alive;
 			}
 			else if (str_name == "speed")
 			{
@@ -152,7 +155,7 @@ int Combatant::roll_initiative()
 */
 int Combatant::take_turn()
 {
-	// Count other combatants in initiative list.
+	// Count other actors in initiative list.
 	std::list<Object *> *potential_targets = &(this->parentMap->initiative_order);
 	auto start = find(potential_targets->begin(), potential_targets->end(), this);
 

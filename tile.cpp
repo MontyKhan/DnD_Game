@@ -77,10 +77,6 @@ Tile::Tile(int x, int y)
 
 Tile::~Tile()
 {
-	if (east)
-		delete east;
-	if (south)
-		delete south;
 	if (contents)
 		delete contents;
 }

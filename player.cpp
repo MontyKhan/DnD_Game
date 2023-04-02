@@ -41,7 +41,7 @@ int Player::take_turn()
 	}
 	cout << "Now at " << this->coordinates << endl;
 
-	// Count other combatants in neighbouring tiles.
+	// Count other actors in neighbouring tiles.
 	int potential_targets = 0;
 	std::vector<Tile*> adjacent_foes = this->getOccupiedNeighbours();
 

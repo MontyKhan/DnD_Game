@@ -11,7 +11,7 @@ using namespace std;
 
 /* brief:	Parses through a xml style .enctr file.
    param:	filepath - A string containing the relative address of the .enctr file.
-   returns: 	A vector of pointers to combatants, as described by the .enctr file.
+   returns: 	A vector of pointers to actors, as described by the .enctr file.
 		Uses downcasting to actually contain Players and monsters.
 */
 std::vector<Object*> interpret_nodes(const char* filepath)
@@ -30,9 +30,9 @@ std::vector<Object*> interpret_nodes(const char* filepath)
 		std::string str_value;
 		node_to_str(str_name,str_value,child);
 		
-		if (str_name == "monster")					// AI controlled monster
+		if (str_name == "monster")					// AI controlled Monster
 		{
-			monster* new_monster = new monster(child);
+			Monster* new_monster = new Monster(child);
 			new_monster->setStatus(alive);
 			combatants.push_back(new_monster);
 		}

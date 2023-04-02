@@ -3,13 +3,14 @@
 #include <iostream>
 #include "display.h"
 #include "combatant.h"
+#include "monster.h"
 
 namespace fs = std::filesystem;
 
 // Create map containers
 std::map<std::string, sf::Texture> textures;
 std::map<std::string, sf::Sprite> sprites;
-std::map<std::string, Object> combatants;
+std::map<std::string, Object*> actors;
 
 /* brief:	Update the screen with all entities that need to be drawn.
    param:	*window - Pointed to the window used as the UI.
@@ -18,10 +19,26 @@ std::map<std::string, Object> combatants;
 */
 void updateScreen(sf::RenderWindow *window)
 {
+#if 0
 	for (std::pair<std::string, sf::Sprite> p : sprites)
 	{
 		window->draw(p.second);
 	}
+#else
+	// Always draw map first, which should be first item in table.
+	window->draw(sprites.begin()->second);
+
+	for (auto a : actors)
+	{
+		bool alive = (a.second->getStatus() != dead);
+		bool loaded = sprites.find(a.first) != sprites.end();
+
+		if (alive && loaded)
+		{
+			window->draw(sprites[a.first]);
+		}
+	}
+#endif
 }
 
 /* brief:	Fill the texture and sprite maps with files to optimise load times.

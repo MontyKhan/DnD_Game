@@ -7,7 +7,7 @@
 
 using namespace rapidxml;
 
-// Parses through an xml formatted .enctr file for combatants.
+// Parses through an xml formatted .enctr file for actors.
 std::vector<Object*> interpret_nodes(const char* filepath);
 
 #endif

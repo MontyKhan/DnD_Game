@@ -11,7 +11,7 @@
 // Create map containers
 extern std::map<std::string, sf::Texture> textures;
 extern std::map<std::string, sf::Sprite> sprites;
-extern std::map<std::string, Object> combatants;
+extern std::map<std::string, Object*> actors;
 
 // Draw all sprites within the vector "entities" to screen.
 void updateScreen(sf::RenderWindow *window);

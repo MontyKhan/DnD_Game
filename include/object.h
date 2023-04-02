@@ -10,7 +10,7 @@
 
 #define MAX_VALUE 32767
 
-enum life_status {alive, death_1, death_2, dead};
+enum life_status {inanimate, alive, death_1, death_2, dead};
 enum object_type {OutOfBounds, type_object, type_player, type_combatant};
 
 // Forward class declarations
