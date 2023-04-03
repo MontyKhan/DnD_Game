@@ -114,7 +114,7 @@
 	<player>
 		<name>Player</name>
 		<ac>12</ac>
-		<hp>15</hp>
+		<hp>254</hp>
 		<speed>30</speed>
 		<initiative>0</initiative>
 		<weapon>

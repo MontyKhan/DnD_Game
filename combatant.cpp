@@ -2,6 +2,7 @@
 #include "tools.h"
 #include "load_file.h"
 #include "pathfinding.h"
+#include "battlemap.h"
 #include "rapidxml/rapidxml_print.hpp"
 #include "display.h"
 #include <sstream>
@@ -17,34 +18,30 @@ using namespace rapidxml;
 		AC - Combatant Armour Class as int.
 		Spd - Combatant speed in feet as an int.
 		Init - Initiative modifier as an int. Is converted into a roll equal to 1d20 + Init.
-		Coordinates - 3D coordinates of combatant
-		Status - life_status of combatant
+		Coordinates - 3D coordinates of Combatant
+		Status - life_status of Combatant
    return:	Nothing, as constructor.
 */
 
-combatant::combatant(std::string Name, int HP, int AC, int Spd, int Init, location Coordinates, life_status Status)
+Combatant::Combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status Status) :
+	hp{ HP }, ac{ AC }, speed{ Spd }, init{ Roll(1, 20, Init) }, status{ Status }
 {
 	name = Name;
-	hp = HP;
-	ac = AC;
-	speed = Spd;
-	init = roll(1,20,Init);
 	coordinates = Coordinates;
-	status = Status;
 }
 
 /* brief:	Constructor for reading variables from a vector of strings.
    param:	line - Stats in order of Name, HP, AC, Spd, Init as in above formats.
    return:	Nothing, as constructor.
 */
-combatant::combatant(std::vector<std::string> line)
+Combatant::Combatant(std::vector<std::string> line)
 {
 	name = line[NAME_VAR];				// Get name (string)
 	hp = stoi(line[HP_VAR]);			// Get HP (int)
 	ac = stoi(line[AC_VAR]);			// Get AC (int)
 	speed = stoi(line[SPD_VAR]);			// Get speed (int)
-	init = roll(1,20,stoi(line[INIT_VAR]));		// Create initiative roll
-	coordinates = location();
+	init = Roll(1,20,stoi(line[INIT_VAR]));		// Create initiative roll
+	coordinates = Location();
 	status = dead;
 }
 
@@ -52,7 +49,8 @@ combatant::combatant(std::vector<std::string> line)
    param:	*node - Pointer to an xml node containing values
    return:	Nothing, as constructor.
 */
-combatant::combatant(xml_node<> *root)
+Combatant::Combatant(xml_node<> *root) :
+	hp{ 0 }, ac{ 0 }, speed{ 0 }, status{ dead }
 {
 	for (xml_node<> *child = root->first_node(); child; child = child->next_sibling())	// Monster
 	{
@@ -70,7 +68,7 @@ combatant::combatant(xml_node<> *root)
 		}
 		else if (str_name == "coordinates")
 		{
-			coordinates = location(str_value);
+			coordinates = Location(str_value);
 		}
 		else
 		{
@@ -86,6 +84,9 @@ combatant::combatant(xml_node<> *root)
 			else if (str_name == "hp")
 			{
 				hp = stoi(str_value);
+
+				if (hp > 0)
+					status = alive;
 			}
 			else if (str_name == "speed")
 			{
@@ -93,17 +94,17 @@ combatant::combatant(xml_node<> *root)
 			}
 			else if (str_name == "initiative")
 			{
-				init = roll(1,20,stoi(str_value));
+				init = Roll(1,20,stoi(str_value));
 			}
 		}
 	}
 }
 
-/* brief:	Print all stats of combatant to screen.
+/* brief:	Print all stats of Combatant to screen.
    param:	None.
    returns:	Nothing.
 */
-void combatant::print_stats()
+void Combatant::print_stats()
 {
 	cout << "Name: " << name << endl;
 	cout << "HP: " << hp << endl;
@@ -118,7 +119,7 @@ void combatant::print_stats()
    param: 	roll value, containing the number of dice, the size of the dice and the modifier.
    returns: 	The result of the roll, plus the modifier.
 */
-int combatant::make_roll(roll x)
+int Combatant::make_roll(Roll x)
 {
 	int damage = 0;					// Initialise damage to 0.
 	vector <int> results;				// Declare empty vector of ints for containing results of each roll.
@@ -143,64 +144,69 @@ int combatant::make_roll(roll x)
    param:	None
    returns:	The result of the 1d20 + init roll.
 */
-int combatant::roll_initiative()
+int Combatant::roll_initiative()
 {
-	return make_roll(init);
+	initiative = make_roll(init);
+	return initiative;
 }
 
 /* brief:	Select opponent and make attack.
-   param:	A pointer to the node containing the combatant making the attack.
    returns:	0 if successful.
 */
-int combatant::take_turn(node* self)
+int Combatant::take_turn()
 {
-	// Set target to start at attacker (origin).
-	node * target = self;
-
-	// Count other combatants in initiative list.
-	int potential_targets = 0;
-	while (target->next != self)
-	{
-		potential_targets++;
-		target = target->next;
-	}
-
-	// Reset target to origin.
-	target = self;
+	// Count other actors in initiative list.
+	std::list<Object *> *potential_targets = &(this->parentMap->initiative_order);
+	auto start = find(potential_targets->begin(), potential_targets->end(), this);
 
 	vector<int> distances;
 
 	// Progress the head of the circular list ahead by target_selector.
 	// i.e. 1 means go to next. Cannot go completely around the list.
-	// for (int i = 0; i < target_selector; i++)
-	for (int i = 0; i < potential_targets; i++)
+	//for (auto const& o: potential_targets->begin())
+	auto o = std::next(start);
+	while (true) 
 	{
-		target = target->next;
-		distances.push_back(this->coordinates.find_distance(target->player->getCoordinates()));
+		if (o == potential_targets->end())
+			o = potential_targets->begin();
+
+		if (o == start)
+			break;
+
+		distances.push_back(this->coordinates.find_distance((*o)->getCoordinates()));
+		o++;
 	}
 
 	// Find minimum distance in list, i.e. closest opponent.
-	target = self;
+	auto target = (std::next(start) != potential_targets->end() ? 
+				   std::next(start) : 
+				   potential_targets->begin());
+
 	auto min = *min_element(distances.begin(), distances.end());
 	for (int D : distances)
 	{
-		target = target->next;
+		if (*target == this)
+		{
+			// Something gone badly wrong, shouldn't reach here.
+			throw ("Combatant succumbed to self-loathing");
+		}
+
 		if (D == min)
 		{
 			std::cout << "test_take_turn_1" << std::endl;
-			std::cout << "target position: " << target->player->getCoordinates() << std::endl;
-			std::vector<Tile*> free_cells = target->player->getFreeNeighbours();
+			std::cout << "target position: " << (*target)->getCoordinates() << std::endl;
+			std::vector<Tile*> free_cells = (*target)->getFreeNeighbours();
 			std::cout << "test_take_turn_2" << std::endl;
 			int min_dist = MAX_VALUE;
 			bool reached = false;
 
 			if (free_cells.size() > 0)
 			{
-				Tile* new_location;
+				Tile* new_Location = nullptr;
 				for (Tile* T : free_cells)
 				{
 					std::cout << "T: " << T->getCoordinates();
-					int dist = this->parent->findMinimumPath(T);
+					int dist = this->tile->findMinimumPath(T);
 					std::cout << ", dist: " << dist << std::endl;
 					if (dist < min_dist)
 					{
@@ -208,24 +214,24 @@ int combatant::take_turn(node* self)
 
 						if (min_dist <= DIAGONAL_NEIGHBOUR)
 						{
-							new_location = this->parent;
+							new_Location = this->tile;
 							std::cout << "Already neighbour. Stay in place." << std::endl;
 							reached = true;
 						}
 						if (min_dist <= this->speed)
 						{
-							new_location = T;
+							new_Location = T;
 							reached = true;
 						}
 						else
-							new_location = parent->findMidPoint(T, this->speed);
+							new_Location = tile->findMidPoint(T, this->speed);
 					}
 				}
 
-				std::cout << "new location: " << new_location->getCoordinates() << std::endl;
+				std::cout << "new Location: " << new_Location->getCoordinates() << std::endl;
 
 				// Select new tile to move to.
-				moveTo(new_location);
+				moveTo(new_Location);
 			}
 			else
 			{
@@ -236,17 +242,18 @@ int combatant::take_turn(node* self)
 			life_status result = alive;
 			if (reached)
 				// Make attack against target. If attack kills them, result is set to dead. Else, alive.
-				result = self->player->make_attack(*(target->player));
+				result = this->make_attack(**target);
 			else
 				cout << this->name << " moved to " << this->coordinates << "." << endl;
 
-			// If target is killed, remove them from the list and decrement the number of potential targets.
-			if (result == dead)
-			{
-				remove_from_list(target);
-				potential_targets--;
-			}
 		break;
+		}
+		else
+		{
+			if (std::next(target) != potential_targets->end())
+				target++;
+			else
+				target = potential_targets->begin();
 		}
 	}
 
@@ -258,7 +265,7 @@ int combatant::take_turn(node* self)
    param:	target - Passed by reference. Combatant for the attacks to be made against.
    return:	status of target after attack, i.e. dead or alive.
 */
-life_status combatant::make_attack(object & target)
+life_status Combatant::make_attack(Object & target)
 {
 	int wc = 0;							// Weapon choice
 
@@ -284,41 +291,11 @@ life_status combatant::make_attack(object & target)
 	return alive;				// Should not reach here.
 }
 
-/* brief:	Roll attack. If it's greater than the target's AC, roll damage and subtract that from the target's HP. Print result.
-		If it's less, just print miss to stdout.
-		Virtual function, overwritten in Player.
-   param:	weapon - Weapon with which attacks are made, using damage and attack rolls. Type checked.
-		target - Passed by reference. Combatant for the attacks to be made against.
-   return:	status of target after attack, i.e. dead or alive.
-*/
-life_status combatant::make_attack(weapon_type weapon, object & target)
-{
-	int attack_roll = make_roll(weapon.getAttack());		// Initialise attack_roll to randomly generated value in dice range.
-
-	// If attack roll is less than the target's AC, print message about missing.
-	if (attack_roll < target.getAc()) {
-		cout << name << " swung at " << target.getName() << " but missed!" << endl;
-		return alive; // 0
-	}
-	// If attack roll is greater than the target's AC, roll damage and subtract that from the target's HP.
-	// Then print message about hitting and dealing damage to stdout. Check target's status.
-	else {
-		int damage_roll = make_roll(weapon.getDamage());
-		cout << name << " hit " << target.getName() << " for " << damage_roll << " damage! ";
-		life_status target_status = target.take_damage(damage_roll);
-		if (target_status != dead)
-			cout << target.getHp() << " HP remaining." << endl;
-		return target_status;			// Return status of target.
-	}
-
-	return alive;				// Should not reach here.
-}
-
 /* brief:	Take a value away from HP.
    param:	dam, the damage to be taken by the recipitent.
    returns:	The recipitent's status, i.e. dead or alive.
 */
-life_status combatant::take_damage(int dam)
+life_status Combatant::take_damage(int dam)
 {
 	// If damage is less than the target's HP, just reduce HP.
 	if (dam < hp)
@@ -328,26 +305,10 @@ life_status combatant::take_damage(int dam)
 		hp = 0;
 		status = dead;
 		cout << name << " was downed!" << endl;
-	}
 
-	return status;
-}
-
-/* brief:	Take a value away from HP.
-   param:	dam, the damage to be taken by the recipitent.
-		damage_type, the type of the damage. Currently ignored.
-   returns:	The recipitent's status, i.e. dead or alive.
-*/
-life_status combatant::take_damage(int dam, type damage_type)
-{
-	// If damage is less than the target's HP, just reduce HP.
-	if (dam < hp)
-		hp -= dam;
-	// If damage is greater than target's HP, set HP to zero and kill recipitent.
-	else {
-		hp = 0;
-		status = dead;
-		cout << name << " was downed!" << endl;
+		auto corpse = find(this->parentMap->initiative_order.begin(), this->parentMap->initiative_order.end(), this);
+		this->parentMap->initiative_order.erase(corpse);
+		this->tile->clearContents();
 	}
 
 	return status;
@@ -357,9 +318,9 @@ life_status combatant::take_damage(int dam, type damage_type)
    param:	The tile to be moved to.
    returns:	A 0 on a success.
 */
-int combatant::moveTo(Tile* target)
+int Combatant::moveTo(Tile* target)
 {
-	Tile* tmp = this->parent;
+	Tile* tmp = this->tile;
 	this->coordinates = target->getCoordinates();
 	if (target->setContents(this) == 0)
 	{

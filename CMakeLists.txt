@@ -15,6 +15,7 @@ player.cpp
 tile.cpp 
 object.cpp 
 display.cpp 
+battlemap.cpp
 main.cpp
 )
 

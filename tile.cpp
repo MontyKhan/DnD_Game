@@ -20,7 +20,7 @@ Tile::Tile(int x, int y)
 	this->south = nullptr;
 	this->west = nullptr;
 	this->contents = new OutOfBoundsObject();
-	this->coordinates = location(0,0,0);
+	this->coordinates = Location(0,0,0);
 	this->origin = this;
 
 	// Create first row
@@ -73,6 +73,12 @@ Tile::Tile(int x, int y)
 		prev_y = y_iter;
 		y_iter = y_iter->south;
 	}
+}
+
+Tile::~Tile()
+{
+	if (contents)
+		delete contents;
 }
 
 /* brief:	Prints entire map to console, starting from origin.
@@ -165,11 +171,11 @@ Tile* Tile::get(int x, int y)
 	return tile;
 }
 
-/* brief:	Get a tile by location
+/* brief:	Get a tile by Location
    param:	coordinates - coordinates of tile
-   returns:	The tile at location
+   returns:	The tile at Location
 */
-Tile* Tile::get(location coordinates)
+Tile* Tile::get(Location coordinates)
 {
 	Tile* tile = get(coordinates.getX(), coordinates.getY());
 
@@ -180,7 +186,7 @@ Tile* Tile::get(location coordinates)
    param:	toFind - The object to find.
    returns:	The tile containing the object.
 */
-Tile* Tile::get(object* toFind)
+Tile* Tile::get(Object* toFind)
 {
 	Tile* tile = get(toFind->getCoordinates());
 
@@ -192,7 +198,7 @@ Tile* Tile::get(object* toFind)
    returns:	0 if contents succesfully changed,
 		-1 if tile already contains something.
 */
-int Tile::setContents(object* Contents)
+int Tile::setContents(Object* Contents)
 {
 	try
 	{

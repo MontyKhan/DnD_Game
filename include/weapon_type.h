@@ -9,20 +9,20 @@ using namespace rapidxml;
 enum type {acid, bludgeoning, cold, fire, force, lightning, necrotic, piercing, poison, psychic, radiant, slashing, thunder};
 
 
-// Class for each weapon wielded by combatant
+// Class for each weapon wielded by Combatant
 class weapon_type {
 private:
 	std::string name;
-	roll attack;
-	roll damage;
+	Roll attack;
+	Roll damage;
 	int range;
 	type damage_type;
 public:
 	// Default constuctor, assume fists
 	weapon_type() 
-		: name(""), attack(roll(1,20,0)), damage(roll(1,4,0)), range(5), damage_type(bludgeoning) {};
+		: name(""), attack(Roll(1,20,0)), damage(Roll(1,4,0)), range(5), damage_type(bludgeoning) {};
 	// Constructor for values recieved individually.
-	weapon_type(std::string Name, roll Attack, roll Damage, int Range, type Type) 
+	weapon_type(std::string Name, Roll Attack, Roll Damage, int Range, type Type) 
 		: name(Name), attack(Attack), damage(Damage), range(Range), damage_type(Type) {};
 	// Constructor for xml node
 	weapon_type(rapidxml::xml_node<> *root);
@@ -30,10 +30,10 @@ public:
 	// Setters/getters
 	int setName(std::string Name) { name = Name; return 0; };
 	std::string getName() { return name; };
-	int setAttack(roll Attack) { attack = Attack; return 0; };
-	roll getAttack() { return attack; };
-	int setDamage(roll Damage) { damage = Damage; return 0; };
-	roll getDamage() { return damage; };
+	int setAttack(Roll Attack) { attack = Attack; return 0; };
+	Roll getAttack() { return attack; };
+	int setDamage(Roll Damage) { damage = Damage; return 0; };
+	Roll getDamage() { return damage; };
 	int setType(type Type) { damage_type = Type; return 0; };
 	type getType() { return damage_type; };
 	std::string getTypeStr();		// Defined in file.

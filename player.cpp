@@ -2,46 +2,46 @@
 #include "combatant.h"
 #include "roll.h"
 #include "tools.h"
+#include "battlemap.h"
 
 /* brief: 	Make move and then make attack against specified target.
-	  	Virtual overloaded function from combatant.
-   param: 	Pointer to node describing the player.
+	  		Virtual overloaded function from Combatant.
    returns:	0 if successful.
 */
-int Player::take_turn(node* self)
+int Player::take_turn()
 {
-	cout << "Currently at: " << this->coordinates << endl;
-
-	location new_location = location();
-	bool location_set = false;
+	// cout << "Currently at: " << this->coordinates << endl;
+#if 0
+	Location new_Location = Location();
+	bool Location_set = false;
 	int turn_finished = 0;
 
 	sf::Event event;
 
-	while (location_set == false)
+	while (Location_set == false)
 	{
-		if (this->parentWindow->pollEvent(event))
+		//if (this->parentWindow->pollEvent(event))
 		{
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
-				new_location.setX(int(event.mouseButton.x/32.f));
-				new_location.setY(int(event.mouseButton.y/32.f));
+				new_Location.setX(int(event.mouseButton.x/32.f));
+				new_Location.setY(int(event.mouseButton.y/32.f));
 				cout << "x: " << event.mouseButton.x/32.f << ", y: " << event.mouseButton.y/32.f << endl;
-				location_set = true;
+				Location_set = true;
 				turn_finished = 1;
 			}
 		}
 	}
 
-	//location new_location = this->coordinates + move_vector;
-	if (new_location != this->coordinates)
+	//Location new_Location = this->coordinates + move_vector;
+	if (new_Location != this->coordinates)
 	{
-		Tile* new_tile = this->parent->get(new_location);
+		Tile* new_tile = this->parent->get(new_Location);
 		moveTo(this->parent->findMidPoint(new_tile, this->speed));
 	}
 	cout << "Now at " << this->coordinates << endl;
 
-	// Count other combatants in neighbouring tiles.
+	// Count other actors in neighbouring tiles.
 	int potential_targets = 0;
 	std::vector<Tile*> adjacent_foes = this->getOccupiedNeighbours();
 
@@ -58,30 +58,83 @@ int Player::take_turn(node* self)
 		cin >> tc;
 
 		// Make attack against target. If attack kills them, result is set to dead. Else, alive.
-		life_status result = self->player->make_attack(*(adjacent_foes[tc-1]->getContents()));
+		life_status result = this->make_attack(*(adjacent_foes[tc-1]->getContents()));
 
 		// If target is killed, remove them from the list and decrement the number of potential targets.
 		if (result == dead)
 		{
-			self->remove(adjacent_foes[tc-1]->getContents());
-			potential_targets--;
+			auto corpse = find(this->parentMap->initiative_order.begin(), this->parentMap->initiative_order.end(), adjacent_foes[tc - 1]->getContents());
+			if (corpse != this->parentMap->initiative_order.end())
+			{
+				this->parentMap->initiative_order.erase(corpse);
+				potential_targets--;
+			}
+			else
+				throw("Could not find corpse in initiative order!");
 		}
 	}
 
 	return turn_finished;
+#else
+	int state = turn_finished ? 1 : 0;
+	turn_finished = false;	// Reset before next turn
+
+	return state;
+#endif
+}
+
+bool Player::handleEvent(sf::Event &event, sf::RenderWindow &window)
+{
+	if (event.type == sf::Event::KeyPressed)
+	{
+		if (event.key.code == sf::Keyboard::W)
+			moveTo(this->tile->getNorth());
+
+		if (event.key.code == sf::Keyboard::A)
+			moveTo(this->tile->getWest());
+
+		if (event.key.code == sf::Keyboard::S)
+			moveTo(this->tile->getSouth());
+
+		if (event.key.code == sf::Keyboard::D)
+			moveTo(this->tile->getEast());
+
+		if (event.key.code == sf::Keyboard::P)
+			std::cout << "print" << std::endl;
+
+		if (event.key.code == sf::Keyboard::Return)
+			turn_finished = true;
+	}
+
+	else if (event.type == sf::Event::MouseButtonReleased)
+	{
+		sf::Vector2i pos = sf::Mouse::getPosition(window);
+		sf::Vector2u window_size = window.getSize();
+
+		uint8_t x_pos = (pos.x/float(window_size.x)) * this->getBattlemap()->getWidth();
+		uint8_t y_pos = (pos.y /float(window_size.y)) * this->getBattlemap()->getHeight();
+
+		Tile *newTile = this->getBattlemap()->get(x_pos, y_pos);
+		if (newTile->getContents())
+			make_attack(*(newTile->getContents()));
+		else
+			moveTo(newTile);
+	}
+	
+	return true;
 }
 
 /* brief: 	Roll attack against the target's AC, then roll damage.
-	 	Virtual overloaded function from combatant.
+	 	Virtual overloaded function from Combatant.
    param: 	Address of target, called by reference.
    returns:	The status of the target.
 */
-life_status Player::make_attack(object & target)
+life_status Player::make_attack(Object & target)
 {
-	std::string input;
-	cout << endl << "Please give number of weapon to use: ";
-	cin >> input;
-	int wc = stoi(input);							// Weapon choice
+	//std::string input;
+	//cout << endl << "Please give number of weapon to use: ";
+	//cin >> input;
+	int wc = 0;							// Weapon choice
 
 	int attack_roll = make_roll(weapons[wc].getAttack());		// Initialise attack_roll to randomly generated value in dice range.
 

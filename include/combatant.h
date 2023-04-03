@@ -22,42 +22,37 @@ using namespace rapidxml;
 
 class node;				// Forward declaration for take_turn(node* self) function.
 
-// Class for each combatant in an encounter
-class combatant : public object {
+// Class for each Combatant in an encounter
+class Combatant : public Object {
 protected:
-	std::string name;
 	int hp;
 	int ac;
 	int speed;
-	roll init;
+	Roll init;
 	std::vector<weapon_type> weapons;
 	life_status status;
 
 public:
 	// Constructor for individual variables
-	combatant(std::string Name, int HP, int AC, int Spd, int Init, location Coordinates, life_status Status);
+	Combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status Status);
 	// Constructor for vector of strings, as read from .csv.
-	combatant(std::vector<std::string> line);
+	Combatant(std::vector<std::string> line);
 	// Constructor for xml node
-	combatant(rapidxml::xml_node<> *node);
+	Combatant(rapidxml::xml_node<> *node);
 	// Default constructor
-	combatant() 
-		: name(""), hp(0), ac(0), speed(0), init(roll()), object(location()), status(dead) {};
+	Combatant() 
+		: hp(0), ac(0), speed(0), init(Roll()), Object(Location()), status(alive) {};
 
 	// Roll a dice
-	int make_roll(roll x);
+	int make_roll(Roll x);
 	// Roll initiative specifically
 	int roll_initiative();
 	// Move and then make attack
-	virtual int take_turn(node* self);
+	virtual int take_turn();
 	// Roll both attack and damage against a target.
-	virtual life_status make_attack(object & target);
-	// Roll both attack and damage against a target, supplying a weapon.
-	life_status make_attack(weapon_type weapon, object & target);	// Pass by reference
+	virtual life_status make_attack(Object & target);
 	// Reduce hp by dam
 	life_status take_damage(int dam);
-	// Reduce hp by dam, specific to damage type.
-	life_status take_damage(int dam, type damage_type);
 	// Move to a tile next to another tile.
 	virtual int moveTo(Tile* target);
 
@@ -70,10 +65,12 @@ public:
 	int setAc(int val) { ac = val; return 0; };
 	int getSpd() { return speed; };					// Speed
 	int setSpd(int val) { speed = val; return 0; };
-	roll getInit() { return init; };				// Initiative
-	int setInit(int val) { init = roll(1,20,val); return 0; };
+	Roll getInit() { return init; };				// Initiative
+	int setInit(int val) { init = Roll(1,20,val); return 0; };
 	life_status getStatus() { return status; };			// Status
 	int setStatus(life_status val) { status = val; return 0; };
+	int getInitiative() { return initiative; };
+	int setInitiative(int init) { initiative = init; return 0; };
 
 	// Debugging functions
 	void print_stats();

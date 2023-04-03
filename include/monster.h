@@ -5,9 +5,9 @@
 
 using namespace std;
 
-class monster : public combatant
+class Monster : public Combatant
 {
-	using combatant::combatant;
+	using Combatant::Combatant;
 };
 
 #endif

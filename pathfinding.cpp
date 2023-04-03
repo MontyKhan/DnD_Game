@@ -8,46 +8,46 @@ using namespace std;
 
 
 /* brief:	Override function. Prints coordinates in format %, %, %.
-		Friend function of location.
+		Friend function of Location.
    param:	&out - Address of output stream.
 		&r - coordinates to print.
    returns:	output stream.
 */
-std::ostream & operator << (std::ostream &out, const location &l)
+std::ostream & operator << (std::ostream &out, const Location &l)
 {
 	out << "(" << l.x << ", " << l.y << ", " << l.z << ")";
 	return out;
 }
 
-/* brief:	Compares two sets of location data, returns True if equal.
-   param:	&rhs - First location to compare.
-		&lhs - Second location to compare.
+/* brief:	Compares two sets of Location data, returns True if equal.
+   param:	&rhs - First Location to compare.
+		&lhs - Second Location to compare.
    returns:	True if equal, false otherwise.
 */
-bool operator == (const location &rhs, const location &lhs)
+bool operator == (const Location &rhs, const Location &lhs)
 {
 	return ((rhs.x == lhs.x) && (rhs.y == lhs.y) && (rhs.z == lhs.z));
 }
 
-/* brief:	Compare two sets of location data, returns False is equal.
-   param:	&rhs - First location to compare.
-		&lhs - Second location to compare.
+/* brief:	Compare two sets of Location data, returns False is equal.
+   param:	&rhs - First Location to compare.
+		&lhs - Second Location to compare.
    returns:	True if unequal, false otherwise.
 */
-bool operator != (const location &rhs, const location &lhs)
+bool operator != (const Location &rhs, const Location &lhs)
 {
 	return !(rhs == lhs);
 }
 
-/* brief:	Add two sets of location data. To the right and up are considered positive directions.
+/* brief:	Add two sets of Location data. To the right and up are considered positive directions.
 		Down and left are considered negative.
-   param:	&rhs - First location to sum.
-		&lhs - Second location to sum.
-   returns:	The sum of the two locations.
+   param:	&rhs - First Location to sum.
+		&lhs - Second Location to sum.
+   returns:	The sum of the two Locations.
 */
-location operator + (const location &rhs, const location &lhs)
+Location operator + (const Location &rhs, const Location &lhs)
 {
-	location sum;
+	Location sum;
 
 	// Sum all components
 	sum.x = rhs.x + lhs.x;
@@ -57,15 +57,15 @@ location operator + (const location &rhs, const location &lhs)
 	return sum;
 }
 
-/* brief:	Subtact one location datum from another. To the right and up are considered positive directions.
+/* brief:	Subtact one Location datum from another. To the right and up are considered positive directions.
 		Down and left are considered negative.
    param:	&rhs - Location to subtract from.
 		&lhs - Location to subtract.
-   returns:	The sum of the two locations.
+   returns:	The sum of the two Locations.
 */
-location operator - (const location &rhs, const location &lhs)
+Location operator - (const Location &rhs, const Location &lhs)
 {
-	location sum;
+	Location sum;
 
 	// Sum all components
 	sum.x = rhs.x - lhs.x;
@@ -79,7 +79,7 @@ location operator - (const location &rhs, const location &lhs)
    param:	str, in the format %,%,%
    returns:	Nothing, as constructor.
 */
-location::location(std::string str)
+Location::Location(std::string str)
 {
 	std::vector<std::string> vals = split_string(str, ",");
 
@@ -88,7 +88,7 @@ location::location(std::string str)
 	z = stoi(vals[2]);
 }
 
-float find_euc(location rhs, location lhs)
+float find_euc(Location rhs, Location lhs)
 {
 	float x_d = abs(float(rhs.x) - float(lhs.x));
 	float y_d = abs(float(rhs.y) - float(lhs.y));
@@ -105,7 +105,7 @@ float find_euc(location rhs, location lhs)
 		z - Distance along z axis.
    return:	Distance between two points in euclidean space.
 */
-int location::find_distance(location coords)
+int Location::find_distance(Location coords)
 {
 	int x_d = abs(x - coords.getX());
 	int y_d = abs(y - coords.getY());
