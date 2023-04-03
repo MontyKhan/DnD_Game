@@ -10,77 +10,10 @@
 */
 int Player::take_turn()
 {
-	// cout << "Currently at: " << this->coordinates << endl;
-#if 0
-	Location new_Location = Location();
-	bool Location_set = false;
-	int turn_finished = 0;
-
-	sf::Event event;
-
-	while (Location_set == false)
-	{
-		//if (this->parentWindow->pollEvent(event))
-		{
-			if (event.type == sf::Event::MouseButtonPressed)
-			{
-				new_Location.setX(int(event.mouseButton.x/32.f));
-				new_Location.setY(int(event.mouseButton.y/32.f));
-				cout << "x: " << event.mouseButton.x/32.f << ", y: " << event.mouseButton.y/32.f << endl;
-				Location_set = true;
-				turn_finished = 1;
-			}
-		}
-	}
-
-	//Location new_Location = this->coordinates + move_vector;
-	if (new_Location != this->coordinates)
-	{
-		Tile* new_tile = this->parent->get(new_Location);
-		moveTo(this->parent->findMidPoint(new_tile, this->speed));
-	}
-	cout << "Now at " << this->coordinates << endl;
-
-	// Count other actors in neighbouring tiles.
-	int potential_targets = 0;
-	std::vector<Tile*> adjacent_foes = this->getOccupiedNeighbours();
-
-	if (adjacent_foes.size() > 0)
-	{
-		cout << "Select target:\t";
-		for(Tile* T : adjacent_foes)
-		{
-			cout << T->getContents()->getName() << " (" << ++potential_targets << ")" << endl << "\t\t";
-		}
-
-		// Ask user for which enemy to attack.
-		int tc;
-		cin >> tc;
-
-		// Make attack against target. If attack kills them, result is set to dead. Else, alive.
-		life_status result = this->make_attack(*(adjacent_foes[tc-1]->getContents()));
-
-		// If target is killed, remove them from the list and decrement the number of potential targets.
-		if (result == dead)
-		{
-			auto corpse = find(this->parentMap->initiative_order.begin(), this->parentMap->initiative_order.end(), adjacent_foes[tc - 1]->getContents());
-			if (corpse != this->parentMap->initiative_order.end())
-			{
-				this->parentMap->initiative_order.erase(corpse);
-				potential_targets--;
-			}
-			else
-				throw("Could not find corpse in initiative order!");
-		}
-	}
-
-	return turn_finished;
-#else
 	int state = turn_finished ? 1 : 0;
 	turn_finished = false;	// Reset before next turn
 
 	return state;
-#endif
 }
 
 bool Player::handleEvent(sf::Event &event, sf::RenderWindow &window)
