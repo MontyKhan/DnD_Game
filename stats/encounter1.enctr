@@ -3,7 +3,7 @@
 		<name>Orc</name>
 		<ac>13</ac>
 		<hp>15</hp>
-		<speed>30</speed>
+		<speed>6</speed>
 		<initiative>1</initiative>
 		<weapon>
 			<name>Greataxe</name>
@@ -19,7 +19,7 @@
 		<name>Goblin</name>
 		<ac>15</ac>
 		<hp>7</hp>
-		<speed>30</speed>
+		<speed>6</speed>
 		<initiative>2</initiative>
 		<weapon>
 			<name>Scimitar</name>
@@ -35,7 +35,7 @@
 		<name>Bugbear</name>
 		<ac>16</ac>
 		<hp>27</hp>
-		<speed>30</speed>
+		<speed>6</speed>
 		<initiative>2</initiative>
 		<weapon>
 			<name>Morningstar</name>
@@ -51,7 +51,7 @@
 		<name>Bandit</name>
 		<ac>12</ac>
 		<hp>11</hp>
-		<speed>30</speed>
+		<speed>6</speed>
 		<initiative>1</initiative>
 		<weapon>
 			<name>Scimitar</name>
@@ -67,7 +67,7 @@
 		<name>Kobold</name>
 		<ac>12</ac>
 		<hp>5</hp>
-		<speed>30</speed>
+		<speed>6</speed>
 		<initiative>2</initiative>
 		<weapon>
 			<name>Dagger</name>
@@ -83,7 +83,7 @@
 		<name>Hobgoblin</name>
 		<ac>18</ac>
 		<hp>11</hp>
-		<speed>30</speed>
+		<speed>6</speed>
 		<initiative>1</initiative>
 		<weapon>
 			<name>Longsword</name>
@@ -99,7 +99,7 @@
 		<name>Drow</name>
 		<ac>15</ac>
 		<hp>13</hp>
-		<speed>30</speed>
+		<speed>6</speed>
 		<initiative>2</initiative>
 		<weapon>
 			<name>Shortsword</name>
