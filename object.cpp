@@ -31,7 +31,6 @@ std::vector<Tile*> Object::getFreeNeighbours()
 	std::vector<Tile*> free_tiles;
 	std::vector<Tile *> tiles = this->getNeighbours();
 
-	cout << "test_getFreeNeighbours_1" << endl;	
 	// Check neighbouring tiles, clockwise starting at North.
 	for (auto const &neighbour : tiles)
 	{
@@ -52,7 +51,6 @@ std::vector<Tile*> Object::getOccupiedNeighbours()
 	std::vector<Tile*> occupied_tiles;
 	std::vector<Tile *> tiles = this->getNeighbours();
 
-	cout << "test_getFreeNeighbours_1" << endl;
 	// Check neighbouring tiles, clockwise starting at North.
 	for (auto const &neighbour : tiles)
 	{

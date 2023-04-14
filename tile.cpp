@@ -21,13 +21,13 @@ Tile::Tile(int x, int y)
 	this->west = nullptr;
 	this->contents = new OutOfBoundsObject();
 	this->coordinates = Location(0,0,0);
-	this->origin = this;
+	this->origin.reset(this);
 
 	// Create first row
-	Tile* x_iter = this;
+	shared_ptr<Tile> x_iter = origin;
 	for (int i = 0; i < x; i++)
 	{
-		Tile* new_tile = new Tile();
+		shared_ptr<Tile> new_tile{ new Tile() };
 		new_tile->origin = this->origin;
 		new_tile->contents = new OutOfBoundsObject();
 		new_tile->west = x_iter;			// All else will be nullptr by default.
@@ -37,20 +37,20 @@ Tile::Tile(int x, int y)
 	}
 
 	// Create subsequent rows
-	Tile* prev_y = this;
-	Tile* y_iter = new Tile();
+	shared_ptr<Tile> prev_y = origin;
+	shared_ptr<Tile> y_iter;
 	for (int j = 1; j < y; j++)
 	{
-		y_iter = new Tile();
+		y_iter.reset(new Tile());
 		y_iter->north = prev_y;
 		y_iter->setCoordinates(0,j,0);
 		y_iter->contents = new OutOfBoundsObject();
 		prev_y->south = y_iter;
 
-		Tile* x_iter = y_iter;
+		x_iter = y_iter;
 		for (int i = 0; i < x; i++)
 		{
-			Tile* new_tile = new Tile();
+			shared_ptr<Tile> new_tile{ new Tile() };
 			new_tile->origin = this->origin;
 			new_tile->west = x_iter;
 			new_tile->north = prev_y->east;
@@ -87,9 +87,6 @@ Tile::~Tile()
 */
 void Tile::print_map()
 {
-	// Point to current tile
-	Tile* origin = this;
-
 	// Iterate upwards
 	while (origin->north != nullptr)
 	{
@@ -112,8 +109,16 @@ void Tile::print_map()
 */ 
 void Tile::print_from()
 {
+	// Print self first
+	if (this->contents == nullptr)
+		std::cout << "x";
+	else if (this->contents->getObjectType() == OutOfBounds)
+		std::cout << "w";
+	else
+		std::cout << "p";
+
 	// Point to first neighbour
-	Tile* tile = this;
+	shared_ptr<Tile> tile = this->east;
 
 	// Iterate through row, print "x" for each tile.
 	while (tile != nullptr)
@@ -142,7 +147,7 @@ void Tile::print_from()
 */
 Tile* Tile::get(int x, int y)
 {
-	Tile * tile = origin;
+	shared_ptr<Tile> tile = origin;
 	try
 	{
 		// Iterate down column.
@@ -168,7 +173,7 @@ Tile* Tile::get(int x, int y)
 		exit (EXIT_FAILURE);
 	}
 
-	return tile;
+	return tile.get();
 }
 
 /* brief:	Get a tile by Location
@@ -252,13 +257,13 @@ int Tile::findMinimumPath(Tile* target)
 int Tile::findMinimumPath(Tile* target, int hops)
 {
 	// Check if any of neighbouring tiles are the target.
-	if (this->north == target)
+	if (this->north.get() == target)
 		return 1;
-	else if (this->east == target)
+	else if (this->east.get() == target)
 		return 1;
-	else if (this->south == target)
+	else if (this->south.get() == target)
 		return 1;
-	else if (this->west == target)
+	else if (this->west.get() == target)
 		return 1;
 	
 	// By default, set the minimum distance to an arbitarily large value. Will be overriden if a path is found.
@@ -274,7 +279,7 @@ int Tile::findMinimumPath(Tile* target, int hops)
 
 	// Check if any of the neighbouring tiles are closer to the target.
 	float min_dist = north_dist;
-	Tile* next_tile = this->north;
+	shared_ptr<Tile> next_tile = this->north;
 	if (east_dist < min_dist)
 	{
 		min_dist = east_dist;
@@ -322,7 +327,7 @@ Tile* Tile::findMidPoint(Tile* target, int moves)
 
 	// Check if any of the neighbouring tiles are closer to the target.
 	float min_dist = north_dist;
-	Tile* next_tile = this->north;
+	shared_ptr<Tile> next_tile = this->north;
 	if (east_dist < min_dist)
 	{
 		min_dist = east_dist;
@@ -351,7 +356,7 @@ Tile* Tile::findMidPoint(Tile* target, int moves)
 int Tile::width()
 {
 	int i = 0;
-	Tile *tile = this->origin;
+	Tile *tile = this->origin.get();
 
 	while (tile->getEast() != nullptr)
 	{	
@@ -369,11 +374,11 @@ int Tile::width()
 int Tile::height()
 {
 	int i = 0;
-	Tile *tile = this->origin;
+	shared_ptr<Tile> tile = this->origin;
 
 	while (tile->getSouth() != nullptr)
 	{
-		tile = tile->getSouth();
+		tile.reset(tile->getSouth());
 		i++;
 	}
 

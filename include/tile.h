@@ -1,6 +1,8 @@
 #ifndef TILE_H
 #define TILE_H
 
+#include <memory>
+
 #include "pathfinding.h"
 
 // Forward class declarations
@@ -10,11 +12,11 @@ class Tile {
 private:
 	Object *contents;
 	Location coordinates;
-	Tile *north;
-	Tile *east;
-	Tile *south;
-	Tile *west;
-	Tile *origin;
+	std::shared_ptr<Tile> north;
+	std::shared_ptr<Tile> east;
+	std::shared_ptr<Tile> south;
+	std::shared_ptr<Tile> west;
+	std::shared_ptr<Tile> origin;
 public:
 	// Constructors
 	Tile() : contents(nullptr), north(nullptr), east(nullptr), south(nullptr), west(nullptr), origin(nullptr) {};	// Default
@@ -47,14 +49,14 @@ public:
 	int setCoordinates(int x, int y, int z) { coordinates = Location(x,y,z); return 0; };
 	int setCoordinates(Location Coordinates) { coordinates = Coordinates; return 0; };
 	Object* clearContents() { contents = NULL; return contents; };
-	Tile* getNorth() { return north; };
-	int setNorth(Tile* North) { north = North; return 0;};
-	Tile* getEast() { return east; };
-	int setEast(Tile* East) { east = East; return 0;};
-	Tile* getSouth() { return south; };
-	int setSouth(Tile* South) { south = South; return 0;};
-	Tile* getWest() { return west; };
-	int setWest(Tile* West) { west = West; return 0;};
+	Tile* getNorth() { return north.get(); };
+	int setNorth(Tile* North) { north.reset(North); return 0;};
+	Tile* getEast() { return east.get(); };
+	int setEast(Tile* East) { east.reset(East); return 0;};
+	Tile* getSouth() { return south.get(); };
+	int setSouth(Tile* South) { south.reset(South); return 0;};
+	Tile* getWest() { return west.get(); };
+	int setWest(Tile* West) { west.reset(West); return 0;};
 };
 
 #endif

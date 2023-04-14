@@ -193,10 +193,8 @@ int Combatant::take_turn()
 
 		if (D == min)
 		{
-			std::cout << "test_take_turn_1" << std::endl;
 			std::cout << "target position: " << (*target)->getCoordinates() << std::endl;
 			std::vector<Tile*> free_cells = (*target)->getFreeNeighbours();
-			std::cout << "test_take_turn_2" << std::endl;
 			int min_dist = MAX_VALUE;
 			bool reached = false;
 
