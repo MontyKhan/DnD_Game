@@ -29,7 +29,7 @@ protected:
 	int ac;
 	int speed;
 	Roll init;
-	std::vector<weapon_type> weapons;
+	std::vector<Weapon> weapons;
 	life_status status;
 
 public:

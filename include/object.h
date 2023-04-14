@@ -65,7 +65,7 @@ public:
 	// Roll both attack and damage against a target.
 	virtual life_status make_attack(Object & target) { return dead; };
 	// Roll both attack and damage against a target, supplying a weapon.
-	virtual life_status make_attack(weapon_type weapon, Object & target) { return dead; };	// Pass by reference
+	virtual life_status make_attack(Weapon weapon, Object & target) { return dead; };	// Pass by reference
 	// Reduce hp by dam
 	virtual life_status take_damage(int dam) { return dead; };
 	// Reduce hp by dam, specific to damage type.

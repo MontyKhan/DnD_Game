@@ -7,7 +7,7 @@
 		<initiative>1</initiative>
 		<weapon>
 			<name>Greataxe</name>
-			<range>5</range>
+			<range>1</range>
 			<attack>5</attack>
 			<damage>1d12 + 3</damage>
 			<type>slashing</type>
@@ -18,12 +18,12 @@
 	<monster>
 		<name>Goblin</name>
 		<ac>15</ac>
-		<hp>7</hp>
+		<hp>200</hp>
 		<speed>6</speed>
 		<initiative>2</initiative>
 		<weapon>
 			<name>Scimitar</name>
-			<range>5</range>
+			<range>1</range>
 			<attack>4</attack>
 			<damage>1d6 + 2</damage>
 			<type>slashing</type>
@@ -39,7 +39,7 @@
 		<initiative>2</initiative>
 		<weapon>
 			<name>Morningstar</name>
-			<range>5</range>
+			<range>1</range>
 			<attack>4</attack>
 			<damage>2d8 + 2</damage>
 			<type>bludgeoning</type>
@@ -55,7 +55,7 @@
 		<initiative>1</initiative>
 		<weapon>
 			<name>Scimitar</name>
-			<range>5</range>
+			<range>1</range>
 			<attack>3</attack>
 			<damage>1d6 + 1</damage>
 			<type>bludgeoning</damage>
@@ -71,7 +71,7 @@
 		<initiative>2</initiative>
 		<weapon>
 			<name>Dagger</name>
-			<range>5</range>
+			<range>1</range>
 			<attack>4</attack>
 			<damage>1d4 + 2</damage>
 			<type>piercing</type>
@@ -82,12 +82,12 @@
 	<monster>
 		<name>Hobgoblin</name>
 		<ac>18</ac>
-		<hp>11</hp>
+		<hp>10</hp>
 		<speed>6</speed>
 		<initiative>1</initiative>
 		<weapon>
 			<name>Longsword</name>
-			<range>5</range>
+			<range>2</range>
 			<attack>3</attack>
 			<damage>1d10 + 1</damage>
 			<type>slashing</type>
@@ -103,7 +103,7 @@
 		<initiative>2</initiative>
 		<weapon>
 			<name>Shortsword</name>
-			<range>5</range>
+			<range>1</range>
 			<attack>4</attack>
 			<damage>1d6 + 2</damage>
 			<type>piercing</type>
@@ -119,14 +119,14 @@
 		<initiative>0</initiative>
 		<weapon>
 			<name>Greataxe</name>
-			<range>5</range>
+			<range>1</range>
 			<attack>5</attack>
 			<damage>1d12 + 3</damage>
 			<type>slashing</type>
 		</weapon>
 		<weapon>
 			<name>Handaxe</name>
-			<range>5</attack>
+			<range>1</attack>
 			<attack>5</attack>
 			<damage>1d6 + 3</damage>
 			<type>slashing</damage>

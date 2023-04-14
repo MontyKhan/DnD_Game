@@ -2,6 +2,8 @@
 #include "tools.h"
 #include "load_file.h"
 #include "weapon_type.h"
+#include "pathfinding.h"
+#include "object.h"
 #include "rapidxml/rapidxml_print.hpp"
 #include <sstream>
 
@@ -12,7 +14,8 @@ using namespace rapidxml;
    param:	Node containing weapon stats.
    returns:	Nothing, as constructor.
 */
-weapon_type::weapon_type(rapidxml::xml_node<> *root)
+Weapon::Weapon(rapidxml::xml_node<> *root)
+	: name{ "" }, attack{ Roll{1, 20, 0} }, damage{ Roll{ 1, 4, 0 } }, range{ 1 }, damage_type{ bludgeoning }, owner{ nullptr }
 {
 	for (xml_node<> *child = root->first_node(); child; child = child->next_sibling())	// Monster
 	{
@@ -23,7 +26,6 @@ weapon_type::weapon_type(rapidxml::xml_node<> *root)
 
 		// Convert name and value of child node to strings.
 		node_to_str(str_name, str_value, child);
-
 
 		// I wish switches could handle strings.
 		if (str_name == "name")
@@ -53,7 +55,7 @@ weapon_type::weapon_type(rapidxml::xml_node<> *root)
    param:	None
    returns:	A string matching up to the enum of the damage type.
 */
-std::string weapon_type::getTypeStr()
+std::string Weapon::getTypeStr()
 {
 	if (damage_type == acid)
 		return "acid";
@@ -83,4 +85,32 @@ std::string weapon_type::getTypeStr()
 		return "thunder";
 	else
 		return "invalid";
+}
+
+uint32_t Weapon::makeWeaponAttack(Object &target)
+{
+	uint8_t distance_to_target = find_euc(owner->getCoordinates(), target.getCoordinates());
+	if (range < distance_to_target) {
+		cout << target.getName() << " out of range of " << owner->getName() << "'s " << name << "!" << endl;
+		return alive; // 0
+	}
+
+	int attack_roll = owner->make_roll(attack);		// Initialise attack_roll to randomly generated value in dice range.
+
+	// If attack roll is less than the target's AC, print message about missing.
+	if (attack_roll < target.getAc()) {
+		cout << name << " swung at " << target.getName() << " but missed!" << endl;
+		return alive; // 0
+	}
+	// If attack roll is greater than the target's AC, roll damage and subtract that from the target's HP.
+	// Then print message about hitting and dealing damage to stdout. Check target's status.
+	/* else */ {
+		int damage_roll = owner->make_roll(damage);
+		cout << name << " hit " << target.getName() << " with their " << name << " for "
+			<< damage_roll << " " << getTypeStr() << " damage! ";
+		life_status target_status = target.take_damage(damage_roll);
+		if (target_status != dead)
+			cout << target.getHp() << " HP remaining." << endl;
+		return target_status;			// Return status of target.
+	}
 }

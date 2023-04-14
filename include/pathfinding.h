@@ -45,7 +45,6 @@ public:
 	friend float find_euc(Location rhs, Location lhs);				// Find distance between locations
 };
 
-int find_euc(int x, int y, int h);	// Find euclidean distance between two points.
 float find_euc(Location rhs, Location lhs);
 
 #endif

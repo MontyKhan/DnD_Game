@@ -5,6 +5,7 @@
 #include "battlemap.h"
 #include "rapidxml/rapidxml_print.hpp"
 #include "display.h"
+#include "weapon_type.h"
 #include <sstream>
 #include <algorithm>
 
@@ -64,7 +65,9 @@ Combatant::Combatant(xml_node<> *root) :
 
 		if (str_name == "weapon")					// If has grandchildren, weapon.
 		{
-			weapons.push_back(weapon_type(child));
+			Weapon weapon = Weapon(child);
+			weapon.setOwner(this);
+			weapons.push_back(weapon);
 		}
 		else if (str_name == "coordinates")
 		{
@@ -204,13 +207,15 @@ int Combatant::take_turn()
 				for (Tile* T : free_cells)
 				{
 					std::cout << "T: " << T->getCoordinates();
-					int dist = this->tile->findMinimumPath(T);
+					uint8_t weapon_range = weapons[0].getRange();
+					// If weapon doesn't require you to be neighbouring, just get close enough to hit.
+					int dist = this->tile->findMinimumPath(T, weapon_range);
 					std::cout << ", dist: " << dist << std::endl;
 					if (dist < min_dist)
 					{
 						min_dist = dist;
 
-						if (min_dist <= DIAGONAL_NEIGHBOUR)
+						if (min_dist <= weapon_range)
 						{
 							new_Location = this->tile;
 							std::cout << "Already neighbour. Stay in place." << std::endl;
@@ -267,26 +272,7 @@ life_status Combatant::make_attack(Object & target)
 {
 	int wc = 0;							// Weapon choice
 
-	int attack_roll = make_roll(weapons[wc].getAttack());		// Initialise attack_roll to randomly generated value in dice range.
-
-	// If attack roll is less than the target's AC, print message about missing.
-	if (attack_roll < target.getAc()) {
-		cout << name << " swung at " << target.getName() << " but missed!" << endl;
-		return alive; // 0
-	}
-	// If attack roll is greater than the target's AC, roll damage and subtract that from the target's HP.
-	// Then print message about hitting and dealing damage to stdout. Check target's status.
-	else {
-		int damage_roll = make_roll(weapons[wc].getDamage());
-		cout << name << " hit " << target.getName() << " with their " << weapons[wc].getName() << " for "
-		     << damage_roll << " " << weapons[wc].getTypeStr() << " damage! ";
-		life_status target_status = target.take_damage(damage_roll);
-		if (target_status != dead)
-			cout << target.getHp() << " HP remaining." << endl;
-		return target_status;			// Return status of target.
-	}
-
-	return alive;				// Should not reach here.
+	return (life_status)weapons[wc].makeWeaponAttack(target);
 }
 
 /* brief:	Take a value away from HP.
