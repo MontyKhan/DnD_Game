@@ -13,7 +13,7 @@ public:
 	// Make move, then attack.
 	int take_turn();
 	// Deal damage to target, then check if they survive.
-	life_status make_attack(Object & target);
+	life_status_t make_attack(Object & target);
 	// Handle event from main event loop
 	bool handleEvent(sf::Event &event, sf::RenderWindow &window);
 

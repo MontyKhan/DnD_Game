@@ -108,7 +108,7 @@ uint32_t Weapon::makeWeaponAttack(Object &target)
 		int damage_roll = owner->make_roll(damage);
 		cout << name << " hit " << target.getName() << " with their " << name << " for "
 			<< damage_roll << " " << getTypeStr() << " damage! ";
-		life_status target_status = target.take_damage(damage_roll);
+		life_status_t target_status = target.take_damage(damage_roll);
 		if (target_status != dead)
 			cout << target.getHp() << " HP remaining." << endl;
 		return target_status;			// Return status of target.

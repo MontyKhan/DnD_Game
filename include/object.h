@@ -10,7 +10,7 @@
 
 #define MAX_VALUE 32767
 
-enum life_status {inanimate, alive, death_1, death_2, dead};
+enum life_status_t {inanimate, alive, death_1, death_2, dead};
 enum object_type {OutOfBounds, type_object, type_player, type_combatant};
 
 // Forward class declarations
@@ -63,13 +63,13 @@ public:
 	// Move and then make attack
 	virtual int take_turn() { return -1; };
 	// Roll both attack and damage against a target.
-	virtual life_status make_attack(Object & target) { return dead; };
+	virtual life_status_t make_attack(Object & target) { return dead; };
 	// Roll both attack and damage against a target, supplying a weapon.
-	virtual life_status make_attack(Weapon weapon, Object & target) { return dead; };	// Pass by reference
+	virtual life_status_t make_attack(Weapon weapon, Object & target) { return dead; };	// Pass by reference
 	// Reduce hp by dam
-	virtual life_status take_damage(int dam) { return dead; };
+	virtual life_status_t take_damage(int dam) { return dead; };
 	// Reduce hp by dam, specific to damage type.
-	virtual life_status take_damage(int dam, type damage_type) { return dead; };
+	virtual life_status_t take_damage(int dam, type damage_type) { return dead; };
 	// Move to a tile next to another tile.
 	virtual int moveTo(Tile* target) { return -1; };
 	// Process input event.
@@ -96,8 +96,8 @@ public:
 	virtual int setSpd(int val) { return -1; };
 	virtual Roll getInit() { return Roll(0,0,0); };				// Initiative roll
 	virtual int setInit(int val) { return -1; };
-	virtual life_status getStatus() { return dead; };			// Status
-	virtual int setStatus(life_status val) { return -1; };
+	virtual life_status_t getStatus() { return dead; };			// Status
+	virtual int setStatus(life_status_t val) { return -1; };
 	virtual int getInitiative() { return -1; };					// Initiative value
 	virtual int setInitiative(int init) { return -1; };
 

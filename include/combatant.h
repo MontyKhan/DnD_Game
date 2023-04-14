@@ -30,11 +30,11 @@ protected:
 	int speed;
 	Roll init;
 	std::vector<Weapon> weapons;
-	life_status status;
+	life_status_t status;
 
 public:
 	// Constructor for individual variables
-	Combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status Status);
+	Combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status_t Status);
 	// Constructor for vector of strings, as read from .csv.
 	Combatant(std::vector<std::string> line);
 	// Constructor for xml node
@@ -50,9 +50,9 @@ public:
 	// Move and then make attack
 	virtual int take_turn();
 	// Roll both attack and damage against a target.
-	virtual life_status make_attack(Object & target);
+	virtual life_status_t make_attack(Object & target);
 	// Reduce hp by dam
-	life_status take_damage(int dam);
+	life_status_t take_damage(int dam);
 	// Move to a tile next to another tile.
 	virtual int moveTo(Tile* target);
 
@@ -67,8 +67,8 @@ public:
 	int setSpd(int val) { speed = val; return 0; };
 	Roll getInit() { return init; };				// Initiative
 	int setInit(int val) { init = Roll(1,20,val); return 0; };
-	life_status getStatus() { return status; };			// Status
-	int setStatus(life_status val) { status = val; return 0; };
+	life_status_t getStatus() { return status; };			// Status
+	int setStatus(life_status_t val) { status = val; return 0; };
 	int getInitiative() { return initiative; };
 	int setInitiative(int init) { initiative = init; return 0; };
 

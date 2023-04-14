@@ -20,11 +20,11 @@ using namespace rapidxml;
 		Spd - Combatant speed in feet as an int.
 		Init - Initiative modifier as an int. Is converted into a roll equal to 1d20 + Init.
 		Coordinates - 3D coordinates of Combatant
-		Status - life_status of Combatant
+		Status - life_status_t of Combatant
    return:	Nothing, as constructor.
 */
 
-Combatant::Combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status Status) :
+Combatant::Combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status_t Status) :
 	hp{ HP }, ac{ AC }, speed{ Spd }, init{ Roll(1, 20, Init) }, status{ Status }
 {
 	name = Name;
@@ -242,7 +242,7 @@ int Combatant::take_turn()
 			}
 
 			// If next to target, attack. Otherwise, do nothing but print message.
-			life_status result = alive;
+			life_status_t result = alive;
 			if (reached)
 				// Make attack against target. If attack kills them, result is set to dead. Else, alive.
 				result = this->make_attack(**target);
@@ -268,18 +268,18 @@ int Combatant::take_turn()
    param:	target - Passed by reference. Combatant for the attacks to be made against.
    return:	status of target after attack, i.e. dead or alive.
 */
-life_status Combatant::make_attack(Object & target)
+life_status_t Combatant::make_attack(Object & target)
 {
 	int wc = 0;							// Weapon choice
 
-	return (life_status)weapons[wc].makeWeaponAttack(target);
+	return (life_status_t)weapons[wc].makeWeaponAttack(target);
 }
 
 /* brief:	Take a value away from HP.
    param:	dam, the damage to be taken by the recipitent.
    returns:	The recipitent's status, i.e. dead or alive.
 */
-life_status Combatant::take_damage(int dam)
+life_status_t Combatant::take_damage(int dam)
 {
 	// If damage is less than the target's HP, just reduce HP.
 	if (dam < hp)
