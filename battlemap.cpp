@@ -1,9 +1,13 @@
 #include "battlemap.h"
 
+#include <functional>
+
 #include "object.h"
 #include "display.h"
 #include "linegrid.h"
 #include "player.h"
+
+const float ai_max{ 5 };
 
 BattleMap::BattleMap(uint8_t x, uint8_t y, std::vector<Object*> objects) :
 	objects(objects),
@@ -89,6 +93,22 @@ void moveToMousedOverTile(sf::RectangleShape &highlighter, sf::RenderWindow &win
 	highlighter.setPosition(x_pos, y_pos);
 }
 
+/* brief: Get count of factions still involved in battle
+   param: active_combatants - List of all objects in battle
+   return: Count of unique factions
+**/
+int numberOfRemainingFactions(std::list<Object *> active_combatants)
+{
+	std::function<uint32_t (Object *)> getFaction = [&](Object *actor) {return static_cast<uint32_t>(actor->getFaction()); };
+
+	active_combatants.sort([&](Object *lhs, Object *rhs) {return getFaction(lhs) > getFaction(rhs); });
+	auto last = std::unique(active_combatants.begin(), active_combatants.end(), 
+		[&](Object *lhs, Object *rhs) {return getFaction(lhs) == getFaction(rhs); });
+	active_combatants.erase(last, active_combatants.end());
+
+	return active_combatants.size();
+}
+
 /* brief: 	Roll initiative for all players and monsters involved, then have each perform an action
 		on their turn.
 		Currently only supports melee attacks against random opponents.
@@ -111,30 +131,74 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 	std::cout << endl;
 
 	sf::Event event;
+	sf::Clock clock;
+	bool animation_finished = true;
+	bool turn_finished = false;
+	float animation_increment = 0;
 	// Repeat until only one player is left.
 	do {
 
-		if (this->initiative_order.size() <= 1)
+		// Check if battle over
+		//if (this->initiative_order.size() <= 1)
+		if (numberOfRemainingFactions(this->initiative_order) <= 1)
 		{
 			std::cout << "Finished" << std::endl;
 			break;
 		}
 
 		// Make move and take attack
-		bool turn_finished = (*active_player)->take_turn();
+		if (!turn_finished)
+			turn_finished = (*active_player)->take_turn();
 
 		if (turn_finished)
 		{
-			std::cout << "character name: " << (*active_player)->getName() << std::endl;
-			std::cout << "character Location: " << (*active_player)->getCoordinates() << std::endl;
+			std::vector<Tile*> visitedTiles = std::move(*(*active_player)->getVisitedTiles());
+			animation_finished = !(visitedTiles.size() > 0);
 
-			if (std::next(active_player) == this->initiative_order.end())
+			if (!animation_finished)
 			{
-				active_player = this->initiative_order.begin();
+				Tile *active_tile = *visitedTiles.begin();
+				Tile *next_tile = (visitedTiles.size() > 1) ? *(visitedTiles.begin() + 1) : *visitedTiles.begin();
+				Location grid_coordinates = active_tile->getCoordinates();
+				float ref_coordinates_x = grid_coordinates.getX() + ((animation_increment / ai_max) * grid_coordinates.find_distance(next_tile->getCoordinates()));
+				float ref_coordinates_y = grid_coordinates.getY() + ((animation_increment / ai_max) * grid_coordinates.find_distance(next_tile->getCoordinates()));
+				sprites[(*active_player)->getName()].setPosition(16.f + (32.f * float(ref_coordinates_x)),
+					16.f + (32.f * float(ref_coordinates_y)));
+
+				cout << "Elapsed Time: " << clock.getElapsedTime().asSeconds() << endl;
+				if (clock.getElapsedTime().asSeconds() > 10.0f)
+				{
+					clock.restart();
+					if (animation_increment < ai_max)
+						++animation_increment;
+					else
+					{
+						animation_increment = 0;
+						visitedTiles.erase(visitedTiles.begin());
+
+						if (visitedTiles.size() == 0)
+							animation_finished = true;
+					}
+				}
+				else
+				{
+					animation_finished += 0;
+				}
 			}
 			else
 			{
-				active_player++;
+				std::cout << "character name: " << (*active_player)->getName() << std::endl;
+				std::cout << "character Location: " << (*active_player)->getCoordinates() << std::endl;
+
+				turn_finished = false;
+				if (std::next(active_player) == this->initiative_order.end())
+				{
+					active_player = this->initiative_order.begin();
+				}
+				else
+				{
+					active_player++;
+				}
 			}
 		}
 
@@ -142,27 +206,7 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 		{
 			if (dynamic_cast<Player *>(*active_player))
 			{
-#if 0
-				if (event.key.code == sf::Keyboard::W)
-					sprites["Player"].move(0.f, -5.f);
-
-				if (event.key.code == sf::Keyboard::A)
-					sprites["Player"].move(-5.f, 0.f);
-
-				if (event.key.code == sf::Keyboard::S)
-					sprites["Player"].move(0.f, 5.f);
-
-				if (event.key.code == sf::Keyboard::D)
-					sprites["Player"].move(5.f, 0.f);
-
-				if (event.key.code == sf::Keyboard::P)
-					std::cout << "print" << std::endl;
-
-				if (event.key.code == sf::Keyboard::Return)
-					nextTurn = true;
-#else
 				(*active_player)->handleEvent(event, window);
-#endif
 			}
 			else
 			{

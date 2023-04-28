@@ -7,7 +7,7 @@
 
 /* brief: 	Make move and then make attack against specified target.
 	  		Virtual overloaded function from Combatant.
-   returns:	0 if successful.
+   returns:	0 if still players turn, 1 otherwise.
 */
 int Player::take_turn()
 {
@@ -19,6 +19,9 @@ int Player::take_turn()
 
 bool Player::handleEvent(sf::Event &event, sf::RenderWindow &window)
 {
+	if (turn_finished)
+		return true;	// No moves after turn is finished!
+
 	if (event.type == sf::Event::KeyPressed)
 	{
 		if (event.key.code == sf::Keyboard::W)

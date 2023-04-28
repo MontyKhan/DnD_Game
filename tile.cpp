@@ -243,7 +243,7 @@ int Tile::setContents(Object* Contents)
    param:	target - The tile you are measuring the distance to.
    returns:	The number of steps required.
 */
-int Tile::findMinimumPath(Tile* target)
+std::vector<Tile *>  Tile::findMinimumPath(Tile* target)
 {
 	return findMinimumPath(target, 0);
 }
@@ -254,17 +254,31 @@ int Tile::findMinimumPath(Tile* target)
    		hops - The number of moves required to move to the target. Set to 0 when first calling.
    returns:	The number of steps required.
 */
-int Tile::findMinimumPath(Tile* target, int hops)
+std::vector<Tile *>  Tile::findMinimumPath(Tile* target, int hops)
 {
+	std::vector<Tile *> visited { this };
+
 	// Check if any of neighbouring tiles are the target.
 	if (this->north.get() == target)
-		return 1;
+	{
+		visited.push_back(this->north.get());
+		return visited;
+	}
 	else if (this->east.get() == target)
-		return 1;
+	{
+		visited.push_back(this->east.get());
+		return visited;
+	}
 	else if (this->south.get() == target)
-		return 1;
+	{
+		visited.push_back(this->south.get());
+		return visited;
+	}
 	else if (this->west.get() == target)
-		return 1;
+	{
+		visited.push_back(this->west.get());
+		return visited;
+	}
 
 	float current_dist = find_euc(this->coordinates, target->coordinates);
 	
@@ -303,10 +317,11 @@ int Tile::findMinimumPath(Tile* target, int hops)
 	else
 	{
 		// Recursive function, check number of hops required from next closest step.
-		hops = next_tile->findMinimumPath(target, hops) + 1;
+		std::vector<Tile *> next_steps = next_tile->findMinimumPath(target, hops);
+		visited.insert(visited.end(), make_move_iterator(next_steps.begin()), make_move_iterator(next_steps.end()));
 	}
 
-	return hops;
+	return visited;
 }
 
 /* brief: 	Find the closest point on the path to the target allowed by the speed.

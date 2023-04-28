@@ -2,6 +2,7 @@
 #define TILE_H
 
 #include <memory>
+#include <vector>
 
 #include "pathfinding.h"
 
@@ -34,8 +35,8 @@ public:
 	// Get specific tile by contents.
 	Tile* get(Object *toFind);
 	// Finds distance to another tile.
-	int findMinimumPath(Tile* target);			// Accessor for when calling within code.
-	int findMinimumPath(Tile* target, int hops);		// Recursive function.
+	std::vector<Tile *> findMinimumPath(Tile* target);			// Accessor for when calling within code.
+	std::vector<Tile *>  findMinimumPath(Tile* target, int hops);		// Recursive function.
 	// Find closest point to target that can be reached in a set number of hops.
 	Tile* findMidPoint(Tile* target, int moves);
 	// Return size of tile map.

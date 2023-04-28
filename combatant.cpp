@@ -198,7 +198,10 @@ int Combatant::take_turn()
 					std::cout << "T: " << T->getCoordinates();
 					uint8_t weapon_range = weapons[0].getRange();
 					// If weapon doesn't require you to be neighbouring, just get close enough to hit.
-					int dist = this->tile->findMinimumPath(T, weapon_range);
+					std::vector<Tile *> visited = this->tile->findMinimumPath(T, weapon_range);
+					int dist = visited.size();
+					this->visitedTiles = std::move(visited);
+
 					std::cout << ", dist: " << dist << std::endl;
 					if (dist < min_dist)
 					{
@@ -298,8 +301,8 @@ int Combatant::moveTo(Tile* target)
 	if (target->setContents(this) == 0)
 	{
 		tmp->clearContents();
-		sprites[this->name].setPosition(16.f+(32.f*float(this->coordinates.getX())),
-						16.f+(32.f*float(this->coordinates.getY())));
+		//sprites[this->name].setPosition(16.f+(32.f*float(this->coordinates.getX())),
+						//16.f+(32.f*float(this->coordinates.getY())));
 	}
 
 	return 0;

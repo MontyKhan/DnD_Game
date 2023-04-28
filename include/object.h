@@ -40,11 +40,12 @@ protected:
 	uint8_t initiative;
 	BattleMap *parentMap;
 	bool turn_finished;
+	std::vector<Tile *> visitedTiles;
 
 public:
 	// Constructors
-	Object() : name(""), coordinates(Location(0, 0, 0)), tile(nullptr), initiative(0), parentMap(nullptr), turn_finished(false) {};
-	Object(Location Coordinates) : name(""), coordinates(Coordinates), tile(nullptr), initiative(0), parentMap(nullptr), turn_finished(false) {};
+	Object() : name{ "" }, coordinates{ Location(0, 0, 0) }, tile{ nullptr }, initiative{ 0 }, parentMap{ nullptr }, turn_finished{ false } {};
+	Object(Location Coordinates) : name{ "" }, coordinates{ Coordinates }, tile{ nullptr }, initiative{ 0 }, parentMap{ nullptr }, turn_finished{ false } {};
 
 	// Get a vector of neighbouring tiles.
 	std::vector<Tile *> getNeighbours();
@@ -85,6 +86,8 @@ public:
 	int setParent( Tile* Parent ) { tile = Parent; return 0; };
 	BattleMap *getBattlemap() { return parentMap; };
 	int setBattlemap(BattleMap* map) { parentMap = map; return 0; };
+	std::vector<Tile *> *getVisitedTiles() { return &visitedTiles; };
+	int setVisitedTiles(std::vector<Tile *> vt) { visitedTiles = vt; };
 
 	// Virtual getters/setters
 	virtual std::string getName() { return name; };				// Name
