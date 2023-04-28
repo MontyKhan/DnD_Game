@@ -5,6 +5,7 @@
 		<hp>15</hp>
 		<speed>6</speed>
 		<initiative>1</initiative>
+		<faction>orcs</faction>
 		<weapon>
 			<name>Greataxe</name>
 			<range>1</range>
@@ -21,6 +22,7 @@
 		<hp>200</hp>
 		<speed>6</speed>
 		<initiative>2</initiative>
+		<faction>goblin</faction>
 		<weapon>
 			<name>Scimitar</name>
 			<range>1</range>
@@ -37,6 +39,7 @@
 		<hp>27</hp>
 		<speed>6</speed>
 		<initiative>2</initiative>
+		<faction>goblin</faction>
 		<weapon>
 			<name>Morningstar</name>
 			<range>1</range>
@@ -53,6 +56,7 @@
 		<hp>11</hp>
 		<speed>6</speed>
 		<initiative>1</initiative>
+		<faction>none</faction>
 		<weapon>
 			<name>Scimitar</name>
 			<range>1</range>
@@ -69,6 +73,7 @@
 		<hp>5</hp>
 		<speed>6</speed>
 		<initiative>2</initiative>
+		<faction>player</faction>
 		<weapon>
 			<name>Dagger</name>
 			<range>1</range>
@@ -85,6 +90,7 @@
 		<hp>10</hp>
 		<speed>6</speed>
 		<initiative>1</initiative>
+		<faction>goblin</faction>
 		<weapon>
 			<name>Longsword</name>
 			<range>2</range>
@@ -101,6 +107,7 @@
 		<hp>13</hp>
 		<speed>6</speed>
 		<initiative>2</initiative>
+		<faction>drow</faction>
 		<weapon>
 			<name>Shortsword</name>
 			<range>1</range>
@@ -117,6 +124,7 @@
 		<hp>254</hp>
 		<speed>30</speed>
 		<initiative>0</initiative>
+		<faction>player</faction>
 		<weapon>
 			<name>Greataxe</name>
 			<range>1</range>

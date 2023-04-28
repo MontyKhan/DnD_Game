@@ -31,17 +31,18 @@ protected:
 	Roll init;
 	std::vector<Weapon> weapons;
 	life_status_t status;
+	Faction faction;
 
 public:
 	// Constructor for individual variables
-	Combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status_t Status);
+	Combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status_t Status, Faction Faction);
 	// Constructor for vector of strings, as read from .csv.
 	Combatant(std::vector<std::string> line);
 	// Constructor for xml node
 	Combatant(rapidxml::xml_node<> *node);
 	// Default constructor
 	Combatant() 
-		: hp(0), ac(0), speed(0), init(Roll()), Object(Location()), status(alive) {};
+		: hp{ 0 }, ac{ 0 }, speed{ 0 }, init{ Roll() }, Object{ Location() }, status{ alive }, faction{ Faction::none } {};
 
 	// Roll a dice
 	int make_roll(Roll x);
@@ -69,8 +70,10 @@ public:
 	int setInit(int val) { init = Roll(1,20,val); return 0; };
 	life_status_t getStatus() { return status; };			// Status
 	int setStatus(life_status_t val) { status = val; return 0; };
-	int getInitiative() { return initiative; };
+	int getInitiative() { return initiative; };				// Initiative
 	int setInitiative(int init) { initiative = init; return 0; };
+	Faction getFaction() { return faction; };			// Faction
+	int setFaction(Faction f) { faction = f; return 0; }
 
 	// Debugging functions
 	void print_stats();

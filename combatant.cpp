@@ -24,8 +24,8 @@ using namespace rapidxml;
    return:	Nothing, as constructor.
 */
 
-Combatant::Combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status_t Status) :
-	hp{ HP }, ac{ AC }, speed{ Spd }, init{ Roll(1, 20, Init) }, status{ Status }
+Combatant::Combatant(std::string Name, int HP, int AC, int Spd, int Init, Location Coordinates, life_status_t Status, Faction Faction) :
+	hp{ HP }, ac{ AC }, speed{ Spd }, init{ Roll(1, 20, Init) }, status{ Status }, faction{ Faction }
 {
 	name = Name;
 	coordinates = Coordinates;
@@ -51,7 +51,7 @@ Combatant::Combatant(std::vector<std::string> line)
    return:	Nothing, as constructor.
 */
 Combatant::Combatant(xml_node<> *root) :
-	hp{ 0 }, ac{ 0 }, speed{ 0 }, status{ dead }
+	hp{ 0 }, ac{ 0 }, speed{ 0 }, status{ dead }, faction{ Faction:: none }
 {
 	for (xml_node<> *child = root->first_node(); child; child = child->next_sibling())	// Monster
 	{
@@ -98,6 +98,13 @@ Combatant::Combatant(xml_node<> *root) :
 			else if (str_name == "initiative")
 			{
 				init = Roll(1,20,stoi(str_value));
+			}
+			else if (str_name == "faction")
+			{
+				if (factionLookup.find(str_value) != factionLookup.end())
+					faction = factionLookup.find(str_value)->second;
+				else
+					faction = Faction::none;
 			}
 		}
 	}
@@ -159,41 +166,23 @@ int Combatant::roll_initiative()
 int Combatant::take_turn()
 {
 	// Count other actors in initiative list.
-	std::list<Object *> *potential_targets = &(this->parentMap->initiative_order);
-	auto start = find(potential_targets->begin(), potential_targets->end(), this);
+	//std::list<Object *> *potential_targets = &(this->parentMap->initiative_order);
+	std::list<Object *> potential_targets;
+	std::copy_if(this->parentMap->initiative_order.begin(), this->parentMap->initiative_order.end(),
+		std::back_inserter(potential_targets),
+		[&](Object *actor) {return (actor != this) && (actor->getFaction() != this->faction); }
+	);
 
 	vector<int> distances;
-
-	// Progress the head of the circular list ahead by target_selector.
-	// i.e. 1 means go to next. Cannot go completely around the list.
-	//for (auto const& o: potential_targets->begin())
-	auto o = std::next(start);
-	while (true) 
-	{
-		if (o == potential_targets->end())
-			o = potential_targets->begin();
-
-		if (o == start)
-			break;
-
-		distances.push_back(this->coordinates.find_distance((*o)->getCoordinates()));
-		o++;
-	}
+	for (const auto &enemy : potential_targets)
+		distances.push_back(this->coordinates.find_distance(enemy->getCoordinates()));
 
 	// Find minimum distance in list, i.e. closest opponent.
-	auto target = (std::next(start) != potential_targets->end() ? 
-				   std::next(start) : 
-				   potential_targets->begin());
+	auto target = potential_targets.begin();
 
 	auto min = *min_element(distances.begin(), distances.end());
 	for (int D : distances)
 	{
-		if (*target == this)
-		{
-			// Something gone badly wrong, shouldn't reach here.
-			throw ("Combatant succumbed to self-loathing");
-		}
-
 		if (D == min)
 		{
 			std::cout << "target position: " << (*target)->getCoordinates() << std::endl;
@@ -253,10 +242,10 @@ int Combatant::take_turn()
 		}
 		else
 		{
-			if (std::next(target) != potential_targets->end())
+			if (std::next(target) != potential_targets.end())
 				target++;
 			else
-				target = potential_targets->begin();
+				target = potential_targets.begin();
 		}
 	}
 

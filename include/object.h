@@ -3,6 +3,7 @@
 
 #include "pathfinding.h"
 #include "weapon_type.h"
+#include "faction.h"
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
@@ -100,6 +101,8 @@ public:
 	virtual int setStatus(life_status_t val) { return -1; };
 	virtual int getInitiative() { return -1; };					// Initiative value
 	virtual int setInitiative(int init) { return -1; };
+	virtual Faction getFaction() { return Faction::none; };		// Faction
+	virtual int setFaction(Faction f) { return -1; };
 
 	// Get type
 	virtual object_type getObjectType() {return type_object; };			// Return ennumerated type value.

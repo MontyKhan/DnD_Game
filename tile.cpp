@@ -265,6 +265,8 @@ int Tile::findMinimumPath(Tile* target, int hops)
 		return 1;
 	else if (this->west.get() == target)
 		return 1;
+
+	float current_dist = find_euc(this->coordinates, target->coordinates);
 	
 	// By default, set the minimum distance to an arbitarily large value. Will be overriden if a path is found.
 	float north_dist = MAX_VALUE, east_dist = MAX_VALUE, south_dist = MAX_VALUE, west_dist = MAX_VALUE;
@@ -278,26 +280,32 @@ int Tile::findMinimumPath(Tile* target, int hops)
 		west_dist = find_euc(this->west->coordinates, target->coordinates);
 
 	// Check if any of the neighbouring tiles are closer to the target.
-	float min_dist = north_dist;
+	float min_dist = (this->north && this->north->contents == nullptr) ? north_dist : MAX_VALUE;
 	shared_ptr<Tile> next_tile = this->north;
-	if (east_dist < min_dist)
+	if (east_dist < min_dist && this->east->contents == nullptr)
 	{
 		min_dist = east_dist;
 		next_tile = this->east;
 	}
-	if (south_dist < min_dist)
+	if (south_dist < min_dist && this->south->contents == nullptr)
 	{
 		min_dist = south_dist;
 		next_tile = this->south;
 	}
-	if (west_dist < min_dist)
+	if (west_dist < min_dist && this->west->contents == nullptr)
 	{
 		min_dist = west_dist;
 		next_tile = this->west;
 	}
 
-	// Recursive function, check number of hops required from next closest step.
-	hops = next_tile->findMinimumPath(target, hops) + 1;
+	if (current_dist < min_dist)
+		hops = 0;
+	else
+	{
+		// Recursive function, check number of hops required from next closest step.
+		hops = next_tile->findMinimumPath(target, hops) + 1;
+	}
+
 	return hops;
 }
 
