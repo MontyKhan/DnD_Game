@@ -42,6 +42,7 @@ public:
 	friend bool operator != (const Location &rhs, const Location &lhs);		// Check for inequality.
 	friend Location operator + (const Location &rhs, const Location &lhs);		// Sum locations
 	friend Location operator - (const Location &rhs, const Location &lhs);		// Subtract locations
+	friend Location operator * (const Location &loc, const double val);				// Multiply location by value
 	friend float find_euc(Location rhs, Location lhs);				// Find distance between locations
 };
 

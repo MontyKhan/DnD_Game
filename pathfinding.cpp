@@ -75,6 +75,24 @@ Location operator - (const Location &rhs, const Location &lhs)
 	return sum;
 }
 
+/* brief:	Multiple coordinates by numerical value
+   param:   &loc - Location value
+			val - Numerical value
+   returns: The product of the location and the value
+			e.g. (1,1,1) * 3 = (3,3,3)
+**/
+Location operator * (const Location &loc, const double val)
+{
+	Location prod;
+
+	prod.x = loc.x * val;
+	prod.y = loc.y * val;
+	prod.z = loc.z * val;
+
+	return prod;
+}
+
+
 /* brief:	Sets values for x, y and z based on a string.
    param:	str, in the format %,%,%
    returns:	Nothing, as constructor.

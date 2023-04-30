@@ -55,7 +55,10 @@ bool Player::handleEvent(sf::Event &event, sf::RenderWindow &window)
 		if (newTile->getContents())
 			make_attack(*(newTile->getContents()));
 		else
+		{
+			visitedTiles = this->tile->findMinimumPath(newTile);
 			moveTo(newTile);
+		}
 	}
 	
 	return true;
