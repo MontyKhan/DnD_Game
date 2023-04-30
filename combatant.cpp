@@ -219,7 +219,11 @@ int Combatant::take_turn()
 							reached = true;
 						}
 						else
+						{
 							new_Location = tile->findMidPoint(T, this->speed);
+							visited = this->tile->findMinimumPath(new_Location);
+							this->visitedTiles = std::move(visited);
+						}
 					}
 				}
 
@@ -301,8 +305,6 @@ int Combatant::moveTo(Tile* target)
 	if (target->setContents(this) == 0)
 	{
 		tmp->clearContents();
-		//sprites[this->name].setPosition(16.f+(32.f*float(this->coordinates.getX())),
-						//16.f+(32.f*float(this->coordinates.getY())));
 	}
 
 	return 0;

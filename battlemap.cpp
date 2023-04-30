@@ -159,14 +159,14 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 			{
 				Tile *active_tile = *visitedTiles->begin();
 				Tile *next_tile = (visitedTiles->size() > 1) ? *(visitedTiles->begin() + 1) : *visitedTiles->begin();
+
 				Location grid_coordinates = active_tile->getCoordinates();
 				float ref_coordinates_x = grid_coordinates.getX() + ((animation_increment / ai_max) * (next_tile->getCoordinates().getX() - active_tile->getCoordinates().getX()));
 				float ref_coordinates_y = grid_coordinates.getY() + ((animation_increment / ai_max) * (next_tile->getCoordinates().getY() - active_tile->getCoordinates().getY()));
 				sprites[(*active_player)->getName()].setPosition(16.f + (32.f * float(ref_coordinates_x)),
 					16.f + (32.f * float(ref_coordinates_y)));
 
-				cout << "Elapsed Time: " << clock.getElapsedTime().asSeconds() << endl;
-				if (clock.getElapsedTime().asSeconds() > 0.2f)
+				if (clock.getElapsedTime().asSeconds() > 0.1f)
 				{
 					clock.restart();
 					if (animation_increment < ai_max)
@@ -179,10 +179,6 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 						if (visitedTiles->size() == 0)
 							animation_finished = true;
 					}
-				}
-				else
-				{
-					cout << "Still counting!" << endl;
 				}
 			}
 			else
@@ -207,10 +203,6 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 			if (dynamic_cast<Player *>(*active_player))
 			{
 				(*active_player)->handleEvent(event, window);
-			}
-			else
-			{
-				std::cout << "Not a player!" << std::endl;
 			}
 		}
 
