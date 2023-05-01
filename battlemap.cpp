@@ -137,6 +137,21 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 	float animation_increment = 0;
 	// Repeat until only one player is left.
 	do {
+		// Rotate player to face mouse
+		sprites["Player"].setRotation(face_mouse(sprites["Player"], window));
+
+		// Move tile highlighter to mouse.
+		moveToMousedOverTile(highlighter, window, hl_width);
+
+		window.clear();
+		LineGrid tiles;
+		tiles.create((WINDOW_W + 1) / this->computeWidth());
+
+		updateScreen(&window);
+
+		window.draw(highlighter);
+		window.draw(tiles);
+		window.display();
 
 		// Check if battle over
 		//if (this->initiative_order.size() <= 1)
@@ -184,7 +199,13 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 			else
 			{
 				std::cout << "character name: " << (*active_player)->getName() << std::endl;
-				std::cout << "character Location: " << (*active_player)->getCoordinates() << std::endl;
+				std::cout << "character location: " << (*active_player)->getCoordinates() << std::endl;
+
+				for (const auto &actor : initiative_order)
+				{
+					std::cout << "actor name: " << actor->getName() << std::endl;
+					std::cout << "actor location: " << actor->getCoordinates() << std::endl;
+				}
 
 				turn_finished = false;
 				if (std::next(active_player) == this->initiative_order.end())
@@ -205,22 +226,6 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 				(*active_player)->handleEvent(event, window);
 			}
 		}
-
-		// Rotate player to face mouse
-		sprites["Player"].setRotation(face_mouse(sprites["Player"], window));
-
-		// Move tile highlighter to mouse.
-		moveToMousedOverTile(highlighter, window, hl_width);
-
-		window.clear();
-		LineGrid tiles;
-		tiles.create((WINDOW_W + 1) / this->computeWidth());
-
-		updateScreen(&window);
-
-		window.draw(highlighter);
-		window.draw(tiles);
-		window.display();
 
 	} while (event.type != sf::Event::Closed);
 
