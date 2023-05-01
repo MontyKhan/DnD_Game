@@ -7,7 +7,7 @@
 #include "linegrid.h"
 #include "player.h"
 
-const float ai_max{ 5 };
+const float time_max{ 0.5 };
 
 BattleMap::BattleMap(uint8_t x, uint8_t y, std::vector<Object*> objects) :
 	objects(objects),
@@ -134,7 +134,7 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 	sf::Clock clock;
 	bool animation_finished = true;
 	bool turn_finished = false;
-	float animation_increment = 0;
+	float clock_time = 0;
 	// Repeat until only one player is left.
 	do {
 		// Rotate player to face mouse
@@ -176,24 +176,22 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 				Tile *next_tile = (visitedTiles->size() > 1) ? *(visitedTiles->begin() + 1) : *visitedTiles->begin();
 
 				Location grid_coordinates = active_tile->getCoordinates();
-				float ref_coordinates_x = grid_coordinates.getX() + ((animation_increment / ai_max) * (next_tile->getCoordinates().getX() - active_tile->getCoordinates().getX()));
-				float ref_coordinates_y = grid_coordinates.getY() + ((animation_increment / ai_max) * (next_tile->getCoordinates().getY() - active_tile->getCoordinates().getY()));
+				clock_time = clock.getElapsedTime().asSeconds();
+				if (clock_time > time_max) { clock_time = time_max; }
+
+				float ref_coordinates_x = grid_coordinates.getX() + ((clock_time / time_max) * (next_tile->getCoordinates().getX() - active_tile->getCoordinates().getX()));
+				float ref_coordinates_y = grid_coordinates.getY() + ((clock_time / time_max) * (next_tile->getCoordinates().getY() - active_tile->getCoordinates().getY()));
 				sprites[(*active_player)->getName()].setPosition(16.f + (32.f * float(ref_coordinates_x)),
 					16.f + (32.f * float(ref_coordinates_y)));
 
-				if (clock.getElapsedTime().asSeconds() > 0.1f)
+				if (clock_time == time_max)
 				{
 					clock.restart();
-					if (animation_increment < ai_max)
-						++animation_increment;
-					else
-					{
-						animation_increment = 0;
-						visitedTiles->erase(visitedTiles->begin());
+					clock_time = 0;
+					visitedTiles->erase(visitedTiles->begin());
 
-						if (visitedTiles->size() == 0)
-							animation_finished = true;
-					}
+					if (visitedTiles->size() == 0)
+						animation_finished = true;
 				}
 			}
 			else

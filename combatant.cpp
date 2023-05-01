@@ -200,33 +200,30 @@ int Combatant::take_turn()
 					// If weapon doesn't require you to be neighbouring, just get close enough to hit.
 					std::vector<Tile *> visited = this->tile->findMinimumPath(T, weapon_range);
 					int dist = visited.size();
-					if (dist < this->visitedTiles.size())
+					this->visitedTiles = std::move(visited);
+
+					std::cout << ", dist: " << dist << std::endl;
+					if (dist < min_dist)
 					{
-						this->visitedTiles = std::move(visited);
+						min_dist = dist;
 
-						std::cout << ", dist: " << dist << std::endl;
-						if (dist < min_dist)
+						if (min_dist <= weapon_range)
 						{
-							min_dist = dist;
-
-							if (min_dist <= weapon_range)
-							{
-								new_Location = this->tile;
-								this->visitedTiles.clear();
-								std::cout << "Already neighbour. Stay in place." << std::endl;
-								reached = true;
-							}
-							if (min_dist <= this->speed)
-							{
-								new_Location = T;
-								reached = true;
-							}
-							else
-							{
-								new_Location = tile->findMidPoint(T, this->speed);
-								visited = this->tile->findMinimumPath(new_Location);
-								this->visitedTiles = std::move(visited);
-							}
+							new_Location = this->tile;
+							this->visitedTiles.clear();
+							std::cout << "Already neighbour. Stay in place." << std::endl;
+							reached = true;
+						}
+						if (min_dist <= this->speed)
+						{
+							new_Location = T;
+							reached = true;
+						}
+						else
+						{
+							new_Location = tile->findMidPoint(T, this->speed);
+							visited = this->tile->findMinimumPath(new_Location);
+							this->visitedTiles = std::move(visited);
 						}
 					}
 				}
