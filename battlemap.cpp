@@ -132,7 +132,7 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 
 	sf::Event event;
 	sf::Clock clock;
-	bool animation_finished = true;
+	bool move_anim_finished = true;
 	bool turn_finished = false;
 	float clock_time = 0;
 	// Repeat until only one player is left.
@@ -168,9 +168,10 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 		if (turn_finished)
 		{
 			std::vector<Tile*>* visitedTiles = (*active_player)->getVisitedTiles();
-			animation_finished = !(visitedTiles->size() > 0);
+			bool move_anim_finished = !(visitedTiles->size() > 0);
+			bool attack_anim_finished = (*active_player)->getAttackTarget() == nullptr;
 
-			if (!animation_finished)
+			if (!move_anim_finished)
 			{
 				Tile *active_tile = *visitedTiles->begin();
 				Tile *next_tile = (visitedTiles->size() > 1) ? *(visitedTiles->begin() + 1) : *visitedTiles->begin();
@@ -191,7 +192,23 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 					visitedTiles->erase(visitedTiles->begin());
 
 					if (visitedTiles->size() == 0)
-						animation_finished = true;
+						move_anim_finished = true;
+				}
+			}
+			else if (!attack_anim_finished)
+			{
+				clock_time = clock.getElapsedTime().asSeconds();
+				if (clock_time > time_max) { clock_time = time_max; }
+
+				sprites[(*active_player)->getName()].rotate(360.f / (clock_time / time_max));
+
+				if (clock_time == time_max)
+				{
+					clock.restart();
+					clock_time = 0;
+
+					(*active_player)->setAttackTarget(nullptr);
+					attack_anim_finished = true;
 				}
 			}
 			else

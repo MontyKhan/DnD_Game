@@ -75,6 +75,7 @@ life_status_t Player::make_attack(Object & target)
 	//cout << endl << "Please give number of weapon to use: ";
 	//cin >> input;
 	int wc = 0;							// Weapon choice
+	attack_target = &target;
 
 	return (life_status_t)weapons[wc].makeWeaponAttack(target);
 }

@@ -41,11 +41,12 @@ protected:
 	BattleMap *parentMap;
 	bool turn_finished;
 	std::vector<Tile *> visitedTiles;
+	Object *attack_target;
 
 public:
 	// Constructors
-	Object() : name{ "" }, coordinates{ Location(0, 0, 0) }, tile{ nullptr }, initiative{ 0 }, parentMap{ nullptr }, turn_finished{ false } {};
-	Object(Location Coordinates) : name{ "" }, coordinates{ Coordinates }, tile{ nullptr }, initiative{ 0 }, parentMap{ nullptr }, turn_finished{ false } {};
+	Object() : name{ "" }, coordinates{ Location(0, 0, 0) }, tile{ nullptr }, initiative{ 0 }, parentMap{ nullptr }, turn_finished{ false }, attack_target{ nullptr } {};
+	Object(Location Coordinates) : name{ "" }, coordinates{ Coordinates }, tile{ nullptr }, initiative{ 0 }, parentMap{ nullptr }, turn_finished{ false }, attack_target{ nullptr } {};
 
 	// Get a vector of neighbouring tiles.
 	std::vector<Tile *> getNeighbours();
@@ -87,7 +88,9 @@ public:
 	BattleMap *getBattlemap() { return parentMap; };
 	int setBattlemap(BattleMap* map) { parentMap = map; return 0; };
 	std::vector<Tile *> *getVisitedTiles() { return &visitedTiles; };
-	int setVisitedTiles(std::vector<Tile *> vt) { visitedTiles = vt; };
+	int setVisitedTiles(std::vector<Tile *> vt) { visitedTiles = vt; return visitedTiles.size(); };
+	Object *getAttackTarget() { return attack_target; };
+	int setAttackTarget(Object *target) { attack_target = target; return 0; };
 
 	// Virtual getters/setters
 	virtual std::string getName() { return name; };				// Name

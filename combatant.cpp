@@ -29,6 +29,7 @@ Combatant::Combatant(std::string Name, int HP, int AC, int Spd, int Init, Locati
 {
 	name = Name;
 	coordinates = Coordinates;
+	attack_target = nullptr;
 }
 
 /* brief:	Constructor for reading variables from a vector of strings.
@@ -44,6 +45,7 @@ Combatant::Combatant(std::vector<std::string> line)
 	init = Roll(1,20,stoi(line[INIT_VAR]));		// Create initiative roll
 	coordinates = Location();
 	status = dead;
+	attack_target = nullptr;
 }
 
 /* brief:	Constructor reading variables from an xml node.
@@ -53,6 +55,7 @@ Combatant::Combatant(std::vector<std::string> line)
 Combatant::Combatant(xml_node<> *root) :
 	hp{ 0 }, ac{ 0 }, speed{ 0 }, status{ dead }, faction{ Faction:: none }
 {
+	attack_target = nullptr;
 	for (xml_node<> *child = root->first_node(); child; child = child->next_sibling())	// Monster
 	{
 		xml_node<> *grandchild = child->first_node();	// Name
@@ -277,6 +280,7 @@ life_status_t Combatant::make_attack(Object & target)
 {
 	int wc = 0;							// Weapon choice
 
+	attack_target = &target;
 	return (life_status_t)weapons[wc].makeWeaponAttack(target);
 }
 
