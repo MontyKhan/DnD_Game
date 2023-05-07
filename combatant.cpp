@@ -186,56 +186,64 @@ int Combatant::take_turn()
 		if (D == min)
 		{
 			std::cout << "target position: " << (*target)->getCoordinates() << std::endl;
-			std::vector<Tile*> free_cells = (*target)->getFreeNeighbours();
-			int min_dist = MAX_VALUE;
 			bool reached = false;
 
-			if (free_cells.size() > 0)
+			std::vector<Tile *> neighbours = (*target)->getNeighbours();
+			if (std::any_of(neighbours.begin(), neighbours.end(), [&](Tile *n) {return n->getContents() == this; }))
 			{
-				Tile* new_Location = nullptr;
-				for (Tile *T : free_cells)
-				{
-					std::cout << "T: " << T->getCoordinates();
-					uint8_t weapon_range = weapons[0].getRange();
-					// If weapon doesn't require you to be neighbouring, just get close enough to hit.
-					std::vector<Tile *> visited = this->tile->findMinimumPath(T, weapon_range);
-					int dist = visited.size();
-					this->visitedTiles = std::move(visited);
-
-					std::cout << ", dist: " << dist << std::endl;
-					if (dist < min_dist)
-					{
-						min_dist = dist;
-
-						if (min_dist <= weapon_range)
-						{
-							new_Location = this->tile;
-							this->visitedTiles.clear();
-							std::cout << "Already neighbour. Stay in place." << std::endl;
-							reached = true;
-						}
-						if (min_dist <= this->speed)
-						{
-							new_Location = T;
-							reached = true;
-						}
-						else
-						{
-							new_Location = tile->findMidPoint(T, this->speed);
-							visited = this->tile->findMinimumPath(new_Location);
-							this->visitedTiles = std::move(visited);
-						}
-					}
-				}
-
-				std::cout << "new Location: " << new_Location->getCoordinates() << std::endl;
-
-				// Select new tile to move to.
-				moveTo(new_Location);
+				std::cout << "staying in place, already neighbouring." << std::endl;
+				reached = true;
 			}
 			else
 			{
-				std::cout << "staying in place." << std::endl;
+				std::vector<Tile *> free_cells = (*target)->getFreeNeighbours();
+				int min_dist = MAX_VALUE;
+
+				if (free_cells.size() > 0)
+				{
+					Tile *new_Location = nullptr;
+					for (Tile *T : free_cells)
+					{
+						std::cout << "T: " << T->getCoordinates();
+						uint8_t weapon_range = weapons[0].getRange();
+						// If weapon doesn't require you to be neighbouring, just get close enough to hit.
+						std::vector<Tile *> visited = this->tile->findMinimumPath(T, weapon_range);
+						int dist = visited.size();
+
+						std::cout << ", dist: " << dist << std::endl;
+						if (dist < min_dist)
+						{
+							min_dist = dist;
+							this->visitedTiles = std::move(visited);
+
+							if (min_dist <= weapon_range)
+							{
+								new_Location = this->tile;
+								this->visitedTiles.clear();
+								std::cout << "Already neighbour. Stay in place." << std::endl;
+								reached = true;
+							}
+							if (min_dist <= this->speed)
+							{
+								new_Location = T;
+								reached = true;
+							}
+							else
+							{
+								new_Location = tile->findMidPoint(T, this->speed);
+							}
+						}
+					}
+
+					std::cout << "new Location: " << new_Location->getCoordinates() << std::endl;
+
+					// Select new tile to move to.
+					moveTo(new_Location);
+				}
+				else
+				{
+					std::cout << "staying in place, no neighbours." << std::endl;
+				}
 			}
 
 			// If next to target, attack. Otherwise, do nothing but print message.
