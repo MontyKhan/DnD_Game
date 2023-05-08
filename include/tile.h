@@ -35,8 +35,7 @@ public:
 	// Get specific tile by contents.
 	Tile* get(Object *toFind);
 	// Finds distance to another tile.
-	std::vector<Tile *> findMinimumPath(Tile* target);			// Accessor for when calling within code.
-	std::vector<Tile *>  findMinimumPath(Tile* target, int hops);		// Recursive function.
+	int findMinimumPath(Tile* target, std::vector<Tile*>& visited);		// Recursive function.
 	// Find closest point to target that can be reached in a set number of hops.
 	Tile* findMidPoint(Tile* target, int moves);
 	// Return size of tile map.

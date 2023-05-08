@@ -204,44 +204,57 @@ int Combatant::take_turn()
 
 				if (free_cells.size() > 0)
 				{
-					Tile *new_Location = nullptr;
+					Tile *new_location = nullptr;
 					for (Tile *T : free_cells)
 					{
 						std::cout << "T: " << T->getCoordinates();
-						uint8_t weapon_range = weapons[0].getRange();
-						// If weapon doesn't require you to be neighbouring, just get close enough to hit.
-						std::vector<Tile *> visited = this->tile->findMinimumPath(T, weapon_range);
-						int dist = visited.size();
 
+						uint8_t weapon_range = weapons[0].getRange();
+						std::vector<Tile *> visited;
+
+						// If weapon doesn't require you to be neighbouring, just get close enough to hit.
+						int dist = this->tile->findMinimumPath(T, visited);
 						std::cout << ", dist: " << dist << std::endl;
+						if (dist < 0)
+						{
+							std::cout << "Way to target blocked, can only reach " << visited.back()->getCoordinates() << std::endl;
+							new_location = visited.back();
+							dist = MAX_VALUE;
+						}
+
 						if (dist < min_dist)
 						{
 							min_dist = dist;
 							this->visitedTiles = std::move(visited);
 
-							if (min_dist <= weapon_range)
-							{
-								new_Location = this->tile;
-								this->visitedTiles.clear();
-								std::cout << "Already neighbour. Stay in place." << std::endl;
-								reached = true;
-							}
 							if (min_dist <= this->speed)
 							{
-								new_Location = T;
+								new_location = T;
 								reached = true;
 							}
 							else
 							{
-								new_Location = tile->findMidPoint(T, this->speed);
+								new_location = tile->findMidPoint(T, this->speed);
+
+								visited.clear();
+								tile->findMinimumPath(new_location, visited);
+
+								this->visitedTiles = std::move(visited);
 							}
 						}
 					}
 
-					std::cout << "new Location: " << new_Location->getCoordinates() << std::endl;
+					if (this->visitedTiles.size() && this->visitedTiles.back() != new_location)
+					{
+						std::cout << "Way to " << new_location->getCoordinates() << "blocked. Stopping at " 
+							<< this->visitedTiles.back()->getCoordinates() << "." << std::endl;
+						new_location = this->visitedTiles.back();
+					}
+
+					std::cout << "new Location: " << new_location->getCoordinates() << std::endl;
 
 					// Select new tile to move to.
-					moveTo(new_Location);
+					moveTo(new_location);
 				}
 				else
 				{

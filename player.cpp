@@ -56,8 +56,16 @@ bool Player::handleEvent(sf::Event &event, sf::RenderWindow &window)
 			make_attack(*(newTile->getContents()));
 		else
 		{
-			visitedTiles = this->tile->findMinimumPath(newTile);
-			moveTo(newTile);
+			int dist = this->tile->findMinimumPath(newTile, visitedTiles);
+			if (dist == visitedTiles.size())
+			{
+				moveTo(newTile);
+			}
+			else
+			{
+				std::cout << "Cannot reach tile! Going as far as can." << std::endl;
+				moveTo(visitedTiles.back());
+			}
 		}
 	}
 	

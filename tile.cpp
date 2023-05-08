@@ -226,6 +226,11 @@ int Tile::setContents(Object* Contents)
 				throw str_err;
 			}
 		}
+		else if (contents == Contents)
+		{
+			std::cout << "Contents already assigned to tile!" << std::endl;
+			return -1;
+		}
 		// If tile occupied, return -1 and preserve original contents.
 		else
 		{
@@ -239,45 +244,36 @@ int Tile::setContents(Object* Contents)
 	}
 }
 
-/* brief:	Accessor function for findMinimumPath without 0 as a magic number.
-   param:	target - The tile you are measuring the distance to.
-   returns:	The number of steps required.
-*/
-std::vector<Tile *>  Tile::findMinimumPath(Tile* target)
-{
-	return findMinimumPath(target, 0);
-}
-
 /* brief:	Returns the number of moves necessary to move to the target tile.
 		Does not account for obstacles, improve to Djikstra's or A* later.
    param:	target - The tile you are measuring the distance to.
    		hops - The number of moves required to move to the target. Set to 0 when first calling.
    returns:	The number of steps required.
 */
-std::vector<Tile *>  Tile::findMinimumPath(Tile* target, int hops)
+int Tile::findMinimumPath(Tile* target, std::vector<Tile*>& visited)
 {
-	std::vector<Tile *> visited { this };
+	visited.push_back(this);
 
 	// Check if any of neighbouring tiles are the target.
 	if (this->north.get() == target)
 	{
 		visited.push_back(this->north.get());
-		return visited;
+		return 1;
 	}
 	else if (this->east.get() == target)
 	{
 		visited.push_back(this->east.get());
-		return visited;
+		return 1;
 	}
 	else if (this->south.get() == target)
 	{
 		visited.push_back(this->south.get());
-		return visited;
+		return 1;
 	}
 	else if (this->west.get() == target)
 	{
 		visited.push_back(this->west.get());
-		return visited;
+		return 1;
 	}
 
 	float current_dist = find_euc(this->coordinates, target->coordinates);
@@ -312,16 +308,23 @@ std::vector<Tile *>  Tile::findMinimumPath(Tile* target, int hops)
 		next_tile = this->west;
 	}
 
-	if (current_dist < min_dist)
-		hops = 0;
+	int hops = 0;
+	if (min_dist == MAX_VALUE)
+		hops = -1;
+	else if (current_dist < min_dist)
+		hops = -1;	// Something gone wrong, moving away from target. Stop where you are.
 	else
 	{
 		// Recursive function, check number of hops required from next closest step.
-		std::vector<Tile *> next_steps = next_tile->findMinimumPath(target, hops);
-		visited.insert(visited.end(), make_move_iterator(next_steps.begin()), make_move_iterator(next_steps.end()));
+		hops = next_tile->findMinimumPath(target, visited);
+		if (hops < 0)
+			return -1;
+		else
+			++hops;
+		// visited.insert(visited.end(), make_move_iterator(next_steps.begin()), make_move_iterator(next_steps.end()));
 	}
 
-	return visited;
+	return hops;
 }
 
 /* brief: 	Find the closest point on the path to the target allowed by the speed.
@@ -349,19 +352,24 @@ Tile* Tile::findMidPoint(Tile* target, int moves)
 		west_dist = find_euc(this->west->coordinates, target->coordinates);
 
 	// Check if any of the neighbouring tiles are closer to the target.
-	float min_dist = north_dist;
-	shared_ptr<Tile> next_tile = this->north;
-	if (east_dist < min_dist)
+	float min_dist = MAX_VALUE;
+	shared_ptr<Tile> next_tile;
+	if (this->north->getContents() == nullptr)
+	{
+		min_dist = north_dist;
+		next_tile = this->north;
+	}
+	if (east_dist < min_dist && this->east->getContents() == nullptr)
 	{
 		min_dist = east_dist;
 		next_tile = this->east;
 	}
-	if (south_dist < min_dist)
+	if (south_dist < min_dist && this->south->getContents() == nullptr)
 	{
 		min_dist = south_dist;
 		next_tile = this->south;
 	}
-	if (west_dist < min_dist)
+	if (west_dist < min_dist && this->north->getContents() == nullptr)
 	{
 		min_dist = west_dist;
 		next_tile = this->west;

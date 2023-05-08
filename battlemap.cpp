@@ -137,9 +137,6 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 	float clock_time = 0;
 	// Repeat until only one player is left.
 	do {
-		// Rotate player to face mouse
-		sprites["Player"].setRotation(face_mouse(sprites["Player"], window));
-
 		// Move tile highlighter to mouse.
 		moveToMousedOverTile(highlighter, window, hl_width);
 
@@ -201,12 +198,14 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 				if (clock_time > time_max) { clock_time = time_max; }
 
 				sprites[(*active_player)->getName()].rotate(360.f / (clock_time / time_max));
+				sprites[(*active_player)->getAttackTarget()->getName()].setColor(sf::Color::Red);
 
 				if (clock_time == time_max)
 				{
 					clock.restart();
 					clock_time = 0;
 
+					sprites[(*active_player)->getAttackTarget()->getName()].setColor(sf::Color::White);
 					(*active_player)->setAttackTarget(nullptr);
 					attack_anim_finished = true;
 				}
