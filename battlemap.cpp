@@ -6,6 +6,7 @@
 #include "display.h"
 #include "linegrid.h"
 #include "player.h"
+#include "scheduler.h"
 
 const float time_max{ 0.5 };
 
@@ -132,11 +133,17 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 
 	sf::Event event;
 	sf::Clock clock;
+	Scheduler scheduler;
 	bool move_anim_finished = true;
 	bool turn_finished = false;
 	float clock_time = 0;
 	// Repeat until only one player is left.
+
+	scheduler.addEvent([](float time) {std::cout << "Testing Scheduler" << std::endl; return 0; }, 5, 0);
+
 	do {
+		scheduler.executeEvents();
+
 		// Move tile highlighter to mouse.
 		moveToMousedOverTile(highlighter, window, hl_width);
 
@@ -158,78 +165,77 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 			break;
 		}
 
+		std::vector<Tile *> *visitedTiles = (*active_player)->getVisitedTiles();
+		bool move_action_used = (visitedTiles->size() > 0);
+		bool attack_action_used = (*active_player)->getAttackTarget() != nullptr;
+
+		if (move_action_used)
+		{
+			Tile *active_tile = *visitedTiles->begin();
+			Tile *next_tile = (visitedTiles->size() > 1) ? *(visitedTiles->begin() + 1) : *visitedTiles->begin();
+
+			Location grid_coordinates = active_tile->getCoordinates();
+			clock_time = clock.getElapsedTime().asSeconds();
+			if (clock_time > time_max) { clock_time = time_max; }
+
+			float ref_coordinates_x = grid_coordinates.getX() + ((clock_time / time_max) * (next_tile->getCoordinates().getX() - active_tile->getCoordinates().getX()));
+			float ref_coordinates_y = grid_coordinates.getY() + ((clock_time / time_max) * (next_tile->getCoordinates().getY() - active_tile->getCoordinates().getY()));
+			sprites[(*active_player)->getName()].setPosition(16.f + (32.f * float(ref_coordinates_x)),
+				16.f + (32.f * float(ref_coordinates_y)));
+
+			if (clock_time == time_max)
+			{
+				clock.restart();
+				clock_time = 0;
+				visitedTiles->erase(visitedTiles->begin());
+
+				if (visitedTiles->size() == 0)
+					move_action_used = false;
+			}
+		}
+		else if (attack_action_used)
+		{
+			clock_time = clock.getElapsedTime().asSeconds();
+			if (clock_time > time_max) { clock_time = time_max; }
+
+			sprites[(*active_player)->getName()].rotate(360.f / (clock_time / time_max));
+			sprites[(*active_player)->getAttackTarget()->getName()].setColor(sf::Color::Red);
+
+			if (clock_time == time_max)
+			{
+				clock.restart();
+				clock_time = 0;
+
+				sprites[(*active_player)->getAttackTarget()->getName()].setColor(sf::Color::White);
+				(*active_player)->setAttackTarget(nullptr);
+				attack_action_used = false;
+			}
+		}
+
 		// Make move and take attack
-		if (!turn_finished)
+		bool animations_finished = !(move_action_used || attack_action_used);
+		if ((!turn_finished) && animations_finished)
 			turn_finished = (*active_player)->take_turn();
 
 		if (turn_finished)
 		{
-			std::vector<Tile*>* visitedTiles = (*active_player)->getVisitedTiles();
-			bool move_anim_finished = !(visitedTiles->size() > 0);
-			bool attack_anim_finished = (*active_player)->getAttackTarget() == nullptr;
+			std::cout << "character name: " << (*active_player)->getName() << std::endl;
+			std::cout << "character location: " << (*active_player)->getCoordinates() << std::endl;
 
-			if (!move_anim_finished)
+			for (const auto &actor : initiative_order)
 			{
-				Tile *active_tile = *visitedTiles->begin();
-				Tile *next_tile = (visitedTiles->size() > 1) ? *(visitedTiles->begin() + 1) : *visitedTiles->begin();
-
-				Location grid_coordinates = active_tile->getCoordinates();
-				clock_time = clock.getElapsedTime().asSeconds();
-				if (clock_time > time_max) { clock_time = time_max; }
-
-				float ref_coordinates_x = grid_coordinates.getX() + ((clock_time / time_max) * (next_tile->getCoordinates().getX() - active_tile->getCoordinates().getX()));
-				float ref_coordinates_y = grid_coordinates.getY() + ((clock_time / time_max) * (next_tile->getCoordinates().getY() - active_tile->getCoordinates().getY()));
-				sprites[(*active_player)->getName()].setPosition(16.f + (32.f * float(ref_coordinates_x)),
-					16.f + (32.f * float(ref_coordinates_y)));
-
-				if (clock_time == time_max)
-				{
-					clock.restart();
-					clock_time = 0;
-					visitedTiles->erase(visitedTiles->begin());
-
-					if (visitedTiles->size() == 0)
-						move_anim_finished = true;
-				}
+				std::cout << "actor name: " << actor->getName() << std::endl;
+				std::cout << "actor location: " << actor->getCoordinates() << std::endl;
 			}
-			else if (!attack_anim_finished)
+
+			turn_finished = false;
+			if (std::next(active_player) == this->initiative_order.end())
 			{
-				clock_time = clock.getElapsedTime().asSeconds();
-				if (clock_time > time_max) { clock_time = time_max; }
-
-				sprites[(*active_player)->getName()].rotate(360.f / (clock_time / time_max));
-				sprites[(*active_player)->getAttackTarget()->getName()].setColor(sf::Color::Red);
-
-				if (clock_time == time_max)
-				{
-					clock.restart();
-					clock_time = 0;
-
-					sprites[(*active_player)->getAttackTarget()->getName()].setColor(sf::Color::White);
-					(*active_player)->setAttackTarget(nullptr);
-					attack_anim_finished = true;
-				}
+				active_player = this->initiative_order.begin();
 			}
 			else
 			{
-				std::cout << "character name: " << (*active_player)->getName() << std::endl;
-				std::cout << "character location: " << (*active_player)->getCoordinates() << std::endl;
-
-				for (const auto &actor : initiative_order)
-				{
-					std::cout << "actor name: " << actor->getName() << std::endl;
-					std::cout << "actor location: " << actor->getCoordinates() << std::endl;
-				}
-
-				turn_finished = false;
-				if (std::next(active_player) == this->initiative_order.end())
-				{
-					active_player = this->initiative_order.begin();
-				}
-				else
-				{
-					active_player++;
-				}
+				active_player++;
 			}
 		}
 
