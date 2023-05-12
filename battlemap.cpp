@@ -136,6 +136,8 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 	Scheduler scheduler;
 	bool move_anim_finished = true;
 	bool turn_finished = false;
+	bool move_animation_queued = false;
+	bool attack_animation_queued = false;
 	float clock_time = 0;
 	// Repeat until only one player is left.
 
@@ -193,14 +195,23 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 					move_action_used = false;
 			}
 		}
-		else if (attack_action_used)
+		else if (attack_action_used && !attack_animation_queued)
 		{
+#if 0
 			clock_time = clock.getElapsedTime().asSeconds();
 			if (clock_time > time_max) { clock_time = time_max; }
+#endif
 
 			sprites[(*active_player)->getName()].rotate(360.f / (clock_time / time_max));
 			sprites[(*active_player)->getAttackTarget()->getName()].setColor(sf::Color::Red);
 
+			scheduler.addEvent([&](float time) { sprites[(*active_player)->getAttackTarget()->getName()].setColor(sf::Color::White);  std::cout << "clear colour" << std::endl; }, 1);
+			scheduler.addEvent([&](float time) { (*active_player)->setAttackTarget(nullptr);  std::cout << "clear target" << std::endl; }, 1);
+			scheduler.addEvent([&](float time) { attack_action_used = false; std::cout << "clear bool" << std::endl; }, 1);
+			scheduler.addEvent([&](float time) { attack_animation_queued = false; std::cout << "clear bool" << std::endl; }, 1);
+
+			attack_animation_queued = true;
+#if 0
 			if (clock_time == time_max)
 			{
 				clock.restart();
@@ -210,6 +221,7 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 				(*active_player)->setAttackTarget(nullptr);
 				attack_action_used = false;
 			}
+#endif
 		}
 
 		// Make move and take attack
@@ -217,7 +229,7 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 		if ((!turn_finished) && animations_finished)
 			turn_finished = (*active_player)->take_turn();
 
-		if (turn_finished)
+		if (turn_finished && animations_finished)
 		{
 			std::cout << "character name: " << (*active_player)->getName() << std::endl;
 			std::cout << "character location: " << (*active_player)->getCoordinates() << std::endl;
@@ -252,5 +264,5 @@ void BattleMap::run_encounter(sf::RenderWindow& window)
 	window.close();
 
 	// Debug code. State last fighter standing.
-	cout << (*active_player)->getName() << " wins!" << endl;
+	std::cout << (*active_player)->getName() << " wins!" << endl;
 }

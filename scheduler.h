@@ -12,18 +12,18 @@ typedef enum {
 class TimeEvent
 {
 protected:
-    std::function<int(float)> func;
+    std::function<void(float)> func;
     float expiration;
 
 public:
     TimeEvent() {
         func = [](float f) {return f; };
     };
-    TimeEvent(std::function<int(float)> Func) { func = Func; };
-    virtual void setFunc(std::function<int(float)> Func) { func = Func; };
-    virtual std::function<int(float)> getFunc() { return func; };
+    TimeEvent(std::function<void(float)> Func) { func = Func; };
+    virtual void setFunc(std::function<void(float)> Func) { func = Func; };
+    virtual std::function<void(float)> getFunc() { return func; };
 
-    int execute(float time) { return func(time); };
+    void execute(float time) { func(time); };
 
     float getExpiration() { return expiration; };
 };
@@ -37,7 +37,7 @@ private:
 
 public:
     OngoingEvent() : interval{ 0 }, nextInterval{ 0 }, expirationType { ExpirationInSeconds } {};
-    OngoingEvent(std::function<int(float)> Func, float interval, float expiration = 0, ExpirationType et = ExpirationInSeconds);
+    OngoingEvent(std::function<void(float)> Func, float Interval, float Expiration = 0, ExpirationType et = ExpirationInSeconds);
     
     void setNextInterval(float currentTime) { nextInterval = currentTime + interval; };
     void setNextInterval() { nextInterval += interval; };
@@ -50,7 +50,7 @@ private:
 
 public:
     ScheduledEvent() {};
-    ScheduledEvent(std::function<int(float)> Func, float expiration);
+    ScheduledEvent(std::function<void(float)> Func, float Expiration);
 };
 
 class Scheduler
@@ -62,8 +62,8 @@ private:
 public:
     Scheduler();
     int addEvent(TimeEvent *event) { events.push_back(event); return events.size(); };
-    int addEvent(std::function<int(float)> Func, float interval, float expiration, ExpirationType et = ExpirationInSeconds);
-    int addEvent(std::function<int(float)> Func, float expiration);
+    int addEvent(std::function<void(float)> Func, float Interval, float Expiration, ExpirationType et = ExpirationInSeconds);
+    int addEvent(std::function<void(float)> Func, float Expiration);
     void executeEvents();
 };
 

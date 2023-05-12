@@ -1,16 +1,16 @@
 #include "scheduler.h"
 
-OngoingEvent::OngoingEvent(std::function<int(float)> Func, float interval, float Expiration, ExpirationType et)
-    : interval{interval}, expirationType{et}
+OngoingEvent::OngoingEvent(std::function<void(float)> Func, float Interval, float Expiration, ExpirationType et)
+    : interval{Interval}, expirationType{et}
 {
     func = Func;
-    expiration = expiration;
+    expiration = Expiration;
 }
 
-ScheduledEvent::ScheduledEvent(std::function<int(float)> Func, float expiration)
+ScheduledEvent::ScheduledEvent(std::function<void(float)> Func, float Expiration)
 {
     func = Func;
-    expiration = expiration;
+    expiration = Expiration;
 }
 
 Scheduler::Scheduler()
@@ -18,19 +18,19 @@ Scheduler::Scheduler()
 
 }
 
-int Scheduler::addEvent(std::function<int(float)> Func, float interval, float expiration, ExpirationType et)
+int Scheduler::addEvent(std::function<void(float)> Func, float Interval, float Expiration, ExpirationType et)
 {
     OngoingEvent *event = nullptr;
 
     if (et == ExpirationInSeconds)
     {
-        float expirationTime = expiration ? expiration + clock.getElapsedTime().asSeconds() : 0;
+        float expirationTime = Expiration ? Expiration + clock.getElapsedTime().asSeconds() : 0;
 
-        event = new OngoingEvent{ Func, interval, expirationTime, ExpirationInSeconds };
+        event = new OngoingEvent{ Func, Interval, expirationTime, ExpirationInSeconds };
     }
     else
     {
-        event = new OngoingEvent{ Func, interval, expiration, ExpirationInIncrements };
+        event = new OngoingEvent{ Func, Interval, Expiration, ExpirationInIncrements };
     }
 
     event->setNextInterval(clock.getElapsedTime().asSeconds());
@@ -40,9 +40,9 @@ int Scheduler::addEvent(std::function<int(float)> Func, float interval, float ex
     return events.size();
 }
 
-int Scheduler::addEvent(std::function<int(float)> Func, float expiration)
+int Scheduler::addEvent(std::function<void(float)> Func, float Expiration)
 {
-    float expirationTime = expiration + clock.getElapsedTime().asSeconds();
+    float expirationTime = Expiration + clock.getElapsedTime().asSeconds();
 
     ScheduledEvent *event = new ScheduledEvent{ Func, expirationTime};
 
@@ -60,7 +60,7 @@ void Scheduler::executeEvents()
         return;
 
     TimeEvent *event = events.front();
-    while (events.size() > 0 && event <= events.back())
+    while (events.size() > 0 && event != nullptr)
     {
         bool expired = false;
         auto ongoingEvent = dynamic_cast<OngoingEvent *>(event);
@@ -85,14 +85,16 @@ void Scheduler::executeEvents()
             }
         }
 
+        auto index = std::find(events.begin(), events.end(), event);
         if (expired)
         {
-            auto index = std::find(events.begin(), events.end(), event);
             auto new_iter = events.erase(index);
             if (new_iter != events.end())
                 event = *new_iter;
+            else
+                event = nullptr;
         }
         else
-            event++;
+            event = (index + 1 != events.end() ? *(index + 1) : nullptr);
     }
 }
