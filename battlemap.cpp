@@ -14,7 +14,7 @@ BattleMap::BattleMap(uint8_t x, uint8_t y, std::vector<Object*> objects) :
 	width(x),
 	height(y)
 {
-	origin = new Tile(x, y);
+	origin = new Tile(this, x, y);
 
 	assignInitiativeOrder();
 }
@@ -35,6 +35,22 @@ Tile* BattleMap::get(int x, int y) {
 // Get specific tile by contents.
 Tile* BattleMap::get(Object* toFind) {
 	return origin->get(toFind);
+}
+
+// Confirm tile exists within map
+bool BattleMap::isValid(Location coordinates) {
+	int x = coordinates.getX();
+	int y = coordinates.getY();
+
+	return isValid(x, y);
+}
+
+// Confirm tile exists within map
+bool BattleMap::isValid(int x, int y) {
+	if ((x > this->width) || (y > this->height))
+		return false;
+	else
+		return true;
 }
 
 /* brief: Create a circular doubly linked list sorted by initiative.

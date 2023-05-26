@@ -27,6 +27,10 @@ public:
 	Tile* get(int x, int y);
 	// Get specific tile by contents.
 	Tile* get(Object* toFind);
+	// Check if tile is valid, Location
+	bool isValid(Location coordinates);
+	// Check if tile is valid, individual ints
+	bool isValid(int x, int y);
 
 	// Map charateristics
 	uint8_t getWidth() { return width; };

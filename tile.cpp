@@ -1,9 +1,11 @@
-#include "tile.h"
-#include "tools.h"
 #include <iostream>
 #include <exception>
 #include <stdlib.h>
 #include <sstream>
+
+#include "tile.h"
+#include "tools.h"
+#include "battlemap.h"
 
 
 /* brief:	Constructor for creating rectangle shaped maps.
@@ -11,7 +13,8 @@
 		y - Height of map
    returns:	Nothing, as constructor
 */
-Tile::Tile(int x, int y)
+Tile::Tile(BattleMap *map, int x, int y)
+	: map{map}
 {
 	// Assign values of links to nullptr, to be filled in later.
 	// Could use simplifying?
@@ -28,6 +31,7 @@ Tile::Tile(int x, int y)
 	for (int i = 0; i < x; i++)
 	{
 		shared_ptr<Tile> new_tile{ new Tile() };
+		new_tile->map = this->map;
 		new_tile->origin = this->origin;
 		new_tile->contents = new OutOfBoundsObject();
 		new_tile->west = x_iter;			// All else will be nullptr by default.
@@ -42,6 +46,7 @@ Tile::Tile(int x, int y)
 	for (int j = 1; j < y; j++)
 	{
 		y_iter.reset(new Tile());
+		y_iter->map = this->map;
 		y_iter->north = prev_y;
 		y_iter->setCoordinates(0,j,0);
 		y_iter->contents = new OutOfBoundsObject();
@@ -51,6 +56,7 @@ Tile::Tile(int x, int y)
 		for (int i = 0; i < x; i++)
 		{
 			shared_ptr<Tile> new_tile{ new Tile() };
+			new_tile->map = this->map;
 			new_tile->origin = this->origin;
 			new_tile->west = x_iter;
 			new_tile->north = prev_y->east;
@@ -147,6 +153,9 @@ void Tile::print_from()
 */
 Tile* Tile::get(int x, int y)
 {
+	if (!map->isValid(x, y))
+		return nullptr;
+
 	shared_ptr<Tile> tile = origin;
 	try
 	{

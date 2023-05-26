@@ -8,9 +8,11 @@
 
 // Forward class declarations
 class Object;
+class BattleMap;
 
 class Tile {
 private:
+	BattleMap *map;
 	Object *contents;
 	Location coordinates;
 	std::shared_ptr<Tile> north;
@@ -20,8 +22,8 @@ private:
 	std::shared_ptr<Tile> origin;
 public:
 	// Constructors
-	Tile() : contents(nullptr), north(nullptr), east(nullptr), south(nullptr), west(nullptr), origin(nullptr) {};	// Default
-	Tile(int x, int y);										// Rectangle
+	Tile() : map(nullptr), contents(nullptr), north(nullptr), east(nullptr), south(nullptr), west(nullptr), origin(nullptr) {};	// Default
+	Tile(BattleMap *map, int x, int y);										// Rectangle
 	~Tile();
 
 	// Print entire tile grid to screen, each tile represented by "x"
@@ -41,6 +43,13 @@ public:
 	// Return size of tile map.
 	int width();
 	int height();
+
+	// Utility functions
+	bool isUnblocked() { return contents; };
+	bool isDestination(Tile *dest) { return this == dest; };
+
+	// Pathfinding functions
+	double calculateHValue(Tile *dest);
 
 	// Getters/setters
 	Object* getContents() { return contents; };
