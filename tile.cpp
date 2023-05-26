@@ -6,6 +6,7 @@
 #include "tile.h"
 #include "tools.h"
 #include "battlemap.h"
+#include "pathfinding.h"
 
 
 /* brief:	Constructor for creating rectangle shaped maps.
@@ -261,6 +262,10 @@ int Tile::setContents(Object* Contents)
 */
 int Tile::findMinimumPath(Tile* target, std::vector<Tile*>& visited)
 {
+	visited = Pathfinding::aStar(this, target);
+
+	return visited.size();
+#if 0
 	visited.push_back(this);
 
 	// Check if any of neighbouring tiles are the target.
@@ -334,6 +339,7 @@ int Tile::findMinimumPath(Tile* target, std::vector<Tile*>& visited)
 	}
 
 	return hops;
+#endif
 }
 
 /* brief: 	Find the closest point on the path to the target allowed by the speed.
