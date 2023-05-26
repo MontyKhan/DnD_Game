@@ -5,17 +5,30 @@ set(CMAKE_CXX_STANDARD 17)            # Enable c++17 standard
 # Add main.cpp file of project root directory as source file
 set (SOURCE_FILES
 combatant.cpp 
+include/combatant.h
 csv_reader.cpp 
+include/csv_reader.h
 tools.cpp 
+include/tools.h
 load_file.cpp 
+include/load_file.h
 weapon_type.cpp 
+include/weapon_type.h
 roll.cpp 
-pathfinding.cpp 
+include/roll.h
+location.cpp 
+include/location.h
 player.cpp 
+include/player.h
 tile.cpp 
+include/tile.h
 object.cpp 
+include/object.h
 display.cpp 
+include/display.h
 battlemap.cpp
+include/battlemap.h
+
 main.cpp
 )
 

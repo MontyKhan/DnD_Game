@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "pathfinding.h"
+#include "location.h"
 #include "weapon_type.h"
 #include "faction.h"
 #include <SFML/Graphics.hpp>

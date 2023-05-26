@@ -2,7 +2,7 @@
 #include "tools.h"
 #include "load_file.h"
 #include "weapon_type.h"
-#include "pathfinding.h"
+#include "location.h"
 #include "object.h"
 #include "rapidxml/rapidxml_print.hpp"
 #include <sstream>

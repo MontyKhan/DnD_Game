@@ -1,5 +1,5 @@
-#ifndef PATHFINDING_H
-#define PATHFINDING_H
+#ifndef LOCATION_H
+#define LOCATION_H
 
 #include <stdio.h>
 #include <iostream>

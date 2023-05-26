@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include "weapon_type.h"
-#include "pathfinding.h"
+#include "location.h"
 #include "object.h"
 #include "rapidxml/rapidxml_utils.hpp"
 

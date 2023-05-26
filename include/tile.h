@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "pathfinding.h"
+#include "location.h"
 
 // Forward class declarations
 class Object;

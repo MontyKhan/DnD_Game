@@ -1,7 +1,7 @@
 #include "combatant.h"
 #include "tools.h"
 #include "load_file.h"
-#include "pathfinding.h"
+#include "location.h"
 #include "battlemap.h"
 #include "rapidxml/rapidxml_print.hpp"
 #include "display.h"
