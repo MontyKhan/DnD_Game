@@ -50,6 +50,14 @@ public:
 
 	// Pathfinding functions
 	double calculateHValue(Tile *dest);
+	// Get a vector of neighbouring tiles.
+	std::vector<Tile *> getNeighbours();
+	// Get a vector of vacant neighbouring tiles.
+	std::vector<Tile *> getFreeNeighbours();
+	// Get a vector of occupied neighbouring tiles.
+	std::vector<Tile *> getOccupiedNeighbours();
+	// Check if tile is to diagonal
+	bool isDiagonal(Tile *tile);
 
 	// Getters/setters
 	BattleMap *getParentMap() { return map; };

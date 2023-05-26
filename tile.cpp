@@ -424,3 +424,90 @@ int Tile::height()
 
 	return i;
 }
+
+double Tile::calculateHValue(Tile *dest)
+{
+	double H = find_euc(coordinates, dest->getCoordinates());
+
+	return H;
+}
+
+std::vector<Tile *> Tile::getNeighbours()
+{
+	// Vector to contain neighbouring vacant tiles.
+	std::vector<Tile *> tiles;
+	tiles.resize(8);
+
+	tiles[eNorth] = this->getNorth();
+	tiles[eNorthEast] = tiles[eNorth] ? tiles[eNorth]->getEast() : nullptr;
+	tiles[eEast] = this->getEast();
+	tiles[eSouthEast] = tiles[eEast] ? tiles[eEast]->getSouth() : nullptr;
+	tiles[eSouth] = this->getSouth();
+	tiles[eSouthWest] = tiles[eSouth] ? tiles[eSouth]->getWest() : nullptr;
+	tiles[eWest] = this->getWest();
+	tiles[eNorthWest] = tiles[eWest] ? tiles[eWest]->getNorth() : nullptr;
+
+	return tiles;
+}
+
+/* brief:	Get a list of all neighbouring cells with no contents.
+   param:	None.
+   returns:	A vector containing the empty neighbouring cells.
+*/
+std::vector<Tile *> Tile::getFreeNeighbours()
+{
+	// Vector to contain neighbouring vacant tiles.
+	std::vector<Tile *> free_tiles;
+	std::vector<Tile *> tiles = this->getNeighbours();
+
+	// Check neighbouring tiles, clockwise starting at North.
+	for (auto const &neighbour : tiles)
+	{
+		if (neighbour && neighbour->getContents() == nullptr)
+			free_tiles.push_back(neighbour);
+	}
+
+	return free_tiles;
+}
+
+/* brief:	Get a list of all neighbouring cells with contents.
+   param:	None.
+   returns:	A vector containing the occupied neighbouring cells.
+*/
+std::vector<Tile *> Tile::getOccupiedNeighbours()
+{
+	// Vector to contain neighbouring vacant tiles.
+	std::vector<Tile *> occupied_tiles;
+	std::vector<Tile *> tiles = this->getNeighbours();
+
+	// Check neighbouring tiles, clockwise starting at North.
+	for (auto const &neighbour : tiles)
+	{
+		if (neighbour && neighbour->getContents() != nullptr)
+			occupied_tiles.push_back(neighbour);
+	}
+
+	return occupied_tiles;
+}
+
+bool Tile::isDiagonal(Tile *tile)
+{
+	if (north.get() == tile)
+		return false;
+	else if (north->east.get() == tile)
+		return true;
+	else if (east.get() == tile)
+		return false;
+	else if (east->south.get() == tile)
+		return true;
+	else if (south.get() == tile)
+		return false;
+	else if (south->west.get() == tile)
+		return true;
+	else if (west.get() == tile)
+		return false;
+	else if (west->north.get() == tile)
+		return true;
+	else
+		return false;
+}

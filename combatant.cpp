@@ -314,6 +314,7 @@ life_status_t Combatant::take_damage(int dam)
 
 		auto corpse = find(this->parentMap->initiative_order.begin(), this->parentMap->initiative_order.end(), this);
 		this->parentMap->initiative_order.erase(corpse);
+		eraseItem(this->parentMap->initiative_order, this);
 		this->tile->clearContents();
 	}
 

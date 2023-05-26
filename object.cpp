@@ -5,20 +5,7 @@ using namespace std;
 
 std::vector<Tile *>Object::getNeighbours()
 {
-	// Vector to contain neighbouring vacant tiles.
-	std::vector<Tile *> tiles;
-	tiles.resize(8);
-
-	tiles[eNorth] = this->tile->getNorth();
-	tiles[eNorthEast] = tiles[eNorth] ? tiles[eNorth]->getEast() : nullptr;
-	tiles[eEast] = this->tile->getEast();
-	tiles[eSouthEast] = tiles[eEast] ? tiles[eEast]->getSouth() : nullptr;
-	tiles[eSouth] = this->tile->getSouth();
-	tiles[eSouthWest] = tiles[eSouth] ? tiles[eSouth]->getWest() : nullptr;
-	tiles[eWest] = this->tile->getWest();
-	tiles[eNorthWest] = tiles[eWest] ? tiles[eWest]->getNorth() : nullptr;
-
-	return tiles;
+	return (tile ? tile->getNeighbours() : std::vector<Tile*>());
 }
 
 /* brief:	Get a list of all neighbouring cells with no contents.
@@ -27,18 +14,7 @@ std::vector<Tile *>Object::getNeighbours()
 */
 std::vector<Tile*> Object::getFreeNeighbours()
 {
-	// Vector to contain neighbouring vacant tiles.
-	std::vector<Tile*> free_tiles;
-	std::vector<Tile *> tiles = this->getNeighbours();
-
-	// Check neighbouring tiles, clockwise starting at North.
-	for (auto const &neighbour : tiles)
-	{
-		if (neighbour && neighbour->getContents() == nullptr)
-			free_tiles.push_back(neighbour);
-	}
-	
-	return free_tiles;
+	return (tile ? tile->getFreeNeighbours() : std::vector<Tile *>());
 }
 
 /* brief:	Get a list of all neighbouring cells with contents.
@@ -47,18 +23,7 @@ std::vector<Tile*> Object::getFreeNeighbours()
 */
 std::vector<Tile*> Object::getOccupiedNeighbours()
 {
-	// Vector to contain neighbouring vacant tiles.
-	std::vector<Tile*> occupied_tiles;
-	std::vector<Tile *> tiles = this->getNeighbours();
-
-	// Check neighbouring tiles, clockwise starting at North.
-	for (auto const &neighbour : tiles)
-	{
-		if (neighbour && neighbour->getContents() != nullptr)
-			occupied_tiles.push_back(neighbour);
-	}
-
-	return occupied_tiles;
+	return (tile ? tile->getOccupiedNeighbours() : std::vector<Tile *>());
 }
 
 /* brief:	Print name and Location to console.

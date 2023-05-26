@@ -28,6 +28,8 @@ display.cpp
 include/display.h
 battlemap.cpp
 include/battlemap.h
+pathfinding.cpp
+include/pathfinding.h
 
 main.cpp
 )
