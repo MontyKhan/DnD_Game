@@ -23,7 +23,7 @@ private:
 public:
 	// Constructors
 	Tile() : map(nullptr), contents(nullptr), north(nullptr), east(nullptr), south(nullptr), west(nullptr), origin(nullptr) {};	// Default
-	Tile(BattleMap *map, int x, int y);										// Rectangle
+	Tile(int x, int y);										// Rectangle
 	~Tile();
 
 	// Print entire tile grid to screen, each tile represented by "x"
@@ -52,6 +52,8 @@ public:
 	double calculateHValue(Tile *dest);
 
 	// Getters/setters
+	BattleMap *getParentMap() { return map; };
+	int setParentMap(BattleMap *Map) { map = Map; return 0; };
 	Object* getContents() { return contents; };
 	int setContents(Object* Contents);			// Defined in file
 	Location getCoordinates() { return coordinates; };

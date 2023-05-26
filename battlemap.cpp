@@ -14,7 +14,8 @@ BattleMap::BattleMap(uint8_t x, uint8_t y, std::vector<Object*> objects) :
 	width(x),
 	height(y)
 {
-	origin = new Tile(this, x, y);
+	origin = new Tile(x, y);
+	origin->setParentMap(this);
 
 	assignInitiativeOrder();
 }

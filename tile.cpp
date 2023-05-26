@@ -13,8 +13,8 @@
 		y - Height of map
    returns:	Nothing, as constructor
 */
-Tile::Tile(BattleMap *map, int x, int y)
-	: map{map}
+Tile::Tile(int x, int y)
+	//: map{map}
 {
 	// Assign values of links to nullptr, to be filled in later.
 	// Could use simplifying?
